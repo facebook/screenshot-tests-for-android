@@ -13,4 +13,16 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+
+    sourceSets {
+        main {
+            java {
+                srcDir 'src/main/java'
+            }
+        }
+    }
+}
+
+task jar(type: Jar) {
+    from android.sourceSets.main.allSource
 }
