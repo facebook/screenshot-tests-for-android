@@ -21,10 +21,6 @@ dependencies {
     compile 'com.google.dexmaker:dexmaker-mockito:1.0'
     compile 'com.android.support.test:runner:0.3'
 
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'org.mockito:mockito-core:1.+'
-    androidTestCompile 'junit:junit:4.12'
-    androidTestCompile 'org.easytesting:fest-assert:1.4'
     androidTestCompile 'com.android.support:support-v4:21.0.0'
     androidTestCompile 'com.google.guava:guava:11.0.2'
     androidTestCompile 'com.android.support.test:runner:0.3'
