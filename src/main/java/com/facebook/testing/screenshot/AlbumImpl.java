@@ -27,6 +27,7 @@ import org.xmlpull.v1.XmlSerializer;
 /**
  * A "local" implementation of Album.
  */
+@SuppressWarnings("deprecation")
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
 

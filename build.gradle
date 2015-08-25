@@ -9,11 +9,24 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'android-library'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+    compile 'junit:junit:4.12'
+    compile 'org.mockito:mockito-core:1.+'
+    testCompile 'junit:junit:4.12'
+}
 
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
+
+    lintOptions {
+        abortOnError false
+    }
 
     sourceSets {
         main {
@@ -22,4 +35,5 @@ android {
             }
         }
     }
+
 }
