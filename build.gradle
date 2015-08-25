@@ -8,7 +8,8 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'android-library'
 
 android {
     compileSdkVersion 22
@@ -21,8 +22,4 @@ android {
             }
         }
     }
-}
-
-task jar(type: Jar) {
-    from android.sourceSets.main.allSource
 }
