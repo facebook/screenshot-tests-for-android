@@ -1,0 +1,30 @@
+<screenshots>
+  <screenshot>
+    <description />
+    <name>com.facebook.testing.screenshot.ScriptsFixtureTest_testGetTextViewScreenshot</name>
+    <test_class>
+    com.facebook.testing.screenshot.ScriptsFixtureTest</test_class>
+    <test_name>testGetTextViewScreenshot</test_name>
+    <tile_width>1</tile_width>
+    <tile_height>1</tile_height>
+    <absolute_file_name>/data/data/com.facebook.testing.screenshot.screenshot/app_screenshots-default/com.facebook.testing.screenshot.ScriptsFixtureTest_testGetTextViewScreenshot.png</absolute_file_name>
+  </screenshot>
+  <screenshot>
+    <description />
+    <name>com.facebook.testing.screenshot.ScriptsFixtureTest_testSecondScreenshot</name>
+    <test_class>
+    com.facebook.testing.screenshot.ScriptsFixtureTest</test_class>
+    <test_name>testSecondScreenshot</test_name>
+    <tile_width>1</tile_width>
+    <tile_height>1</tile_height>
+    <absolute_file_name>/data/data/com.facebook.testing.screenshot.screenshot/app_screenshots-default/com.facebook.testing.screenshot.ScriptsFixtureTest_testSecondScreenshot.png</absolute_file_name>
+  </screenshot>
+  <screenshot>
+    <description/>
+    <!-- the '.' makes wkhtmlimage think this is an external url -->
+    <name>com.facebook.something.FooBar2.png</name>
+    <test_name>unknown</test_name>
+    <test_class>unknown</test_class>
+    <error>Outofmem and such</error>
+  </screenshot>
+</screenshots>

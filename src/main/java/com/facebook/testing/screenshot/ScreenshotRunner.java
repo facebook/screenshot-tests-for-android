@@ -1,0 +1,56 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ */
+
+package com.facebook.testing.screenshot;
+
+import android.app.Instrumentation;
+import android.os.Bundle;
+
+/**
+ * The ScreenshotRunner needs to be called from the top level
+ * Instrumentation runner before and after all the tests run.
+ */
+public abstract class ScreenshotRunner {
+
+  /**
+   * Stores some of the static state. We bundle this into a class for
+   * easy cleanup.
+   */
+  static class State {
+    Instrumentation instrumentation;
+    Bundle arguments;
+  }
+
+  static State sState;
+
+  /**
+   * Call this exactly once in your process before any screenshots are
+   * generated.
+   *
+   * Typically this will be in {@code InstrumentationTestRunner#onCreate()}
+   */
+  public static void onCreate(Instrumentation instrumentation, Bundle arguments) {
+    sState = new State();
+    sState.instrumentation = instrumentation;
+    sState.arguments = arguments;
+  }
+
+  /**
+   * Call this exactly once after all your tests have run.
+   *
+   * Typically this can be in {@code InstrumentationTestRunner#finish()}
+   */
+  public static void onDestroy() {
+    if (ScreenshotImpl.hasBeenCreated()) {
+      ScreenshotImpl.getInstance().flush();
+    }
+
+    sState = null;
+  }
+}
