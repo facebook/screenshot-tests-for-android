@@ -20,6 +20,7 @@ import xml.etree.ElementTree as ET
 import getopt
 import shutil
 from . import metadata
+from .simple_puller import SimplePuller
 
 from os.path import join
 from os.path import abspath
@@ -112,6 +113,7 @@ def copy_assets(destination):
     thisdir = os.path.dirname(__file__)
     os.symlink(abspath(join(thisdir, "default.css")), join(destination, "default.css"))
     os.symlink(abspath(join(thisdir, "default.js")), join(destination, "default.js"))
+    os.symlink(abspath(join(thisdir, "background.png")), join(destination, "background.png"))
 
 def pull_metadata(package, dir, adb_puller):
     metadata_file = '/data/data/%s/app_screenshots-default/metadata.xml' % package
@@ -179,11 +181,20 @@ def main(argv):
 
     process = rest_args[0]  # something like com.facebook.places.tests
     opts = dict(opt_list)
-    adb = Adb.from_getopt(opts)
+    puller_args = []
+    if "-e" in opts:
+        puller_args.append("-e")
+
+    if "-d" in opts:
+        puller_args.append("-d")
+
+    if "-s" in opts:
+        puller_args += ["-s", opts["-s"]]
+
     return pull_screenshots(process,
                             filter_name_regex=opts.get('--filter-name-regex'),
                             opt_generate_png=opts.get('--generate-png'),
-                            adb_puller=AdbPuller(adb))
+                            adb_puller=SimplePuller(puller_args))
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))

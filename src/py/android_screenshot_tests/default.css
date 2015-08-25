@@ -3,23 +3,7 @@ body {
 }
 
 img {
-    /* transparent images should still have a white background by default. */
-    background: #ffffff;
-    padding: 0px;
-    margin: 0px;
-    display: block;
-
-    /* This CSS is copypasta from the internets, it creates a photoshop
-     style checkerboard background to indicate transparency. */
-    background-color: #FEFEFE;
-    background-image: -webkit-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB), -webkit-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB);
-    background-image: -moz-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB), -moz-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB);
-    background-image: -o-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB), -o-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB);
-    background-image: -ms-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB), -ms-linear-gradient(45deg, #CBCBCB 25%, transparent 25%, transparent 75%, #CBCBCB 75%, #CBCBCB);
-    -webkit-background-size:10px 10px;
-    -moz-background-size:10px 10px;
-    background-size:10px 10px;
-    background-position:0 0, 15px 15px;
+    background-image: url("background.png");
 }
 
 div.screenshot {
