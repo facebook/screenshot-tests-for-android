@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.facebook.testing.screenshot.tests">
   <uses-sdk android:minSdkVersion='9' android:targetSdkVersion='14'/>
   <uses-permission
       android:name="android.permission.DISABLE_KEYGUARD"/>

@@ -17,9 +17,17 @@ repositories {
 dependencies {
     compile 'junit:junit:4.12'
     compile 'org.mockito:mockito-core:1.+'
+    compile 'com.google.dexmaker:dexmaker:1.0'
+    compile 'com.google.dexmaker:dexmaker-mockito:1.0'
 
     androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'org.mockito:mockito-core:1.+'
+    androidTestCompile 'junit:junit:4.12'
+    androidTestCompile 'org.easytesting:fest-assert:1.4'
+    androidTestCompile 'com.android.support:support-v4:21.0.0'
+    androidTestCompile 'com.google.guava:guava:11.0.2'
     androidTestCompile 'com.android.support.test:runner:0.3'
+    androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
 }
 
@@ -27,22 +35,20 @@ android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"
 
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+
+    defaultConfig {
+        minSdkVersion 9
+        targetSdkVersion 19
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
     lintOptions {
         abortOnError false
     }
 
     sourceSets {
-        main {
-            java {
-                srcDir 'src/main/java'
-            }
-        }
-
-        test {
-            java {
-                srcDir 'src/androidTest/java'
-            }
-        }
     }
-
 }

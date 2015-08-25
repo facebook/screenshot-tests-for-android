@@ -14,9 +14,12 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.R;
+import com.facebook.testing.screenshot.test.R;
 
-import static org.fest.assertions.api.Assertions.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
+import static org.junit.Assert.*;
 
 /**
  * Tests {@link ViewHelpers}
@@ -32,7 +35,7 @@ public class ViewHelpersTest extends InstrumentationTestCase {
   }
 
   public void testPreconditions() throws Throwable {
-    assertThat(mTextView.getMeasuredHeight()).isEqualTo(0);
+    assertEquals(0, mTextView.getMeasuredHeight());
   }
 
   public void testMeasureWithoutHeight() throws Throwable {
@@ -40,7 +43,7 @@ public class ViewHelpersTest extends InstrumentationTestCase {
       .setExactWidthDp(100)
       .layout();
 
-    assertThat(mTextView.getMeasuredHeight()).isGreaterThan(0);
+    assertThat(mTextView.getMeasuredHeight(), greaterThan(0));
   }
 
   public void testMeasureWithoutHeightPx() throws Throwable {
@@ -48,7 +51,7 @@ public class ViewHelpersTest extends InstrumentationTestCase {
       .setExactWidthPx(100)
       .layout();
 
-    assertThat(mTextView.getMeasuredHeight()).isGreaterThan(0);
+    assertThat(mTextView.getMeasuredHeight(), greaterThan(0));
   }
 
   public void testMeasureForOnlyWidth() throws Throwable {
@@ -56,16 +59,16 @@ public class ViewHelpersTest extends InstrumentationTestCase {
       .setExactHeightPx(100)
       .layout();
 
-    assertThat(mTextView.getMeasuredHeight()).isEqualTo(100);
-    assertThat(mTextView.getMeasuredWidth()).isGreaterThan(0);
+    assertThat(mTextView.getMeasuredHeight(), equalTo(100));
+    assertThat(mTextView.getMeasuredWidth(), greaterThan(0));
   }
 
   public void testBothWrapContent() throws Throwable {
     ViewHelpers.setupView(mTextView)
       .layout();
 
-    assertThat(mTextView.getMeasuredHeight()).isGreaterThan(0);
-    assertThat(mTextView.getMeasuredWidth()).isGreaterThan(0);
+    assertThat(mTextView.getMeasuredHeight(), greaterThan(0));
+    assertThat(mTextView.getMeasuredWidth(), greaterThan(0));
   }
 
   public void testHeightAndWidthCorrectlyPropagated() throws Throwable {
@@ -74,8 +77,8 @@ public class ViewHelpersTest extends InstrumentationTestCase {
       .setExactWidthDp(1000)
       .layout();
 
-    assertThat(mTextView.getMeasuredWidth())
-      .isGreaterThan(mTextView.getMeasuredHeight());
+    assertThat(mTextView.getMeasuredWidth(),
+               greaterThan(mTextView.getMeasuredHeight()));
   }
 
   public void testListViewHeight() throws Throwable {
@@ -94,10 +97,10 @@ public class ViewHelpersTest extends InstrumentationTestCase {
       .setExactWidthDp(200)
       .layout();
 
-    assertThat(view.getMeasuredHeight())
-      .isGreaterThan(10);
+    assertThat(view.getMeasuredHeight(),
+               greaterThan(10));
 
     int oneHeight = view.getChildAt(0).getMeasuredHeight();
-    assertThat(view.getMeasuredHeight()).isEqualTo(oneHeight * 20);
+    assertThat(view.getMeasuredHeight(), equalTo(oneHeight * 20));
   }
 }

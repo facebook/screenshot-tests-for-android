@@ -20,10 +20,8 @@ import android.graphics.Bitmap;
 import android.support.test.InstrumentationRegistry;
 import android.test.MoreAsserts;
 
-import com.facebook.testing.instrumentation.LocaleSwitcher;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -42,9 +40,6 @@ public class AlbumImplTest {
   private String mFooFile;
   private String mBarFile;
   private HostFileSender mHostFileSender;
-
-  @Rule
-  public final LocaleSwitcher mLocaleSwitcher = new LocaleSwitcher();
 
   @Before
   public void setUp() throws Exception {
@@ -307,12 +302,6 @@ public class AlbumImplTest {
       fileNames.item(11).getTextContent());
 
     MoreAsserts.assertMatchesRegex(".*foo_1_0.png", fourthFile);
-  }
-
-  @Test
-  public void testRecordWithTilesInDifferentLocale() throws Throwable {
-    mLocaleSwitcher.switchTo(new Locale("bn"));
-    testRecordWithTiles();
   }
 
   @Test
