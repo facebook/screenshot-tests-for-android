@@ -77,7 +77,7 @@ def generate_html(dir):
         return index_html
 
 def write_image(dir, html, screenshot):
-    html.write('<table>')
+    html.write('<table class="img-wrapper">')
     for y in xrange(int(screenshot.find('tile_height').text)):
         html.write('<tr>')
         for x in xrange(int(screenshot.find('tile_width').text)):
