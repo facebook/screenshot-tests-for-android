@@ -19,6 +19,7 @@ dependencies {
     compile 'org.mockito:mockito-core:1.+'
     compile 'com.google.dexmaker:dexmaker:1.0'
     compile 'com.google.dexmaker:dexmaker-mockito:1.0'
+    compile 'com.android.support.test:runner:0.3'
 
     androidTestCompile 'junit:junit:4.12'
     androidTestCompile 'org.mockito:mockito-core:1.+'
@@ -42,7 +43,7 @@ android {
     defaultConfig {
         minSdkVersion 9
         targetSdkVersion 19
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "com.facebook.testing.screenshot.ScreenshotTestRunner"
     }
 
     lintOptions {
