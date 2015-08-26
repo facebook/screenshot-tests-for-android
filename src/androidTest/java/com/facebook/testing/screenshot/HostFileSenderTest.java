@@ -180,6 +180,19 @@ public class HostFileSenderTest {
     File file = newFile("foo");
     assertTrue(file.exists());
     mHostFileSender.send(file);
+    assertTrue(file.exists());
+  }
+
+  @Test
+  public void testExplicitDiscard() throws Throwable {
+    Bundle args = new Bundle();
+    args.putString("HostFileSender_supported", "true");
+    args.putString("discard_screenshot_files", "true");
+    mHostFileSender = new HostFileSender(mInstrumentation, args);
+
+    File file = newFile("foo");
+    assertTrue(file.exists());
+    mHostFileSender.send(file);
     assertFalse(file.exists());
   }
 

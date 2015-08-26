@@ -51,19 +51,21 @@ public class HostFileSender {
    * not be modified beyond this point.
    */
   public synchronized void send(File file) {
+    if (!isHostFileSenderSupported()) {
+      return;
+    }
+
     if (isDiscardMode()) {
       file.delete();
       return;
     }
 
-    if (isHostFileSenderSupported()) {
-        waitForQueue();
+    waitForQueue();
 
-        Bundle bundle = new Bundle();
-        bundle.putString("HostFileSender_filename", file.getAbsolutePath());
-        mInstrumentation.sendStatus(Activity.RESULT_OK, bundle);
-        mQueue.add(file);
-    }
+    Bundle bundle = new Bundle();
+    bundle.putString("HostFileSender_filename", file.getAbsolutePath());
+    mInstrumentation.sendStatus(Activity.RESULT_OK, bundle);
+    mQueue.add(file);
   }
 
   /**
@@ -115,18 +117,10 @@ public class HostFileSender {
    * waiting for the host system to pull them.
    */
   private boolean isDiscardMode() {
-    return isHostFileSenderSupported() && !isKeepFilesEnabled();
+    return "true".equals(mArguments.getString("discard_screenshot_files"));
   }
 
   private boolean isHostFileSenderSupported() {
     return "true".equals(mArguments.getString("HostFileSender_supported"));
-  }
-
-  private boolean isKeepFilesEnabled() {
-    if ("true".equals(mArguments.getString("discard_screenshot_files"))) {
-      return false;
-    }
-
-    return "true".equals(mArguments.getString("keep_files"));
   }
 }
