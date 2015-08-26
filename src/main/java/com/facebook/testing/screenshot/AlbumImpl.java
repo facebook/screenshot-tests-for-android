@@ -40,11 +40,7 @@ public class AlbumImpl implements Album {
 
   /* VisibleForTesting */
   AlbumImpl(Context context, String name, HostFileSender hostFileSender) {
-    mDir = context.getDir("screenshots-" + name, Context.MODE_WORLD_READABLE);
-
-    // Context.MODE_WORLD_WRITEABLE has been deprecated, so let's
-    // manually set this
-    mDir.setWritable(/* writeable = */ true, /* ownerOnly = */ false);
+    mDir = new ScreenshotDirectories(context).get(name);
     mHostFileSender = hostFileSender;
   }
 
