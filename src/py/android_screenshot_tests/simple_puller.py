@@ -29,4 +29,5 @@ class SimplePuller:
 
     def pull(self, src, dest):
         subprocess.check_output(
-            ["adb"] + self._adb_args + ["pull", src, dest])
+            ["adb"] + self._adb_args + ["pull", src, dest],
+            stderr=subprocess.STDOUT)
