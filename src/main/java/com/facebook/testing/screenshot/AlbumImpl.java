@@ -39,8 +39,8 @@ public class AlbumImpl implements Album {
   private HostFileSender mHostFileSender;
 
   /* VisibleForTesting */
-  AlbumImpl(Context context, String name, HostFileSender hostFileSender) {
-    mDir = new ScreenshotDirectories(context).get(name);
+  AlbumImpl(ScreenshotDirectories screenshotDirectories, String name, HostFileSender hostFileSender) {
+    mDir = screenshotDirectories.get(name);
     mHostFileSender = hostFileSender;
   }
 
@@ -78,7 +78,7 @@ public class AlbumImpl implements Album {
       mXmlSerializer.flush();
 
       if (!getMetadataFile().setReadable(/* readable = */ true, /* ownerOnly = */false)) {
-        throw new RuntimeException("Could not set permission on the screenshot metadata file");
+        //        throw new RuntimeException("Could not set permission on the screenshot metadata file");
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -266,7 +266,7 @@ public class AlbumImpl implements Album {
    * disk.
    */
   public static AlbumImpl createLocal(Context context, String name) {
-    return new AlbumImpl(context, name, null);
+    return new AlbumImpl(new ScreenshotDirectories(context), name, null);
   }
 
   /**
@@ -277,6 +277,6 @@ public class AlbumImpl implements Album {
       Context context,
       String name,
       HostFileSender hostFileSender) {
-    return new AlbumImpl(context, name, hostFileSender);
+    return new AlbumImpl(new ScreenshotDirectories(context), name, hostFileSender);
   }
 }

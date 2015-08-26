@@ -40,9 +40,11 @@ public class AlbumImplTest {
   private String mFooFile;
   private String mBarFile;
   private HostFileSender mHostFileSender;
+  private ScreenshotDirectories mScreenshotDirectories;
 
   @Before
   public void setUp() throws Exception {
+    mScreenshotDirectories = new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
     mAlbumImpl = AlbumImpl.createLocal(InstrumentationRegistry.getTargetContext(), "screenshots");
     mSomeBitmap = Bitmap.createBitmap(
       BITMAP_DIMENSION,
@@ -235,12 +237,11 @@ public class AlbumImplTest {
   }
 
   private Document parseMetadata() throws Throwable  {
+    File file = mScreenshotDirectories.get("screenshots");
+
     return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(
-      new File(
-        InstrumentationRegistry.getTargetContext().getDir(
-          "screenshots-screenshots",
-          Context.MODE_WORLD_READABLE),
-        "metadata.xml"));
+      new File(file, "metadata.xml"));
+
   }
 
   @Test
@@ -307,7 +308,7 @@ public class AlbumImplTest {
   @Test
   public void testAlbumWithHostSenderSendsStuff() throws Throwable {
     Album album = new AlbumImpl(
-      InstrumentationRegistry.getTargetContext(),
+      mScreenshotDirectories,
       "foobar",
       mHostFileSender);
 
@@ -319,7 +320,7 @@ public class AlbumImplTest {
   @Test
   public void testAlbumWithHostSenderFlushes() throws Throwable {
     Album album = new AlbumImpl(
-      InstrumentationRegistry.getTargetContext(),
+      mScreenshotDirectories,
       "foobar",
       mHostFileSender);
 

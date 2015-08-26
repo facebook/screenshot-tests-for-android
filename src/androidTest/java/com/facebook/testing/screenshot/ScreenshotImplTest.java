@@ -51,9 +51,11 @@ public class ScreenshotImplTest {
   private TextView mTextView;
   private ScreenshotImpl mScreenshot;
   private ViewHierarchy mViewHierarchy;
+  private ScreenshotDirectories mScreenshotDirectories;
 
   @Before
   public void setUp() throws Exception {
+    mScreenshotDirectories = new ScreenshotDirectories(getInstrumentation().getTargetContext());
     mAlbumImpl = AlbumImpl.createLocal(getInstrumentation().getTargetContext(), "verify-in-test");
     mSecondAlbumImpl = AlbumImpl.createLocal(
       getInstrumentation().getTargetContext(),
@@ -109,8 +111,7 @@ public class ScreenshotImplTest {
     mScreenshot.flush();
 
     String fileName = new File(
-      InstrumentationRegistry.getTargetContext()
-        .getDir("screenshots-verify-in-test", Context.MODE_WORLD_READABLE),
+      mScreenshotDirectories.get("verify-in-test"),
       "blahblah_dump.xml").getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 

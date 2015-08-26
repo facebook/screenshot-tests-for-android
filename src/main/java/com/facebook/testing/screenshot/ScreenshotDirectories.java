@@ -24,11 +24,36 @@ class ScreenshotDirectories {
   }
 
   public File get(String type) {
+    return getSdcardDir(type);
+  }
+
+  private File getSdcardDir(String type) {
+
+    String parent = String.format(
+      "/sdcard/screenshots/%s/",
+      mContext.getPackageName());
+
+    String child = String.format("%s/screenshots-%s", parent, type);
+
+    new File(parent).mkdirs();
+
+    File dir = new File(child);
+    dir.mkdir();
+
+    setWorldWriteable(dir);
+    return dir;
+  }
+
+  private File getDataDir(String type) {
     File dir = mContext.getDir("screenshots-" + type, Context.MODE_WORLD_READABLE);
 
+    setWorldWriteable(dir);
+    return dir;
+  }
+
+  private void setWorldWriteable(File dir) {
     // Context.MODE_WORLD_WRITEABLE has been deprecated, so let's
     // manually set this
     dir.setWritable(/* writeable = */ true, /* ownerOnly = */ false);
-    return dir;
   }
 }

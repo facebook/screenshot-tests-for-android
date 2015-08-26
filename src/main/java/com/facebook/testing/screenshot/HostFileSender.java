@@ -115,7 +115,7 @@ public class HostFileSender {
    * waiting for the host system to pull them.
    */
   private boolean isDiscardMode() {
-    return !isHostFileSenderSupported() && !isKeepFilesEnabled();
+    return isHostFileSenderSupported() && !isKeepFilesEnabled();
   }
 
   private boolean isHostFileSenderSupported() {
@@ -123,6 +123,10 @@ public class HostFileSender {
   }
 
   private boolean isKeepFilesEnabled() {
+    if ("true".equals(mArguments.getString("discard_screenshot_files"))) {
+      return false;
+    }
+
     return "true".equals(mArguments.getString("keep_files"));
   }
 }

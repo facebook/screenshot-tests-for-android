@@ -45,6 +45,8 @@ public class HostFileSenderTest {
   public void before() throws Exception {
     Bundle arguments = new Bundle();
     arguments.putString("HostFileSender_supported", "true");
+    arguments.putString("keep_files", "true");
+
     mInstrumentation = new Instrumentation() {
         @Override
         public void sendStatus(int code, Bundle status) {
@@ -132,7 +134,7 @@ public class HostFileSenderTest {
   }
 
   @Test
-  public void testFlush() throws Throwable {
+  public void testFlushWithoutDiscard() throws Throwable {
     final File one = newFile("one");
     final File two = newFile("two");
     mHostFileSender.send(one);
@@ -172,6 +174,7 @@ public class HostFileSenderTest {
   @Test
   public void testDiscardMode() throws Throwable {
     Bundle args = new Bundle();
+    args.putString("HostFileSender_supported", "true");
     mHostFileSender = new HostFileSender(mInstrumentation, args);
 
     File file = newFile("foo");

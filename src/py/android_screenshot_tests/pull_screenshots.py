@@ -25,7 +25,7 @@ from .simple_puller import SimplePuller
 from os.path import join
 from os.path import abspath
 
-ROOT_SCREENSHOT_DIR = '/data/data'
+ROOT_SCREENSHOT_DIR = '/sdcard/screenshots'
 
 def usage():
     print >>sys.stderr, "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]"
@@ -118,7 +118,7 @@ def copy_assets(destination):
     os.symlink(abspath(join(thisdir, "background.png")), join(destination, "background.png"))
 
 def pull_metadata(package, dir, adb_puller):
-    metadata_file = '%s/%s/app_screenshots-default/metadata.xml' % (ROOT_SCREENSHOT_DIR, package)
+    metadata_file = '%s/%s/screenshots-default/metadata.xml' % (ROOT_SCREENSHOT_DIR, package)
     if adb_puller.remote_file_exists(metadata_file):
         adb_puller.pull(metadata_file, join(dir, 'metadata.xml'))
     else:
