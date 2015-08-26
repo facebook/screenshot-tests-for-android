@@ -105,7 +105,7 @@ class TestPullScreenshots(unittest.TestCase):
         self.assertTrue(os.path.exists(html))
 
     def test_adb_puller_sanity(self):
-        self.assertTrue(AdbPuller().remote_file_exists("/data/data"))
+        self.assertTrue(AdbPuller().remote_file_exists("/sdcard"))
 
     # def test_integration_with_filter(self):
     #     self.scripts.append("which", returncode=0)
