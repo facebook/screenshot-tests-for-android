@@ -3,7 +3,15 @@ We want to make contributing to this project as easy and transparent as
 possible.
 
 ## Our Development Process
-<In progress>
+
+Our GitHub repository is our source of truth, and all development
+happens directly in GitHub. Internally, we might build tools around
+this framework that we might move into the GitHub repository in the
+future, but we won't fork for internal changes.
+
+We encourage tests for any pull request, tests can be run with
+
+  ./gradlew connectedCheck -i
 
 ## Pull Requests
 We actively welcome your pull requests.
