@@ -182,4 +182,15 @@ public class HostFileSenderTest {
     mHostFileSender.send(file);
     assertFalse(file.exists());
   }
+
+  @Test
+  public void testNoArgsDontDiscard() throws Throwable {
+    Bundle args = new Bundle();
+    mHostFileSender = new HostFileSender(mInstrumentation, args);
+
+    File file = newFile("foo");
+    assertTrue(file.exists());
+    mHostFileSender.send(file);
+    assertTrue(file.exists());
+  }
 }
