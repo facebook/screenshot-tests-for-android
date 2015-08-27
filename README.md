@@ -22,6 +22,7 @@ pull_screenshots script from the main repository.
 
 ## Join the screenshot-test-for-android community
 * Website: http://github.com/facebook/screenshot-test-for-android
+* Discussion group: screenshot-test-for-android@googlegroups.com
 
 See the CONTRIBUTING file for how to help out.
 
