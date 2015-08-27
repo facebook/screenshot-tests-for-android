@@ -1,7 +1,20 @@
 # screenshot-test-for-android
 
 screenshot-test-for-android is a library that can generate fast
-deterministic screenshots while running tests in android.
+deterministic screenshots while running instrumentation tests in
+android.
+
+We mimic Android's measure(), layout() and draw() to generate screenshots
+on the test thread. By not having to do the rendering on a separate
+thread we have control over animations and handler callbacks which
+makes the screenshots extremely deterministic and reliable for catching
+regressions in continuous integration.
+
+We also provide utilities for using screenshot tests during the development
+process. With these scripts you can iterate on a view or layout and quickly
+see how the view renders in real android code, without having to
+build the whole app. You can also render the view in multiple configurations
+at one go.
 
 ## Examples
 
