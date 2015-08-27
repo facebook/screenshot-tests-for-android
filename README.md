@@ -5,6 +5,9 @@ deterministic screenshots while running tests in android.
 
 ## Examples
 
+We have a presentation coming up in Droidcon NYC 2015, we'll post
+a link to our presentation once it's published.
+
 ## Requirements
 screenshot-test-for-android works with
 * Mac OS X or Linux
