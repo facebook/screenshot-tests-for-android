@@ -14,16 +14,12 @@ The host tooling probably doesn't work on Windows, but can be made to
 work with a little effort.
 
 ## Building screenshot-test-for-android
-TODO
 
-## Installing screenshot-test-for-android
-TODO
+  ./gradlew build
 
-## How screenshot-test-for-android works
-TODO
+This should build the aar file in builds directory. You still need the 
+pull_screenshots script from the main repository.
 
-## Full documentation
-TODO
 
 ## Join the screenshot-test-for-android community
 * Website: http://github.com/facebook/screenshot-test-for-android
