@@ -4,7 +4,6 @@ screenshot-test-for-android is a library that can generate fast
 deterministic screenshots while running tests in android.
 
 ## Examples
-<Todo>
 
 ## Requirements
 screenshot-test-for-android works with
@@ -23,7 +22,13 @@ pull_screenshots script from the main repository.
 
 ## Join the screenshot-test-for-android community
 * Website: http://github.com/facebook/screenshot-test-for-android
+
 See the CONTRIBUTING file for how to help out.
+
+## Authors
+
+screenshot-test-for-android has been written by Arnold Noronha (arnold@fb.com)
+You can reach him at @tdrhq on GitHub.
 
 ## License
 
