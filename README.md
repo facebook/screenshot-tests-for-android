@@ -14,7 +14,9 @@ work with a little effort.
 
 ## Building screenshot-test-for-android
 
+<pre>
   ./gradlew build
+</pre>
 
 This should build the aar file in builds directory. You still need the 
 pull_screenshots script from the main repository.
