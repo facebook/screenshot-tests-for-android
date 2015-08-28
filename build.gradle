@@ -68,7 +68,6 @@ publishing {
 
   repositories {
     maven {
-      url "$buildDir/repo"
     }
   }
 }
