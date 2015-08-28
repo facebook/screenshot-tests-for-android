@@ -9,6 +9,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
 
 repositories {
     jcenter()
@@ -51,6 +52,25 @@ android {
 
     sourceSets {
     }
+}
+
+
+publishing {
+  publications {
+    mavenAndroid(MavenPublication) {
+      groupId 'com.facebook.testing.screenshot'
+      artifactId 'lib'
+      version '0.1'
+
+      artifact("$buildDir/outputs/aar/screenshot-test-for-android-release.aar")
+    }
+  }
+
+  repositories {
+    maven {
+      url "$buildDir/repo"
+    }
+  }
 }
 
 class ScreenshotsPluginExtension {
