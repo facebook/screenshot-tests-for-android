@@ -52,3 +52,20 @@ android {
     sourceSets {
     }
 }
+
+class ScreenshotsPluginExtension {
+  def bin = "./pull_screenshots"
+  def package_name = "com.facebook.testing.screenshot.test"
+}
+
+class ScreenshotsPlugin implements Plugin<Project> {
+  void apply(Project project) {
+    project.extensions.create("screenshots", ScreenshotsPluginExtension)
+
+    project.task('pullScreenshots', type: Exec) {
+     commandLine project.screenshots.bin, project.screenshots.package_name
+    }
+  }
+}
+
+apply plugin: ScreenshotsPlugin
