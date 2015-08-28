@@ -55,6 +55,7 @@ android {
 
 class ScreenshotsPluginExtension {
     def bin = "./pull_screenshots"
+    def adb = "adb"
     def testApkTarget = ":packageDebugAndroidTest"
 }
 
@@ -71,6 +72,18 @@ class ScreenshotsPlugin implements Plugin<Project> {
         args = ["--apk", output.toString()]
       }
     }
+
+    project.task("clearScreenshots") << {
+      project.exec {
+        executable = project.screenshots.adb
+        args = ["shell", "rm", "-rf", "/sdcard/screenshots"]
+      }
+    }
+
+    project.task("screenshotTests", dependsOn: [
+                   ":clearScreenshots",
+                   ":connectedAndroidTest",
+                   ":pullScreenshots"])
   }
 }
 
