@@ -55,14 +55,14 @@ android {
 
 class ScreenshotsPluginExtension {
     def bin = "./pull_screenshots"
-    def package_name = null
+    def testApkTarget = ":packageDebugAndroidTest"
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
   void apply(Project project) {
     project.extensions.create("screenshots", ScreenshotsPluginExtension)
 
-    def depTarget = ":packageDebugAndroidTest"
+    def depTarget = project.screenshots.testApkTarget
     project.task('pullScreenshots', dependsOn: depTarget) << {
       def output = project.tasks.getByPath(depTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
       println output
