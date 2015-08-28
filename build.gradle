@@ -54,16 +54,22 @@ android {
 }
 
 class ScreenshotsPluginExtension {
-  def bin = "./pull_screenshots"
-  def package_name = "com.facebook.testing.screenshot.test"
+    def bin = "./pull_screenshots"
+    def package_name = null
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
   void apply(Project project) {
     project.extensions.create("screenshots", ScreenshotsPluginExtension)
 
-    project.task('pullScreenshots', type: Exec) {
-     commandLine project.screenshots.bin, project.screenshots.package_name
+    def depTarget = ":packageDebugAndroidTest"
+    project.task('pullScreenshots', dependsOn: depTarget) << {
+      def output = project.tasks.getByPath(depTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
+      println output
+      project.exec {
+        executable = project.screenshots.bin
+        args = ["--apk", output.toString()]
+      }
     }
   }
 }
