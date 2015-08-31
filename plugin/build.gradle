@@ -11,6 +11,22 @@ repositories {
 group='com.facebook.testing.screenshot'
 version='0.1-SNAPSHOT'
 
+task generatePyZip(type: Exec) {
+     def outputDir = file('build/generated-resources')
+     commandLine 'zip', '-r', outputDir.toString() + '/android_screenshot_test.zip', 'src/py/android_screenshot_tests'
+
+     doFirst {
+        println "Creating directory for resources"
+        outputDir.mkdirs()
+     }
+}
+
+task generatePyzip << {
+     outputDir = file('$buildDir/generated-resources')
+     outputs.dir outputDir
+
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {
