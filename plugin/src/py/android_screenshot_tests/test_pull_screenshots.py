@@ -132,7 +132,5 @@ class TestPullScreenshots(unittest.TestCase):
 
             self.assertRegexpMatches(f.read(), '.*manifest.*')
 
-
-
 if __name__ == '__main__':
     unittest.main()
