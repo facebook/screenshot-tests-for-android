@@ -34,13 +34,16 @@ work with a little effort.
   ./gradlew build
 </pre>
 
-This should build the aar file in builds directory. You still need the 
+This should build the aar file in builds directory. You still need the
 pull_screenshots script from the main repository.
 
 
 ## Join the screenshot-test-for-android community
+
 * Website: http://github.com/facebook/screenshot-test-for-android
-* Discussion group: screenshot-test-for-android@googlegroups.com
+* Discussion group:
+   https://groups.google.com/forum/#!forum/screenshot-test-for-android
+   screenshot-test-for-android@googlegroups.com
 
 See the CONTRIBUTING file for how to help out.
 
