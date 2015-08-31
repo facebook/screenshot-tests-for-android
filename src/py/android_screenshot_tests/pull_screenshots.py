@@ -26,6 +26,7 @@ from os.path import join
 from os.path import abspath
 
 ROOT_SCREENSHOT_DIR = '/sdcard/screenshots'
+OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
 
 def usage():
     print >>sys.stderr, "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]"
@@ -119,8 +120,12 @@ def copy_assets(destination):
 
 def pull_metadata(package, dir, adb_puller):
     metadata_file = '%s/%s/screenshots-default/metadata.xml' % (ROOT_SCREENSHOT_DIR, package)
+    old_metadata_file = '%s/%s/app_screenshots-default/metadata.xml' % (OLD_ROOT_SCREENSHOT_DIR, package)
+
     if adb_puller.remote_file_exists(metadata_file):
         adb_puller.pull(metadata_file, join(dir, 'metadata.xml'))
+    elif adb_puller.remote_file_exists(old_metadata_file):
+        adb_puller.pull(old_metadata_file, join(dir, 'metadata.xml'))
     else:
         create_empty_metadata_file(dir)
 
