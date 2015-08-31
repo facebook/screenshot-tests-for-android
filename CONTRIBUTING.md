@@ -9,6 +9,17 @@ happens directly in GitHub. Internally, we might build tools around
 this framework that we might move into the GitHub repository in the
 future, but we won't fork for internal changes.
 
+This repository has two components:
+
+* in `src/` you'll find code that actually runs on the device along
+  with the test
+
+* in `plugin/` you'll find code that runs on the "host" machine.
+
+The 'plugin' code is broken into Groovy code that runs as part of your
+Gradle build, and in `src/py` you'll find python code that actually
+does the heavy work of pulling images and generating HTML files.
+
 We encourage tests for any pull request, tests can be run with
 
   ./gradlew connectedCheck -i

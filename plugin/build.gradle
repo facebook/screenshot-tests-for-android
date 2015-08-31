@@ -1,0 +1,38 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+
+dependencies {
+    compile gradleApi()
+}
+repositories {
+    mavenCentral()
+}
+
+group='com.facebook.testing.screenshot'
+version='0.1-SNAPSHOT'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}
+
+compileJava {
+    sourceSets {
+      main {
+         resources.srcDirs 'src/py'
+         resources {
+             exclude '**/*.pyc'
+             exclude '**/test_*.py'
+             exclude '**/fixtures/**'
+         }
+      }
+    }
+}
+
+task pyTests(type: Exec) {
+     workingDir 'src/py'
+     commandLine 'python', '-m', 'unittest', 'discover'
+}
