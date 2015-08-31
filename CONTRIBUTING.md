@@ -1,4 +1,4 @@
-# Contributing to screenshot-test-for-android
+# Contributing to screenshot-tests-for-android
 We want to make contributing to this project as easy and transparent as
 possible.
 
@@ -43,5 +43,5 @@ outlined on that page and do not file a public issue.
 * ...
 
 ## License
-By contributing screenshot-test-for-android, you agree that your contributions will be licensed
+By contributing screenshot-tests-for-android, you agree that your contributions will be licensed
 under its BSD license.
