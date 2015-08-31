@@ -22,11 +22,11 @@ We have a presentation coming up in Droidcon NYC 2015, we'll post
 a link to our presentation once it's published.
 
 ## Requirements
-screenshot-tests-for-android works with
-* Mac OS X or Linux
+
+screenshot-tests-for-android is known to work with Mac OS X or Linux.
 
 The host tooling probably doesn't work on Windows, but can be made to
-work with a little effort.
+work with a little effort. We'll happily accept pull requests!
 
 ## Building screenshot-tests-for-android
 
