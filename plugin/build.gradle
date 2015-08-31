@@ -23,6 +23,11 @@ compileJava {
     sourceSets {
       main {
          resources.srcDirs 'src/py'
+         resources {
+             exclude '**/*.pyc'
+             exclude '**/test_*.py'
+             exclude '**/fixtures/**'
+         }
       }
     }
 }
