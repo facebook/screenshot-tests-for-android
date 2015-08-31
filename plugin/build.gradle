@@ -11,20 +11,17 @@ repositories {
 group='com.facebook.testing.screenshot'
 version='0.1-SNAPSHOT'
 
+def generatedOutputDir = file('build/generated-resources')
+def generatedZip = generatedOutputDir.toString() + '/android_screenshot_test.zip'
+
 task generatePyZip(type: Exec) {
-     def outputDir = file('build/generated-resources')
-     commandLine 'zip', '-r', outputDir.toString() + '/android_screenshot_test.zip', 'src/py/android_screenshot_tests'
+     outputs.dir generatedOutputDir
+     commandLine 'zip', '-r', generatedZip, 'src/py/android_screenshot_tests'
 
      doFirst {
         println "Creating directory for resources"
-        outputDir.mkdirs()
+        generatedOutputDir.mkdirs()
      }
-}
-
-task generatePyzip << {
-     outputDir = file('$buildDir/generated-resources')
-     outputs.dir outputDir
-
 }
 
 uploadArchives {
@@ -32,5 +29,15 @@ uploadArchives {
         mavenDeployer {
             repository(url: uri('../repo'))
         }
+    }
+}
+
+compileJava {
+    sourceSets {
+      main {
+         // I have no idea what I'm doing
+         output.dir(generatedOutputDir, builtBy: 'generatePyZip')
+         resources.srcDirs generatedOutputDir
+      }
     }
 }
