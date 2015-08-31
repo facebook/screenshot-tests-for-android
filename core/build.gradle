@@ -1,20 +1,18 @@
 buildscript {
     repositories {
         jcenter()
-        maven() {
-           url file("../repo")
-        }
+        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.3'
-        classpath 'com.facebook.testing.screenshot:plugin:0.1+'
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven-publish'
-apply plugin: 'screenshot-tests-plugin'
+apply plugin: 'maven'
+
+group='com.facebook.testing.screenshot'
 
 repositories {
     jcenter()
@@ -54,20 +52,10 @@ android {
     }
 }
 
-
-publishing {
-  publications {
-    mavenAndroid(MavenPublication) {
-      groupId 'com.facebook.testing.screenshot'
-      artifactId 'lib'
-      version '0.1'
-
-      artifact("$buildDir/outputs/aar/screenshot-test-for-android-release.aar")
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
     }
-  }
-
-  repositories {
-    maven {
-    }
-  }
 }

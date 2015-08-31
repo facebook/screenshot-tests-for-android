@@ -9,7 +9,6 @@ repositories {
 }
 
 group='com.facebook.testing.screenshot'
-version='0.1-SNAPSHOT'
 
 uploadArchives {
     repositories {

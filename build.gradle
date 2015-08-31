@@ -6,3 +6,17 @@ buildscript {
         }
     }
 }
+
+allprojects {
+    version = '0.1'
+}
+
+task repoClean << {
+     delete file('repo')
+}
+
+task uploadAllLocal(dependsOn: [
+     ":repoClean",
+     ":plugin:uploadArchives",
+     ":core:uploadArchives"]) {
+}
