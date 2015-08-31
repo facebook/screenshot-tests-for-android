@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-package com.facebook.testing.screenshot;
+package com.facebook.testing.screenshot.internal;
 
 import android.test.InstrumentationTestCase;
 import android.test.UiThreadTest;
