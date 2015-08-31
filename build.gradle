@@ -34,7 +34,7 @@ dependencies {
 }
 
 task pyTests(type: Exec) {
-     workingDir 'src/py'
+     workingDir 'plugin/src/py'
      commandLine 'python', '-m', 'unittest', 'discover'
 }
 
@@ -76,5 +76,3 @@ publishing {
     }
   }
 }
-
-apply plugin: com.facebook.testing.screenshot.build.ScreenshotsPlugin
