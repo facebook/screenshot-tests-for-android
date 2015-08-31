@@ -1,0 +1,20 @@
+apply plugin: 'groovy'
+apply plugin: 'maven'
+dependencies {
+    compile gradleApi()
+    groovy localGroovy()
+}
+repositories {
+    mavenCentral()
+}
+
+group='com.facebook.testing.screenshot'
+version='0.1-SNAPSHOT'
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository(url: uri('../repo'))
+        }
+    }
+}
