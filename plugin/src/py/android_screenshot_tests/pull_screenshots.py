@@ -115,10 +115,13 @@ def generate_png(path_to_html, path_to_png):
 
 def copy_assets(destination):
     """Copy static assets required for rendering the HTML"""
+    _copy_asset("default.css", destination)
+    _copy_asset("default.js", destination)
+    _copy_asset("background.png", destination)
+
+def _copy_asset(filename, destination):
     thisdir = os.path.dirname(__file__)
-    os.symlink(abspath(join(thisdir, "default.css")), join(destination, "default.css"))
-    os.symlink(abspath(join(thisdir, "default.js")), join(destination, "default.js"))
-    os.symlink(abspath(join(thisdir, "background.png")), join(destination, "background.png"))
+    os.symlink(abspath(join(thisdir, filename)), join(destination, filename))
 
 def pull_metadata(package, dir, adb_puller):
     metadata_file = '%s/%s/screenshots-default/metadata.xml' % (ROOT_SCREENSHOT_DIR, package)
