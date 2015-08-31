@@ -7,7 +7,7 @@
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
-package com.facebook.testing.screenshot;
+package com.facebook.testing.screenshot.internal;
 
 /**
  * A 2D layout of image tiles. We represent images as strings which
