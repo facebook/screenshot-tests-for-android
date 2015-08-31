@@ -328,8 +328,8 @@ public class ScreenshotImpl {
         return sInstance;
       }
 
-      Instrumentation instrumentation = ScreenshotRunner.sState.instrumentation;
-      Bundle arguments = ScreenshotRunner.sState.arguments;
+      Instrumentation instrumentation = Registry.getRegistry().instrumentation;
+      Bundle arguments = Registry.getRegistry().arguments;
 
       HostFileSender hostFileSender = new HostFileSender(
         instrumentation,

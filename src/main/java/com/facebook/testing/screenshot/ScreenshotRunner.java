@@ -12,6 +12,7 @@ package com.facebook.testing.screenshot;
 import android.app.Instrumentation;
 import android.os.Bundle;
 
+import com.facebook.testing.screenshot.internal.Registry;
 import com.facebook.testing.screenshot.internal.ScreenshotImpl;
 
 /**
@@ -19,18 +20,6 @@ import com.facebook.testing.screenshot.internal.ScreenshotImpl;
  * Instrumentation runner before and after all the tests run.
  */
 public abstract class ScreenshotRunner {
-
-  /**
-   * Stores some of the static state. We bundle this into a class for
-   * easy cleanup.
-   */
-  public static class State {
-    public Instrumentation instrumentation;
-    public Bundle arguments;
-  }
-
-  public static State sState;
-
   /**
    * Call this exactly once in your process before any screenshots are
    * generated.
@@ -38,9 +27,9 @@ public abstract class ScreenshotRunner {
    * Typically this will be in {@code InstrumentationTestRunner#onCreate()}
    */
   public static void onCreate(Instrumentation instrumentation, Bundle arguments) {
-    sState = new State();
-    sState.instrumentation = instrumentation;
-    sState.arguments = arguments;
+    Registry registry = Registry.getRegistry();
+    registry.instrumentation = instrumentation;
+    registry.arguments = arguments;
   }
 
   /**
@@ -53,6 +42,6 @@ public abstract class ScreenshotRunner {
       ScreenshotImpl.getInstance().flush();
     }
 
-    sState = null;
+    Registry.clear();
   }
 }
