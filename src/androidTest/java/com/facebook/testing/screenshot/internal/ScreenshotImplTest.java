@@ -13,9 +13,10 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.lang.IllegalArgumentException;
-import java.nio.charset.Charset;
+import java.lang.StringBuilder;
 import java.util.Locale;
 
 import android.app.Instrumentation;
@@ -33,7 +34,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.google.common.io.Files;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -121,9 +121,27 @@ public class ScreenshotImplTest {
     assertEquals("foobar", new String(bytes, "utf-8"));
 
     File metadata = mAlbumImpl.getMetadataFile();
-    String metadataContents = Files.toString(metadata, Charset.forName("utf-8"));
+    String metadataContents = fileToString(metadata);
 
     MoreAsserts.assertContainsRegex("blahblah.*.xml", metadataContents);
+  }
+
+  private String fileToString(File file) {
+    try {
+      InputStreamReader reader = new InputStreamReader(
+        new FileInputStream(file));
+
+      StringBuilder sb = new StringBuilder();
+
+      int ch;
+      while ((ch = reader.read()) != -1) {
+        sb.append((char) ch);
+      }
+
+      return sb.toString();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Test
