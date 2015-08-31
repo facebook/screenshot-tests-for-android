@@ -1,8 +1,8 @@
 apply plugin: 'groovy'
 apply plugin: 'maven'
+
 dependencies {
     compile gradleApi()
-    groovy localGroovy()
 }
 repositories {
     mavenCentral()
