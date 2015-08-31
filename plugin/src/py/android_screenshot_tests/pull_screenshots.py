@@ -22,6 +22,7 @@ import shutil
 from . import metadata
 from .simple_puller import SimplePuller
 import glob
+import zipfile
 
 from sets import Set
 from os.path import join
@@ -121,7 +122,25 @@ def copy_assets(destination):
 
 def _copy_asset(filename, destination):
     thisdir = os.path.dirname(__file__)
-    os.symlink(abspath(join(thisdir, filename)), join(destination, filename))
+    _copy_file(abspath(join(thisdir, filename)), join(destination, filename))
+
+def _copy_file(src, dest):
+    if os.path.exists(src):
+        shutil.copyfile(src, dest)
+    else:
+        _copy_via_zip(src, None, dest)
+
+def _copy_via_zip(src_zip, zip_path, dest):
+    if os.path.exists(src_zip):
+        zip = zipfile.ZipFile(src_zip)
+        input = zip.open(zip_path, 'r')
+        with open(dest, 'w') as output:
+            output.write(input.read())
+    else:
+        # walk up the tree
+        head, tail = os.path.split(src_zip)
+
+        _copy_via_zip(head, tail if not zip_path else (tail + "/" + zip_path), dest)
 
 def pull_metadata(package, dir, adb_puller):
     metadata_file = '%s/%s/screenshots-default/metadata.xml' % (ROOT_SCREENSHOT_DIR, package)

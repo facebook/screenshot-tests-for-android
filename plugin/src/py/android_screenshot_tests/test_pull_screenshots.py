@@ -117,5 +117,22 @@ class TestPullScreenshots(unittest.TestCase):
     #                                "--generate-png=%s" % self.output_file])
     #         self.assertTrue(os.path.exists(self.output_file))
 
+    def test_copy_file_zip_aware_real_file(self):
+        with tempfile.NamedTemporaryFile() as f, tempfile.NamedTemporaryFile() as f2:
+            f.write("foobar")
+            f.flush()
+            pull_screenshots._copy_file(f.name, f2.name)
+
+            self.assertEquals("foobar", f2.read())
+
+    def test_copy_file_inside_zip(self):
+        with tempfile.NamedTemporaryFile() as f:
+            pull_screenshots._copy_file(CURRENT_DIR + '/fixtures/dummy.zip/AndroidManifest.xml',
+                                        f.name)
+
+            self.assertRegexpMatches(f.read(), '.*manifest.*')
+
+
+
 if __name__ == '__main__':
     unittest.main()
