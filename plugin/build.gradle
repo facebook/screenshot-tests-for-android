@@ -33,6 +33,6 @@ compileJava {
 }
 
 task pyTests(type: Exec) {
-     workingDir 'src/py'
+     workingDir file('$projectDir/src/py')
      commandLine 'python', '-m', 'unittest', 'discover'
 }
