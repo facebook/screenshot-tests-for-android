@@ -33,11 +33,6 @@ dependencies {
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
 }
 
-task pyTests(type: Exec) {
-     workingDir 'plugin/src/py'
-     commandLine 'python', '-m', 'unittest', 'discover'
-}
-
 android {
     compileSdkVersion 22
     buildToolsVersion "22.0.1"

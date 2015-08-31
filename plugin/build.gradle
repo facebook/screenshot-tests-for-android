@@ -31,3 +31,8 @@ compileJava {
       }
     }
 }
+
+task pyTests(type: Exec) {
+     workingDir 'src/py'
+     commandLine 'python', '-m', 'unittest', 'discover'
+}
