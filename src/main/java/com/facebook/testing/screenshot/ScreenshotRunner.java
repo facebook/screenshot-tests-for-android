@@ -12,6 +12,8 @@ package com.facebook.testing.screenshot;
 import android.app.Instrumentation;
 import android.os.Bundle;
 
+import com.facebook.testing.screenshot.internal.ScreenshotImpl;
+
 /**
  * The ScreenshotRunner needs to be called from the top level
  * Instrumentation runner before and after all the tests run.
@@ -22,12 +24,12 @@ public abstract class ScreenshotRunner {
    * Stores some of the static state. We bundle this into a class for
    * easy cleanup.
    */
-  static class State {
-    Instrumentation instrumentation;
-    Bundle arguments;
+  public static class State {
+    public Instrumentation instrumentation;
+    public Bundle arguments;
   }
 
-  static State sState;
+  public static State sState;
 
   /**
    * Call this exactly once in your process before any screenshots are

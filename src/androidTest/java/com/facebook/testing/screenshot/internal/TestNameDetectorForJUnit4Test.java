@@ -23,7 +23,7 @@ public class TestNameDetectorForJUnit4Test {
   public void testTestNameIsDetectedOnNonUiThread() throws Throwable {
     assertEquals("testTestNameIsDetectedOnNonUiThread", TestNameDetector.getTestName());
     assertEquals(
-      "com.facebook.testing.screenshot.TestNameDetectorForJUnit4Test",
+      "com.facebook.testing.screenshot.internal.TestNameDetectorForJUnit4Test",
       TestNameDetector.getTestClass());
   }
 

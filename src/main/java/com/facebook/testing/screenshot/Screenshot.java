@@ -10,9 +10,9 @@
 package com.facebook.testing.screenshot;
 
 import android.app.Activity;
-import android.content.Context;
-import android.os.Bundle;
 import android.view.View;
+
+import com.facebook.testing.screenshot.internal.ScreenshotImpl;
 
 /**
  * A testing tool for taking a screenshot during an Activity

@@ -17,6 +17,8 @@ import java.util.Map;
 import android.graphics.Bitmap;
 import android.view.View;
 
+import com.facebook.testing.screenshot.RecordBuilder;
+
 /**
  * A builder for all the metadata associated with a screenshot.
  *

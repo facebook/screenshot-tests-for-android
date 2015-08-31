@@ -24,8 +24,10 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
+
+import com.facebook.testing.screenshot.ScreenshotRunner;
+import com.facebook.testing.screenshot.WindowAttachment;
 
 /**
  * Implementation for Screenshot class.
@@ -112,7 +114,7 @@ public class ScreenshotImpl {
   }
 
   // VisibleForTesting
-  void flush() {
+  public void flush() {
     mAlbum.flush();
   }
 

@@ -20,14 +20,14 @@ public class TestNameDetectorTest extends InstrumentationTestCase {
   public void testTestNameIsDetected() throws Throwable {
     assertEquals("testTestNameIsDetected", TestNameDetector.getTestName());
     assertEquals(
-      "com.facebook.testing.screenshot.TestNameDetectorTest",
+      "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
       TestNameDetector.getTestClass());
   }
 
   public void testTestNameIsDetectedOnNonUiThread() throws Throwable {
     assertEquals("testTestNameIsDetectedOnNonUiThread", TestNameDetector.getTestName());
     assertEquals(
-      "com.facebook.testing.screenshot.TestNameDetectorTest",
+      "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
       TestNameDetector.getTestClass());
   }
 }
