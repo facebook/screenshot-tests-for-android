@@ -18,6 +18,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     println("Found jar file at " + jarFile.getAbsolutePath())
 
+    project.dependencies.androidTestCompile('com.facebook.testing.screenshot.core:' + project.version)
+
     project.task('pullScreenshots', dependsOn: depTarget) << {
       def output = project.tasks.getByPath(depTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
       println output
