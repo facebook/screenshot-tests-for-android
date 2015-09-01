@@ -5,6 +5,7 @@ import org.gradle.api.*
 class ScreenshotsPluginExtension {
     def adb = "adb"
     def testApkTarget = ":packageDebugAndroidTest"
+    def customTestRunner = false
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
@@ -18,7 +19,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     println("Found jar file at " + jarFile.getAbsolutePath())
 
-    project.dependencies.androidTestCompile('com.facebook.testing.screenshot.core:' + project.version)
+    def implementationVersion = getClass().getPackage().getImplementationVersion()
+    project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
 
     project.task('pullScreenshots', dependsOn: depTarget) << {
       def output = project.tasks.getByPath(depTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
@@ -49,5 +51,11 @@ class ScreenshotsPlugin implements Plugin<Project> {
                    ":clearScreenshots",
                    ":connectedAndroidTest",
                    ":pullScreenshots"])
+
+    if (!project.screenshots.customTestRunner) {
+       project.android.defaultConfig {
+           testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
+       }
+    }
   }
 }

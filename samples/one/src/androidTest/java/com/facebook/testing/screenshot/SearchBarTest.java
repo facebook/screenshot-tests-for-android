@@ -14,7 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
-import com.facebook.testing.screenshot.test.R;
+import com.facebook.testing.screenshot.samples.R;
 
 public class SearchBarTest extends InstrumentationTestCase {
   public void testRendering() throws Throwable {

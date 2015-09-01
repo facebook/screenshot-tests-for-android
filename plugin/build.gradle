@@ -1,5 +1,12 @@
 apply plugin: 'groovy'
+jar {
+    manifest {
+        attributes "Implementation-Version": project.version.toString()
+    }
+}
+
 apply plugin: 'maven'
+
 
 dependencies {
     compile gradleApi()
