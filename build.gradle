@@ -20,3 +20,8 @@ task uploadAllLocal(dependsOn: [
      ":plugin:uploadArchives",
      ":core:uploadArchives"]) {
 }
+
+task installAll(dependsOn: [
+     ":core:install",
+     ":plugin:install",
+])

@@ -1,16 +1,18 @@
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
     }
 
     dependencies {
         classpath 'com.android.tools.build:gradle:1.1.3'
+
+        // Can't use the default maven install for android libraries
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.3'
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'maven'
+apply plugin: 'com.github.dcendents.android-maven'
 
 group='com.facebook.testing.screenshot'
 
@@ -54,8 +56,7 @@ android {
 
 uploadArchives {
     repositories {
-        mavenDeployer {
-            repository(url: uri('../repo'))
+        mavenInstaller {
         }
     }
 }
