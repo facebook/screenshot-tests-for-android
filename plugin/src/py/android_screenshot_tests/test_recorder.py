@@ -45,6 +45,13 @@ class TestRecorder(unittest.TestCase):
         im = self.create_temp_image("foobar", (100, 10), "blue")
         self.assertTrue(os.path.exists(im))
 
+    def test_recorder_creates_dir(self):
+        shutil.rmtree(self.outputdir)
+        self.make_metadata("""<screenshots></screenshots>""")
+        self.recorder.record()
+
+        self.assertTrue(os.path.exists(self.outputdir))
+
     def test_single_input(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
         self.make_metadata("""<screenshots>

@@ -6,6 +6,7 @@ class ScreenshotsPluginExtension {
     def adb = "adb"
     def testApkTarget = ":packageDebugAndroidTest"
     def customTestRunner = false
+    def recordDir = "recorded_screenshots"
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
@@ -13,6 +14,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     project.extensions.create("screenshots", ScreenshotsPluginExtension)
 
     def depTarget = project.screenshots.testApkTarget
+    def recordMode = false
+    def verifyMode = false
 
     def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource();
     def jarFile = new File(codeSource.getLocation().toURI().getPath());
@@ -37,6 +40,12 @@ class ScreenshotsPlugin implements Plugin<Project> {
             'ANDROID_SERIAL': System.getenv('ANDROID_SERIAL'),
         ]
         args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
+
+        if (recordMode) {
+          args += ["--record", project.screenshots.recordDir]
+        } else if (verifyMode) {
+          args += ["--verify", project.screenshots.recordDir]
+        }
       }
     }
 
@@ -56,6 +65,14 @@ class ScreenshotsPlugin implements Plugin<Project> {
        project.android.defaultConfig {
            testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
        }
+    }
+
+    project.task("recordMode") << {
+      recordMode = true
+    }
+
+    project.task("verifyMode") << {
+      verifyMode = true
     }
   }
 }

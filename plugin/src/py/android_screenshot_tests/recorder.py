@@ -65,7 +65,8 @@ class Recorder:
                        int(screenshot.find('tile_height').text))
 
     def _clean(self):
-        shutil.rmtree(self._output)
+        if os.path.exists(self._output):
+            shutil.rmtree(self._output)
         os.mkdir(self._output)
 
     def _is_image_same(self, file1, file2):

@@ -189,8 +189,8 @@ def pull_screenshots(process,
 
     if record or verify:
         # don't import this early, since we need PIL to import this
-        from .recorder import Record
-        recorder = Record(temp_dir, record or verify)
+        from .recorder import Recorder
+        recorder = Recorder(temp_dir, record or verify)
         if verify:
             recorder.verify()
         else:
