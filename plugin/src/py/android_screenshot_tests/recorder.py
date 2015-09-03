@@ -8,13 +8,24 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 #
 
+import xml.etree.ElementTree as ET
+
+from os.path import join
+import shutil
+
 class Recorder:
-    def __init__(self, record_dir, output):
-        self._record_dir = record_dir
+    def __init__(self, input, output):
+        self._input = input
         self._output = output
 
     def record(self):
-        self
+        root = ET.parse(join(self._input, "metadata.xml")).getroot()
+
+        for screenshot in root.iter("screenshot"):
+            name = screenshot.find('name').text
+            name += ".png"
+            shutil.copyfile(join(self._input, name),
+                            join(self._output, name))
 
     def verify(self):
         pass

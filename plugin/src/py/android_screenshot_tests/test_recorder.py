@@ -12,6 +12,8 @@ import tempfile
 import unittest
 import shutil
 import os
+from os.path import join, exists
+from recorder import Recorder
 
 from PIL import Image
 
@@ -20,13 +22,17 @@ class TestRecorder(unittest.TestCase):
         self.outputdir = tempfile.mkdtemp()
         self.inputdir = tempfile.mkdtemp()
         self.tmpimages = []
+        self.recorder = Recorder(self.inputdir, self.outputdir)
 
-    def create_temp_image(self, dimens, color):
+    def create_temp_image(self, name, dimens, color):
         im = Image.new("RGBA", dimens, color)
-        file = tempfile.NamedTemporaryFile(suffix=".png", dir=self.inputdir)
-        self.tmpimages.append(file)
-        im.save(file.name, "PNG")
-        return file
+        filename = os.path.join(self.inputdir, name)
+        im.save(filename, "PNG")
+        return filename
+
+    def make_metadata(self, str):
+        with open(os.path.join(self.inputdir, "metadata.xml"), "w") as f:
+            f.write(str)
 
     def tearDown(self):
         for f in self.tmpimages:
@@ -36,8 +42,19 @@ class TestRecorder(unittest.TestCase):
         shutil.rmtree(self.inputdir)
 
     def test_create_temp_image(self):
-        im = self.create_temp_image((100, 10), "blue")
-        self.assertTrue(os.path.exists(im.name))
+        im = self.create_temp_image("foobar", (100, 10), "blue")
+        self.assertTrue(os.path.exists(im))
+
+    def test_single_input(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.make_metadata("""<screenshots>
+<screenshot>
+   <name>foobar</name>
+</screenshot>
+</screenshots>""")
+
+        self.recorder.record()
+        self.assertTrue(exists(join(self.outputdir, "foobar.png")))
 
 if __name__ == '__main__':
     unittest.main()
