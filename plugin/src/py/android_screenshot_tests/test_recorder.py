@@ -58,7 +58,7 @@ class TestRecorder(unittest.TestCase):
 
     def test_two_files(self):
         self.create_temp_image("foo.png", (10, 10), "blue")
-        self.create_temp_image("bar.png", (10, 10), "blue")
+        self.create_temp_image("bar.png", (10, 10), "red")
         self.make_metadata("""<screenshots>
 <screenshot>
    <name>foo</name>

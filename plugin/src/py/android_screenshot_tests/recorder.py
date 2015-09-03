@@ -18,14 +18,17 @@ class Recorder:
         self._input = input
         self._output = output
 
+    def _copy(self, name):
+        name += ".png"
+        shutil.copyfile(join(self._input, name),
+                        join(self._output, name))
+
     def record(self):
         root = ET.parse(join(self._input, "metadata.xml")).getroot()
 
         for screenshot in root.iter("screenshot"):
-            name = screenshot.find('name').text
-            name += ".png"
-            shutil.copyfile(join(self._input, name),
-                            join(self._output, name))
+            self._copy(screenshot.find('name').text)
+
 
     def verify(self):
         pass
