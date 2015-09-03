@@ -82,18 +82,21 @@ def generate_html(dir):
         html.write('</body></html>')
         return index_html
 
+def get_image_file_name(name, x, y):
+    image_file = name
+    if x != 0 or y != 0:
+        image_file += "_%d_%d" % (x, y)
+
+    image_file += ".png"
+    return image_file
+
 def write_image(dir, html, screenshot):
     html.write('<table class="img-wrapper">')
     for y in xrange(int(screenshot.find('tile_height').text)):
         html.write('<tr>')
         for x in xrange(int(screenshot.find('tile_width').text)):
             html.write('<td>')
-            image_file = "./" + screenshot.find('name').text
-
-            if x != 0 or y != 0:
-                image_file += "_%d_%d" % (x, y)
-
-            image_file += ".png"
+            image_file = "./" + get_image_file_name(screenshot.find('name').text, x, y)
 
             if os.path.exists(join(dir, image_file)):
                 html.write('<img src="%s" />' % image_file)
