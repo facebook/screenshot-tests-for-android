@@ -178,12 +178,23 @@ def pull_screenshots(process,
                      adb_puller,
                      temp_dir=None,
                      filter_name_regex=None,
+                     record=None,
+                     verify=None,
                      opt_generate_png=None):
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
     copy_assets(temp_dir)
 
     pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
     path_to_html = generate_html(temp_dir)
+
+    if record or verify:
+        # don't import this early, since we need PIL to import this
+        from .recorder import Record
+        recorder = Record(temp_dir, record or verify)
+        if verify:
+            recorder.verify()
+        else:
+            recorder.record()
 
     if opt_generate_png:
         generate_png(path_to_html, opt_generate_png)
