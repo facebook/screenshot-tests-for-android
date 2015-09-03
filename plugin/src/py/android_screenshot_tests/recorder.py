@@ -8,13 +8,13 @@
 # of patent rights can be found in the PATENTS file in the same directory.
 #
 
-class UnTiler:
+class Recorder:
     def __init__(self, record_dir, output):
         self._record_dir = record_dir
         self._output = output
 
     def record(self):
-        pass
+        self
 
     def verify(self):
         pass
