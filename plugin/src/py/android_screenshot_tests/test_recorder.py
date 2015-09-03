@@ -56,5 +56,21 @@ class TestRecorder(unittest.TestCase):
         self.recorder.record()
         self.assertTrue(exists(join(self.outputdir, "foobar.png")))
 
+    def test_two_files(self):
+        self.create_temp_image("foo.png", (10, 10), "blue")
+        self.create_temp_image("bar.png", (10, 10), "blue")
+        self.make_metadata("""<screenshots>
+<screenshot>
+   <name>foo</name>
+</screenshot>
+<screenshot>
+   <name>bar</name>
+</screenshot>
+</screenshots>""")
+
+        self.recorder.record()
+        self.assertTrue(exists(join(self.outputdir, "foo.png")))
+        self.assertTrue(exists(join(self.outputdir, "bar.png")))
+
 if __name__ == '__main__':
     unittest.main()
