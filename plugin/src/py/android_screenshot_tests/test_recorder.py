@@ -100,5 +100,28 @@ class TestRecorder(unittest.TestCase):
         self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
         self.assertEquals((255, 0, 0, 255), im.getpixel((1, 11)))
 
+    def test_one_row_tiles(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.create_temp_image("foobar_1_0.png", (10, 10), "red")
+
+        self.make_metadata("""<screenshots>
+<screenshot>
+   <name>foobar</name>
+    <tile_width>2</tile_width>
+    <tile_height>1</tile_height>
+</screenshot>
+</screenshots>""")
+
+        self.recorder.record()
+
+        im = Image.open(join(self.outputdir, "foobar.png"))
+        (w, h) = im.size
+        self.assertEquals(20, w)
+        self.assertEquals(10, h)
+
+        self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
+        self.assertEquals((255, 0, 0, 255), im.getpixel((11, 1)))
+
+
 if __name__ == '__main__':
     unittest.main()
