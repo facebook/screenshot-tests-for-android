@@ -50,6 +50,8 @@ class TestRecorder(unittest.TestCase):
         self.make_metadata("""<screenshots>
 <screenshot>
    <name>foobar</name>
+   <tile_width>1</tile_width>
+   <tile_height>1</tile_height>
 </screenshot>
 </screenshots>""")
 
@@ -62,15 +64,38 @@ class TestRecorder(unittest.TestCase):
         self.make_metadata("""<screenshots>
 <screenshot>
    <name>foo</name>
+   <tile_width>1</tile_width>
+   <tile_height>1</tile_height>
 </screenshot>
 <screenshot>
    <name>bar</name>
+   <tile_width>1</tile_width>
+   <tile_height>1</tile_height>
 </screenshot>
 </screenshots>""")
 
         self.recorder.record()
         self.assertTrue(exists(join(self.outputdir, "foo.png")))
         self.assertTrue(exists(join(self.outputdir, "bar.png")))
+
+    def test_one_col_tiles(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.create_temp_image("foobar_0_1.png", (10, 10), "blue")
+
+        self.make_metadata("""<screenshots>
+<screenshot>
+   <name>foobar</name>
+    <tile_width>1</tile_width>
+    <tile_height>2</tile_height>
+</screenshot>
+</screenshots>""")
+
+        self.recorder.record()
+
+        im = Image.open(join(self.outputdir, "foobar.png"))
+        (w, h) = im.size
+        self.assertEquals(10, w)
+        self.assertEquals(20, h)
 
 if __name__ == '__main__':
     unittest.main()
