@@ -15,11 +15,16 @@ from os.path import join
 from PIL import Image
 from . import common
 import shutil
+import tempfile
+
+class VerifyError(StandardError):
+    pass
 
 class Recorder:
     def __init__(self, input, output):
         self._input = input
         self._output = output
+        self._realoutput = output
 
     def _copy(self, name, w, h):
         tilewidth, tileheight = Image.open(join(self._input,
@@ -66,4 +71,7 @@ class Recorder:
         self._record()
 
     def verify(self):
-        pass
+        self._output = tempfile.mkdtemp()
+        self._record()
+
+        shutil.rmtree(self._output)

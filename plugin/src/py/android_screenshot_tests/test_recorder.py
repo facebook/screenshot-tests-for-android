@@ -13,7 +13,7 @@ import unittest
 import shutil
 import os
 from os.path import join, exists
-from recorder import Recorder
+from recorder import Recorder, VerifyError
 
 from PIL import Image
 
@@ -148,6 +148,19 @@ class TestRecorder(unittest.TestCase):
 
         self.assertEquals((0, 0, 255, 255), im.getpixel((11, 11)))
         self.assertEquals((255, 0, 0, 255), im.getpixel((1, 11)))
+
+    def test_verify_success(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.make_metadata("""<screenshots>
+<screenshot>
+   <name>foobar</name>
+    <tile_width>1</tile_width>
+    <tile_height>1</tile_height>
+</screenshot>
+</screenshots>""")
+
+        self.recorder.record()
+        self.recorder.verify()
 
 if __name__ == '__main__':
     unittest.main()
