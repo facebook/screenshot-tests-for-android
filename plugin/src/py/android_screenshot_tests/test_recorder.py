@@ -162,5 +162,25 @@ class TestRecorder(unittest.TestCase):
         self.recorder.record()
         self.recorder.verify()
 
+    def test_verify_failure(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.make_metadata("""<screenshots>
+<screenshot>
+   <name>foobar</name>
+    <tile_width>1</tile_width>
+    <tile_height>1</tile_height>
+</screenshot>
+</screenshots>""")
+
+        self.recorder.record()
+        os.unlink(join(self.inputdir, "foobar.png"))
+        self.create_temp_image("foobar.png", (10, 10), "red")
+
+        try:
+            self.recorder.verify()
+            self.fail("expected exception")
+        except VerifyError:
+            pass  # expected
+
 if __name__ == '__main__':
     unittest.main()

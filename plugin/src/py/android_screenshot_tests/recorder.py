@@ -12,7 +12,7 @@ import xml.etree.ElementTree as ET
 import os
 
 from os.path import join
-from PIL import Image
+from PIL import Image, ImageChops
 from . import common
 import shutil
 import tempfile
@@ -54,9 +54,11 @@ class Recorder:
 
         im.save(join(self._output, name + ".png"))
 
-    def _record(self):
-        root = ET.parse(join(self._input, "metadata.xml")).getroot()
+    def _get_metadata_root(self):
+        return ET.parse(join(self._input, "metadata.xml")).getroot()
 
+    def _record(self):
+        root = self._get_metadata_root()
         for screenshot in root.iter("screenshot"):
             self._copy(screenshot.find('name').text,
                        int(screenshot.find('tile_width').text),
@@ -66,6 +68,12 @@ class Recorder:
         shutil.rmtree(self._output)
         os.mkdir(self._output)
 
+    def _is_image_same(self, file1, file2):
+        im1 = Image.open(file1)
+        im2 = Image.open(file2)
+
+        return ImageChops.difference(im1, im2).getbbox() is None
+
     def record(self):
         self._clean()
         self._record()
@@ -73,5 +81,14 @@ class Recorder:
     def verify(self):
         self._output = tempfile.mkdtemp()
         self._record()
+
+        root = self._get_metadata_root()
+        for screenshot in root.iter("screenshot"):
+            name = screenshot.find('name').text + ".png"
+            actual = join(self._output, name)
+            expected = join(self._realoutput, name)
+            if not self._is_image_same(expected,
+                                       actual):
+                raise VerifyError("Image %s is not same as %s" % (actual, expected))
 
         shutil.rmtree(self._output)
