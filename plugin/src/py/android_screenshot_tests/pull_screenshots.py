@@ -233,7 +233,7 @@ def main(argv):
         opt_list, rest_args = getopt.gnu_getopt(
             argv[1:],
             "eds:",
-            ["generate-png=", "filter-name-regex=", "apk"])
+            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify="])
     except getopt.GetoptError, err:
         usage()
         return 2
@@ -263,6 +263,8 @@ def main(argv):
     return pull_screenshots(process,
                             filter_name_regex=opts.get('--filter-name-regex'),
                             opt_generate_png=opts.get('--generate-png'),
+                            record=opts.get('--record'),
+                            verify=opts.get('--verify'),
                             adb_puller=SimplePuller(puller_args))
 
 if __name__ == '__main__':
