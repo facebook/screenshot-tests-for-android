@@ -80,7 +80,7 @@ class TestRecorder(unittest.TestCase):
 
     def test_one_col_tiles(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
-        self.create_temp_image("foobar_0_1.png", (10, 10), "blue")
+        self.create_temp_image("foobar_0_1.png", (10, 10), "red")
 
         self.make_metadata("""<screenshots>
 <screenshot>
@@ -96,6 +96,8 @@ class TestRecorder(unittest.TestCase):
         (w, h) = im.size
         self.assertEquals(10, w)
         self.assertEquals(20, h)
+
+        self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
 
 if __name__ == '__main__':
     unittest.main()
