@@ -9,6 +9,7 @@
 #
 
 import xml.etree.ElementTree as ET
+import os
 
 from os.path import join
 from PIL import Image
@@ -56,8 +57,12 @@ class Recorder:
                        int(screenshot.find('tile_width').text),
                        int(screenshot.find('tile_height').text))
 
+    def _clean(self):
+        shutil.rmtree(self._output)
+        os.mkdir(self._output)
 
     def record(self):
+        self._clean()
         self._record()
 
     def verify(self):
