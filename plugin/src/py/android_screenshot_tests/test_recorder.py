@@ -98,6 +98,7 @@ class TestRecorder(unittest.TestCase):
         self.assertEquals(20, h)
 
         self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
+        self.assertEquals((255, 0, 0, 255), im.getpixel((1, 11)))
 
 if __name__ == '__main__':
     unittest.main()
