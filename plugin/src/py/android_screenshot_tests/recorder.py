@@ -48,7 +48,7 @@ class Recorder:
 
         im.save(join(self._output, name + ".png"))
 
-    def record(self):
+    def _record(self):
         root = ET.parse(join(self._input, "metadata.xml")).getroot()
 
         for screenshot in root.iter("screenshot"):
@@ -56,6 +56,9 @@ class Recorder:
                        int(screenshot.find('tile_width').text),
                        int(screenshot.find('tile_height').text))
 
+
+    def record(self):
+        self._record()
 
     def verify(self):
         pass
