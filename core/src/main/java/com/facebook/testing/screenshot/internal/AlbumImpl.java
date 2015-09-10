@@ -137,6 +137,10 @@ public class AlbumImpl implements Album {
    */
   @Override
   public void cleanup() {
+    if (!mDir.exists()) {
+      // We probably failed to even create it, so nothing to clean up
+      return;
+    }
     for (String s : mDir.list()) {
       new File(mDir, s).delete();
     }

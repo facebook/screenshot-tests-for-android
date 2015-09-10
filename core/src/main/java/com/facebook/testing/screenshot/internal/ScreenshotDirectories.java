@@ -40,6 +40,10 @@ class ScreenshotDirectories {
     File dir = new File(child);
     dir.mkdir();
 
+    if (!dir.exists()) {
+      throw new RuntimeException("Failed to create the directory for screenshots, do you have WRITE_EXTERNAL_STORAGE permission?");
+    }
+
     setWorldWriteable(dir);
     return dir;
   }

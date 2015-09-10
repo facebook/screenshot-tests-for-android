@@ -6,7 +6,7 @@ class ScreenshotsPluginExtension {
     def adb = "adb"
     def testApkTarget = ":packageDebugAndroidTest"
     def customTestRunner = false
-    def recordDir = "recorded_screenshots"
+    def recordDir = "screenshots"
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
