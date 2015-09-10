@@ -4,8 +4,7 @@ tagline:  Generate fast deterministic screenshots while running instrumentation 
 fbappid: ""
 gacode: "myproject-google-analytics-code"
 description:
-baseurl: /screenshot-tests-for-android/
-url: https://facebook.github.io
+baseurl: https://facebook.github.io/screenshot-tests-for-android/
 ghrepo: "facebook/screenshot-tests-for-android"
 
 # Build settings
