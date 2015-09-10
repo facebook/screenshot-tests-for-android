@@ -1,0 +1,7 @@
+- title: Docs
+  href: docs/getting-started.html
+  category: docs
+
+- title: GitHub
+  href: http://github.com/facebook/screenshot-tests-for-android
+  category: github

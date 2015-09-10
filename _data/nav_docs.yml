@@ -1,0 +1,6 @@
+- title: Getting Started
+  items:
+  - id: getting-started
+  - id: creating-a-screenshot
+  - id: custom-instrumentation-test-runners
+  - id: gradle-setup
