@@ -7,4 +7,4 @@ permalink: /docs/getting-started.html
 
 ## Getting Started
 
-For most of you, all you really want to know is [[Gradle setup]] and [[Creating a screenshot]].
+For most of you, all you really want to know is [[Gradle Setup]] and [[Creating a screenshot]].
