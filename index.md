@@ -1,5 +1,5 @@
 ---
-title: screenshot-tests-for-android | Generate fast deterministic screenshots while running instrumentation tests in android
+title: screenshot-tests-for-android | Fast, deterministic screenshot tests for android
 layout: home
 permalink: index.html
 ---
@@ -14,7 +14,6 @@ We also provide utilities for using screenshot tests during the development proc
 ### Contributions
 Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/CONTRIBUTING.md).
 
-###License  
+###License
 
 screenshot-tests-for-android is [BSD-licensed](https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE). We also provide an additional [patent grant](https://github.com/facebook/screenshot-tests-for-android/blob/master/PATENTS).
-
