@@ -74,6 +74,21 @@ if (property('POM_PACKAGING') == 'aar') {
   // We must be doing an android build I guess
 
   afterEvaluate { project ->
+
+    task androidJavadoc(type: Javadoc) {
+        source = android.sourceSets.main.java.srcDirs
+        classpath += files(android.bootClasspath)
+        if (JavaVersion.current().isJava8Compatible()) {
+            println("this is java8")
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
+    }
+
+    task androidJavadocJar(type: Jar, dependsOn: androidJavadoc) {
+        classifier = 'javadoc'
+        from androidJavadoc.destinationDir
+    }
+
     task androidSourcesJar(type: Jar) {
       classifier = 'sources'
       from android.sourceSets.main.java.srcDirs
@@ -87,6 +102,7 @@ if (property('POM_PACKAGING') == 'aar') {
     }
     artifacts {
       archives androidSourcesJar
+      archives androidJavadocJar
       archives jarRelease
     }
 
