@@ -60,3 +60,5 @@ uploadArchives {
         }
     }
 }
+
+apply from: rootProject.file("release.gradle")

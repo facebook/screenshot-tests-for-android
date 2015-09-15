@@ -41,3 +41,5 @@ task pyTests(type: Exec) {
      workingDir file('./src/py')
      commandLine 'python', '-m', 'unittest', 'discover'
 }
+
+apply from: rootProject.file("release.gradle")
