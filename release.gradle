@@ -70,57 +70,60 @@ def getOptionalDeps() {
     }
 }
 
-afterEvaluate { project ->
+if (property('POM_PACKAGING') == 'aar') {
+  // We must be doing an android build I guess
+  afterEvaluate { project ->
 
-  task androidSourcesJar(type: Jar) {
-    classifier = 'sources'
-    from android.sourceSets.main.java.srcDirs
-  }
-
-  android.libraryVariants.all { variant ->
-    def name = variant.name.capitalize()
-    task "jar${name}"(type: Jar, dependsOn: variant.javaCompile) {
-      from variant.javaCompile.destinationDir
+    task androidSourcesJar(type: Jar) {
+      classifier = 'sources'
+      from android.sourceSets.main.java.srcDirs
     }
-  }
-  artifacts {
-    //archives androidSourcesJar
-    archives jarRelease
-  }
 
-  version = VERSION_NAME
-  group = GROUP
-
-  signing {
-    required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
-    sign configurations.archives
-  }
-
-  uploadArchives {
-    configuration = configurations.archives
-    repositories.mavenDeployer {
-      beforeDeployment {
-        MavenDeployment deployment -> signing.signPom(deployment)
+    android.libraryVariants.all { variant ->
+      def name = variant.name.capitalize()
+      task "jar${name}"(type: Jar, dependsOn: variant.javaCompile) {
+        from variant.javaCompile.destinationDir
       }
-
-      repository(url: getRepositoryUrl()) {
-        authentication(
-          userName: getRepositoryUsername(),
-                       password: getRepositoryPassword())
-      }
-
-      // repository(url: "file://localhost/")
-
-      configureScreenshotTestsForAndroidPom pom
     }
-  }
+    artifacts {
+      //archives androidSourcesJar
+      archives jarRelease
+    }
 
-  task installArchives(type: Upload) {
-    configuration = configurations.archives
-    repositories {
-      mavenDeployer {
-        repository url: "file://${System.properties['user.home']}/.m2/repository"
+    version = VERSION_NAME
+    group = GROUP
+
+    signing {
+      required { isReleaseBuild() && gradle.taskGraph.hasTask("uploadArchives") }
+      sign configurations.archives
+    }
+
+    uploadArchives {
+      configuration = configurations.archives
+      repositories.mavenDeployer {
+        beforeDeployment {
+          MavenDeployment deployment -> signing.signPom(deployment)
+        }
+
+        repository(url: getRepositoryUrl()) {
+          authentication(
+            userName: getRepositoryUsername(),
+                         password: getRepositoryPassword())
+        }
+
+        // repository(url: "file://localhost/")
+
         configureScreenshotTestsForAndroidPom pom
+      }
+    }
+
+    task installArchives(type: Upload) {
+      configuration = configurations.archives
+      repositories {
+        mavenDeployer {
+          repository url: "file://${System.properties['user.home']}/.m2/repository"
+          configureScreenshotTestsForAndroidPom pom
+        }
       }
     }
   }
