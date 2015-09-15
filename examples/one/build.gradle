@@ -1,7 +1,7 @@
 buildscript {
     repositories {
         jcenter()
-        mavenLocal()
+        mavenCentral()
     }
 
     dependencies {
@@ -15,7 +15,7 @@ apply plugin: 'screenshot-tests-plugin'
 
 repositories {
     jcenter()
-    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
