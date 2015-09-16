@@ -1,6 +1,6 @@
 permalink: /blog/:year/:month/:day/:title.html
 title: screenshot-tests-for-android
-tagline: Fast, Deterministic Screenshot Tests for Android
+tagline: Fast, Deterministic Screenshot Tests for iteration and tracking regressions
 fbappid: ""
 description:
 baseurl: https://facebook.github.io/screenshot-tests-for-android/
