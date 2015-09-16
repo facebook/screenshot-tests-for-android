@@ -1,18 +1,11 @@
 buildscript {
     repositories {
-        jcenter()
-        maven() {
-           url "./repo"
-        }
+      mavenCentral()
     }
 }
 
 allprojects {
   version = property('VERSION_NAME')
-}
-
-task repoClean << {
-     delete file('repo')
 }
 
 task uploadAllLocal(dependsOn: [

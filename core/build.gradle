@@ -1,6 +1,6 @@
 buildscript {
     repositories {
-        jcenter()
+      mavenCentral()
     }
 
     dependencies {
@@ -17,7 +17,7 @@ apply plugin: 'com.github.dcendents.android-maven'
 group='com.facebook.testing.screenshot'
 
 repositories {
-    jcenter()
+  mavenCentral()
 }
 
 dependencies {
