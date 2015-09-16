@@ -53,6 +53,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       project.exec {
         executable = project.screenshots.adb
         args = ["shell", "rm", "-rf", "/sdcard/screenshots"]
+        ignoreExitValue = true
       }
     }
 
