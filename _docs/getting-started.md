@@ -7,4 +7,7 @@ permalink: /docs/getting-started.html
 
 ## Getting Started
 
-For most of you, all you really want to know is [Gradle Setup](docs/gradle-setup/) and [Creating a screenshot](docs/creating-a-screenshot/).
+
+First you need to [setup the gradle plugin](docs/gradle-setup/).
+
+Then [create a screenshot in a test](docs/creating-a-screenshot/)!
