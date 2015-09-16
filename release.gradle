@@ -113,15 +113,6 @@ if (property('POM_PACKAGING') == 'aar') {
       archives jarRelease
     }
 
-    task installArchives(type: Upload) {
-      configuration = configurations.archives
-      repositories {
-        mavenDeployer {
-          repository url: "file://${System.properties['user.home']}/.m2/repository"
-          configureScreenshotTestsForAndroidPom pom
-        }
-      }
-    }
   }
 } else {
   task sourcesJar(type: Jar, dependsOn: classes) {
@@ -168,4 +159,13 @@ afterEvaluate { project ->
       }
     }
 
+    task installArchives(type: Upload) {
+      configuration = configurations.archives
+      repositories {
+        mavenDeployer {
+          repository url: "file://${System.properties['user.home']}/.m2/repository"
+          configureScreenshotTestsForAndroidPom pom
+        }
+      }
+    }
 }

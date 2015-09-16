@@ -6,13 +6,19 @@ set -o pipefail
 
 echo $ANDROID_SERIAL
 
-rm -rf ~/.m2 ~/.gradle/caches
+cleanup() {
+    rm -rf ~/.m2 ~/.gradle/caches
+    rm -rf */build/
+    rm -rf examples/one/build/
+}
 
-gradle :core:install
-gradle :plugin:install
+cleanup
+
+./gradlew :plugin:install
+./gradlew :core:install
 
 cd examples/one
-gradle connectedAndroidTest --info
-gradle screenshotTests --info
+gradle connectedAndroidTest
+gradle screenshotTests
 
-rm -rf ~/.m2 ~/.gradle/caches
+cleanup

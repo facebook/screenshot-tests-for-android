@@ -2,10 +2,10 @@
 
 package com.facebook.testing.screenshot;
 
-import android.support.test.runner.AndroidJUnitRunner;
 import android.os.Bundle;
+import android.test.InstrumentationTestRunner;
 
-public class ScreenshotTestRunner extends AndroidJUnitRunner {
+public class ScreenshotTestRunner extends InstrumentationTestRunner {
   @Override
   public void onCreate(Bundle args) {
     ScreenshotRunner.onCreate(this, args);
