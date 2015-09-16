@@ -8,7 +8,7 @@ buildscript {
 }
 
 allprojects {
-    version = '0.2'
+  version = property('VERSION_NAME')
 }
 
 task repoClean << {
