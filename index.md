@@ -4,12 +4,36 @@ layout: home
 permalink: index.html
 ---
 
-### About
-screenshot-tests-for-android is a library that can generate fast deterministic screenshots while running instrumentation tests in android.
+### Introduction
 
-We mimic Android's measure(), layout() and draw() to generate screenshots on the test thread. By not having to do the rendering on a separate thread we have control over animations and handler callbacks which makes the screenshots extremely deterministic and reliable for catching regressions in continuous integration.
+Testing *rendering* for your Android app is hard. How do you prevent regressions in paddings and margins and colors from creeping in?
 
-We also provide utilities for using screenshot tests during the development process. With these scripts you can iterate on a view or layout and quickly see how the view renders in real android code, without having to build the whole app. You can also render the view in multiple configurations at one go.
+Iterating on UI code is hard. How do you quickly verify that your
+layout or view changes work correctly in all the configurations?
+
+We introduce screenshot-tests-for-android, and we hope to solve these
+problems for you.
+
+### How does this work?
+
+screenshot-tests-for-android is a library that generates
+*deterministic* screenshots of views during a test run.
+
+By determinism, we mean that every run of your tests generate a
+pixel-identical screenshot. This is crucial for being able to use
+these screenshots to track changes. It's also crucial for making it
+easy to write a screenshot test, because now you as a developer don't
+have to worry about threading and timing issues.
+
+We achieve this by mimicing Android's measure(), layout() and draw()
+on the test thread, and therefore not having to worry about the impact
+of Handler or animation callbacks.
+
+We have utitlities to generate reports with all the screenshots. We
+also provide a way to plug this into your Continuous Integration, by
+asking you to "record" screenshots the first time you create them (or
+if you intentionally change them), and letting your continuous
+integration check against the recorded screenshots.
 
 ### Contributions
 Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/CONTRIBUTING.md).
