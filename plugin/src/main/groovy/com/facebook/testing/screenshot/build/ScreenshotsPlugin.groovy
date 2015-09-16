@@ -7,6 +7,7 @@ class ScreenshotsPluginExtension {
     def testApkTarget = ":packageDebugAndroidTest"
     def customTestRunner = false
     def recordDir = "screenshots"
+    def addCompileDeps = true
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
@@ -23,7 +24,10 @@ class ScreenshotsPlugin implements Plugin<Project> {
     println("Found jar file at " + jarFile.getAbsolutePath())
 
     def implementationVersion = getClass().getPackage().getImplementationVersion()
-    project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
+
+    if (project.screenshots.addCompileDeps) {
+      project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
+    }
 
     project.task('pullScreenshots', dependsOn: depTarget) << {
       def output = project.tasks.getByPath(depTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()

@@ -28,7 +28,6 @@ dependencies {
     compile 'com.android.support.test:runner:0.3'
 
     androidTestCompile 'com.android.support:support-v4:21.0.0'
-    androidTestCompile 'com.android.support.test:runner:0.3'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
 }
