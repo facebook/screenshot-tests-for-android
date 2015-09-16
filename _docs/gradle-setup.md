@@ -12,7 +12,7 @@ Setting up screenshot-tests-for-android in a gradle build is very straightforwar
     // ...
     dependencies {
       // ...
-      classpath 'com.facebook.testing.screenshot:plugin:0.2'
+      classpath 'com.facebook.testing.screenshot:plugin:0.2.1'
     }
   }
 
