@@ -1,5 +1,6 @@
 buildscript {
     repositories {
+        mavenLocal()
         mavenCentral()
     }
 
@@ -13,10 +14,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'screenshot-tests-plugin'
 
 repositories {
+    mavenLocal()
     mavenCentral()
-}
-
-dependencies {
 }
 
 android {
@@ -25,4 +24,7 @@ android {
 
     sourceSets {
     }
+}
+
+dependencies {
 }
