@@ -1,6 +1,6 @@
 ---
 id: custom-instrumentation-test-runners
-title: Custom InstrumentationTestRunners
+title: Custom Test Runner
 layout: docs
 permalink: /docs/custom-instrumentation-test-runners/
 ---
