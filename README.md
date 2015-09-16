@@ -18,8 +18,7 @@ at one go.
 
 ## Examples
 
-We have a presentation coming up in Droidcon NYC 2015, we'll post
-a link to our presentation once it's published.
+Take a look at the documentation at http://facebook.github.io/screenshot-tests-for-android/docs/getting-started/
 
 ## Requirements
 
@@ -40,7 +39,7 @@ pull_screenshots script from the main repository.
 
 ## Join the screenshot-tests-for-android community
 
-* Website: http://github.com/facebook/screenshot-tests-for-android
+* Website: http://facebook.github.io/screenshot-tests-for-android
 * Discussion group:
    https://groups.google.com/forum/#!forum/screenshot-tests-for-android<br />
    screenshot-tests-for-android@googlegroups.com
