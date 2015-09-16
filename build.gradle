@@ -18,3 +18,7 @@ task installAll(dependsOn: [
      ":core:install",
      ":plugin:install",
 ])
+
+task uploadAllArchives(dependsOn:
+                    [":plugin:uploadArchives",
+                     ":core:uploadArchives"])
