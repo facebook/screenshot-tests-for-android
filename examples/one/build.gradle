@@ -11,7 +11,7 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'screenshot-tests-plugin'
+apply plugin: 'com.facebook.testing.screenshot'
 
 repositories {
     mavenLocal()
