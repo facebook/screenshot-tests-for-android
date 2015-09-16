@@ -1,8 +1,7 @@
 permalink: /blog/:year/:month/:day/:title.html
 title: screenshot-tests-for-android
-tagline:  Generate fast deterministic screenshots while running instrumentation tests in android.
+tagline: Fast, Deterministic Screenshot Tests for Android
 fbappid: ""
-gacode: "myproject-google-analytics-code"
 description:
 baseurl: https://facebook.github.io/screenshot-tests-for-android/
 ghrepo: "facebook/screenshot-tests-for-android"
