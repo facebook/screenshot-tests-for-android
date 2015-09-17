@@ -61,16 +61,19 @@ class ScreenshotsPlugin implements Plugin<Project> {
       }
     }
 
-    project.task("screenshotTests", dependsOn: [
-                   ":clearScreenshots",
-                   ":connectedAndroidTest",
-                   ":pullScreenshots"])
+    project.afterEvaluate {
+      project.task("screenshotTests")
+      project.screenshotTests.dependsOn project.clearScreenshots
+      project.screenshotTests.dependsOn project.connectedAndroidTest
+      project.screenshotTests.dependsOn project.pullScreenshots
+    }
 
     if (!project.screenshots.customTestRunner) {
        project.android.defaultConfig {
            testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
        }
     }
+
 
     project.task("recordMode") << {
       recordMode = true
