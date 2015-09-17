@@ -5,7 +5,10 @@ layout: docs
 permalink: /docs/gradle-setup/
 ---
 
-Setting up screenshot-tests-for-android in a gradle build is very straightforward. Assuming you're using the official android plugin, you just need to apply our plugin:
+Setting up screenshot-tests-for-android in a gradle build is very
+straightforward if you're already using Gradle and the Android's
+Gradle plugin. All you need to do is apply the
+screenshot-tests-for-android plugin in your build.gradle:
 
 ```groovy
   buildscript {
@@ -19,8 +22,6 @@ Setting up screenshot-tests-for-android in a gradle build is very straightforwar
   apply plugin: 'com.facebook.testing.screenshot'
 ```
 
-By default this overrides your instrumentation test runner, and depending on your set up this can cause problems. See [Custom InstrumentationTestRunners](docs/custom-instrumentation-test-runners/) for how to avoid this.
-
 This plugin sets up a few convenience commands:
 
 `gradle screenshotTests` will run all the instrumentation tests, and then generate a report of all of the screenshots.
@@ -32,3 +33,5 @@ This plugin sets up a few convenience commands:
 The plugin also sets up compile dependencies for your tests, so you can now just start calling the `Screenshot` API. See [Creating a screenshot](docs/creating-a-screenshot/).
 
 Take a look at our [example build.gradle](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/one/build.gradle).
+
+NOTE: By default this overrides your instrumentation test runner, and depending on your set up this can cause problems. See [Custom InstrumentationTestRunners](docs/custom-instrumentation-test-runners/) for how to avoid this.
