@@ -35,6 +35,11 @@ asking you to "record" screenshots the first time you create them (or
 if you intentionally change them), and letting your continuous
 integration check against the recorded screenshots.
 
+### Documentation
+
+See [Documentation](docs) for how to set up and create screenshot
+tests, with examples.
+
 ### Contributions
 Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/CONTRIBUTING.md).
 
