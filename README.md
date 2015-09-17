@@ -16,7 +16,7 @@ see how the view renders in real android code, without having to
 build the whole app. You can also render the view in multiple configurations
 at one go.
 
-## Examples
+## Documentation
 
 Take a look at the documentation at http://facebook.github.io/screenshot-tests-for-android/docs/getting-started/
 
