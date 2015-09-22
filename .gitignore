@@ -1,6 +1,7 @@
 *.pyc
-/build/
+*/build/
 .gradle
 /repo/
-build
+/build
 repo
+examples/**/build
