@@ -8,4 +8,9 @@ class ScreenshotsPluginTest {
   public void testOne() {
     assertEquals(true, true);
   }
+
+  @Test
+  public void testConstructor() {
+    new ScreenshotsPlugin();
+  }
 }
