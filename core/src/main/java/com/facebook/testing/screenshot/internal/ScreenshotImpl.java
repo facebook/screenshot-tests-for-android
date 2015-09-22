@@ -336,7 +336,7 @@ public class ScreenshotImpl {
         arguments);
 
       sInstance = create(
-        instrumentation.getTargetContext(),
+        instrumentation.getContext(),
         arguments,
         hostFileSender);
 
