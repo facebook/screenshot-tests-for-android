@@ -10,7 +10,7 @@ buildscript {
     }
 }
 
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.application'
 apply plugin: 'com.facebook.testing.screenshot'
 
 repositories {
@@ -20,7 +20,7 @@ repositories {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    buildToolsVersion "23.0.1"
 
     sourceSets {
     }
@@ -33,5 +33,4 @@ dependencies {
   androidTestCompile 'com.android.support.test:rules:0.3'
   androidTestCompile 'com.android.support.test:runner:0.3'
   androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
-  testCompile "com.facebook.testing.screenshot:core:0.2"
 }
