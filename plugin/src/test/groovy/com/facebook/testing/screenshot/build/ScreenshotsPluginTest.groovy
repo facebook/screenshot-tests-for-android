@@ -53,7 +53,6 @@ class ScreenshotsPluginTest {
     project.getPluginManager().apply 'com.android.library'
     project.getPluginManager().apply 'com.facebook.testing.screenshot'
     setupProject()
-
     hasRuntimeDep()
 
     project.evaluate()
@@ -76,15 +75,20 @@ class ScreenshotsPluginTest {
   public void testApplicationHappyPath() {
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    setupProject()
+
     hasRuntimeDep()
+    project.evaluate()
   }
 
-  // @Test
-  // public void testUsesTestApk() {
-  //   def plugin = new ScreenshotsPlugin()
-  //   project.getPluginManager().apply 'com.android.application'
-  //   project.getPluginManager().apply 'com.facebook.testing.screenshot'
+  @Test
+  public void testUsesTestApk() {
+    def plugin = new ScreenshotsPlugin()
+    project.getPluginManager().apply 'com.android.application'
+    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    setupProject()
+    project.evaluate()
 
-  //   assertEquals("foobar", plugin.getTestApkOutput(project))
-  // }
+    assert plugin.getTestApkOutput(project).contains("androidTest")
+  }
 }
