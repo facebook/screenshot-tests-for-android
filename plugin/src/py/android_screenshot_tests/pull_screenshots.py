@@ -179,7 +179,6 @@ def _summary(dir):
     count = len(root.findall('screenshot'))
     print("Found %d screenshots" % count)
 
-
 def pull_screenshots(process,
                      adb_puller,
                      temp_dir=None,
@@ -206,9 +205,11 @@ def pull_screenshots(process,
         generate_png(path_to_html, opt_generate_png)
         shutil.rmtree(temp_dir)
     else:
+        print("\n\n")
         _summary(temp_dir)
         print('Open the following url in a browser to view the results: ')
         print('  file://%s' % path_to_html)
+        print("\n\n")
 
 def _check_output(args, **kwargs):
     with open(os.devnull) as f:
