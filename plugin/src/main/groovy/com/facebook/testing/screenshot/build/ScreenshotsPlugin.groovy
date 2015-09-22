@@ -25,14 +25,19 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     def implementationVersion = getClass().getPackage().getImplementationVersion()
 
+    if (!implementationVersion) {
+      println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
+      implementationVersion = '0.2.1'
+    }
+
     if (project.screenshots.addCompileDeps) {
       project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
     }
 
     project.task('pullScreenshots', dependsOn: depTarget) << {
-      def output = project.tasks.getByPath(depTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
-      println output
       project.exec {
+        def output = getTestApkOutput(project)
+
         executable = 'python'
 
         // I don't know how to only *add* variables, so I'm just propagating all. :(
@@ -74,7 +79,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
        }
     }
 
-
     project.task("recordMode") << {
       recordMode = true
     }
@@ -82,5 +86,9 @@ class ScreenshotsPlugin implements Plugin<Project> {
     project.task("verifyMode") << {
       verifyMode = true
     }
+  }
+
+  String getTestApkOutput(Project project) {
+    return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
   }
 }
