@@ -14,9 +14,20 @@ class ScreenshotsPluginTest {
   }
 
   @Test
-  public void testApplies() {
+  public void testHasTestDep() {
     project.getPluginManager().apply 'com.android.library'
     project.getPluginManager().apply 'com.facebook.testing.screenshot'
+
+    def depSet = project.getConfigurations().getByName('androidTestCompile').getAllDependencies()
+
+    def found = false
+    for (dep in depSet) {
+      if (dep.name == "core") {
+        found = true;
+      }
+    }
+
+    assertTrue(found)
   }
 
 }
