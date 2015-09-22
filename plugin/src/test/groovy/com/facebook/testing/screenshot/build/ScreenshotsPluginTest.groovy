@@ -29,4 +29,10 @@ class ScreenshotsPluginTest {
 
     assertTrue(found)
   }
+
+  @Test
+  public void testApplicationHappyPath() {
+    project.getPluginManager().apply 'com.android.application'
+    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+  }
 }
