@@ -174,6 +174,12 @@ def pull_filtered(package, dir, adb_puller, filter_name_regex=None):
     metadata.filter_screenshots(join(dir, 'metadata.xml'), name_regex=filter_name_regex)
     pull_images(dir, adb_puller=adb_puller)
 
+def _summary(dir):
+    root = ET.parse(join(dir, 'metadata.xml')).getroot()
+    count = len(root.findall('screenshot'))
+    print("Found %d screenshots" % count)
+
+
 def pull_screenshots(process,
                      adb_puller,
                      temp_dir=None,
@@ -200,6 +206,7 @@ def pull_screenshots(process,
         generate_png(path_to_html, opt_generate_png)
         shutil.rmtree(temp_dir)
     else:
+        _summary(temp_dir)
         print('Open the following url in a browser to view the results: ')
         print('  file://%s' % path_to_html)
 

@@ -62,8 +62,12 @@ class TestPullScreenshots(unittest.TestCase):
         os.unlink(self.output_file)
         self.tmpdir = None
         self.scripts = mockprocess.MockProc()
+        self.oldstdout = sys.stdout
 
     def tearDown(self):
+        if self.oldstdout:
+            sys.stdout = self.oldstdout
+
         if os.path.exists(self.output_file):
             os.unlink(self.output_file)
         if self.tmpdir:
@@ -131,6 +135,17 @@ class TestPullScreenshots(unittest.TestCase):
                                         f.name)
 
             self.assertRegexpMatches(f.read(), '.*manifest.*')
+
+    def test_summary_happyPath(self):
+        with tempfile.NamedTemporaryFile() as f:
+            sys.stdout = f
+            pull_screenshots._summary(CURRENT_DIR + '/fixtures/sdcard/screenshots/' + TESTING_PACKAGE + '/screenshots-default')
+            sys.stdout.flush()
+
+            f.seek(0)
+            message = f.read()
+            self.assertRegexpMatches(message, ".*3 screenshots.*")
+
 
 if __name__ == '__main__':
     unittest.main()
