@@ -4,7 +4,7 @@ import org.gradle.api.*
 
 class ScreenshotsPluginExtension {
     def adb = "adb"
-    def testApkTarget = ":packageDebugAndroidTest"
+    def testApkTarget = "packageDebugAndroidTest"
     def customTestRunner = false
     def recordDir = "screenshots"
     def addCompileDeps = true
