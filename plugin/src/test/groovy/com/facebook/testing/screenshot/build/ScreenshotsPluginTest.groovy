@@ -13,7 +13,7 @@ class ScreenshotsPluginTest {
 
   @Test
   public void testOne() {
-    assertEquals(true, true)
+    assertNotNull(plugin)
   }
 
   @Test
