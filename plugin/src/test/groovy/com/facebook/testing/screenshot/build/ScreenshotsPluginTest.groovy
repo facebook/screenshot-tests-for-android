@@ -22,7 +22,7 @@ class ScreenshotsPluginTest {
 
     def found = false
     for (dep in depSet) {
-      if (dep.name == "core") {
+      if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
         found = true;
       }
     }
