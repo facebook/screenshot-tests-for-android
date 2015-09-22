@@ -1,22 +1,22 @@
 package com.facebook.testing.screenshot.build;
 
-import org.junit.*;
-import static org.junit.Assert.*;
+import org.junit.*
+import static org.junit.Assert.*
+import org.gradle.api.*
+import org.gradle.testfixtures.*
 
 class ScreenshotsPluginTest {
-  def plugin;
+  def project;
 
   @Before
   public void setup() {
-    plugin = new ScreenshotsPlugin()
+    project = ProjectBuilder.builder().build()
   }
 
   @Test
-  public void testOne() {
-    assertNotNull(plugin)
+  public void testApplies() {
+    project.getPluginManager().apply 'com.android.library'
+    project.getPluginManager().apply 'com.facebook.testing.screenshot'
   }
 
-  @Test
-  public void testConstructor() {
-  }
 }
