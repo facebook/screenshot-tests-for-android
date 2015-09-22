@@ -18,6 +18,10 @@ class ScreenshotsPluginTest {
     project.getPluginManager().apply 'com.android.library'
     project.getPluginManager().apply 'com.facebook.testing.screenshot'
 
+    hasRuntimeDep()
+  }
+
+  public void hasRuntimeDep() {
     def depSet = project.getConfigurations().getByName('androidTestCompile').getAllDependencies()
 
     def found = false
@@ -34,5 +38,6 @@ class ScreenshotsPluginTest {
   public void testApplicationHappyPath() {
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    hasRuntimeDep()
   }
 }
