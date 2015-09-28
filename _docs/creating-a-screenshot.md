@@ -38,7 +38,7 @@ public class MyTests {
 }
 ```
 
-We have an example of this at [SearchBarTest.java](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/one/src/androidTest/java/com/facebook/testing/screenshot/SearchBarTest.java). You can generate your screenshots using
+We have an example of this at [SearchBarTest.java](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/src/androidTest/java/com/facebook/testing/screenshot/SearchBarTest.java). You can generate your screenshots using
 
 ```bash
 $ gradle screenshotTests
