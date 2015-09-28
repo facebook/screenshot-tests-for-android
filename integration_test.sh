@@ -17,7 +17,7 @@ cleanup
 ./gradlew :plugin:install
 ./gradlew :core:install
 
-cd examples/one
+cd examples/app-example
 gradle connectedAndroidTest
 gradle screenshotTests
 
