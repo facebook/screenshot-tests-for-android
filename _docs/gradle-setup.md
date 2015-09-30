@@ -35,3 +35,8 @@ The plugin also sets up compile dependencies for your tests, so you can now just
 Take a look at our [example build.gradle](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/build.gradle).
 
 NOTE: By default this overrides your instrumentation test runner, and depending on your set up this can cause problems. See [Custom InstrumentationTestRunners](docs/custom-instrumentation-test-runners/) for how to avoid this.
+
+
+== AndroidManifest permissions ==
+
+The screenshots library needs the WRITE_EXTERNAL_STORAGE permission. For an instrumentation test for a library, add this permission to the manifest of the instrumentation apk. For a test for an application, add this permission to the app under test.
