@@ -1,9 +1,10 @@
 permalink: /blog/:year/:month/:day/:title.html
 title: screenshot-tests-for-android
-tagline: Fast, Deterministic Screenshot Tests for iteration and tracking regressions
+tagline: Fast, deterministic screenshot tests for android
 fbappid: ""
 description:
-baseurl: https://facebook.github.io/screenshot-tests-for-android/
+#baseurl: https://facebook.github.io/screenshot-tests-for-android/
+baseurl: 
 ghrepo: "facebook/screenshot-tests-for-android"
 
 # Build settings
