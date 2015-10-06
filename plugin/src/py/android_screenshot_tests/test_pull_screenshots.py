@@ -99,8 +99,8 @@ class TestPullScreenshots(unittest.TestCase):
             temp_dir=self.tmpdir)
         with open(self.tmpdir + "/index.html", "r") as f:
             contents = f.read()
-            self.assertRegexpMatches(contents, ".*com.facebook.testing.screenshot.*")
-            self.assertTrue(contents.find('<img src="./com.facebook.testing.screenshot.') >= 0)
+            self.assertRegexpMatches(contents, ".*com.foo.*")
+            self.assertTrue(contents.find('<img src="./com.foo.') >= 0)
 
     def test_generate_html_returns_a_valid_file(self):
         self.tmpdir = tempfile.mkdtemp(prefix='screenshots')
