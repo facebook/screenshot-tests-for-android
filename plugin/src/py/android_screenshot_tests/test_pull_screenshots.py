@@ -24,7 +24,7 @@ from mock import *
 
 from mockproc import mockprocess
 
-TESTING_PACKAGE = 'com.facebook.testing.screenshot.screenshot'
+TESTING_PACKAGE = 'com.foo'
 CURRENT_DIR = os.path.dirname(__file__)
 
 class AdbPuller:
