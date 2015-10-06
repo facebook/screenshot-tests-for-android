@@ -1,58 +1,47 @@
 ---
-title: screenshot-tests-for-android | Fast, deterministic screenshot tests for android
 layout: home
 permalink: index.html
 ---
 
-### Introduction
+### What is this?
 
-Testing *rendering* for your Android app is hard. How do you prevent regressions in paddings and margins and colors from creeping in?
+Testing rendering for your Android app is hard. How do you prevent visual regressions in paddings and margins and colors from creeping in?
 
 Iterating on UI code is hard. How do you quickly verify that your
-layout or view changes work correctly in all the configurations?
+layout or view changes work correctly in all configurations?
 
-We introduce screenshot-tests-for-android, and we hope to solve these
-problems for you.
+*screenshot-tests-for-android* can solve these problems by providing a test framework that checks for visual differences across changes.
 
-### How does this work?
+### How does it work?
 
-screenshot-tests-for-android is a library that generates
-*deterministic* screenshots of views during a test run.
+*screenshot-tests-for-android* generates deterministic screenshots of views during a test run.
 
-By determinism, we mean that every run of your tests generate a
-pixel-identical screenshot. This is crucial for being able to use
-these screenshots to track changes. It's also crucial for making it
-easy to write a screenshot test, because now you as a developer don't
-have to worry about threading and timing issues.
+By deterministic, we mean that every single run of your tests generates a pixel-perfect screenshot of the app as it would appear on a user's device. This screenshot can then be used to track changes and write screenshot-base tests. 
 
-We achieve this by mimicing Android's measure(), layout() and draw()
+This is crucial because now you as a developer don't have to worry about threading and timing issues.
+
+We achieve this by mimicing Android's `measure()`, `layout()` and `draw()`
 on the test thread, and therefore not having to worry about the impact
 of Handler or animation callbacks.
 
-We have utitlities to generate reports with all the screenshots. We
-also provide a way to plug this into your Continuous Integration, by
-asking you to "record" screenshots the first time you create them (or
-if you intentionally change them), and letting your continuous
-integration check against the recorded screenshots.
+We have utilities to generate reports with all the screenshots, and we also provide a way to plug this into your Continuous Integration, by asking you to "record" screenshots the first time you create them (or whenever you intentionally change them), and letting your continuous integration check against the recorded screenshots.
 
 ### Getting Started
 
-In this section you'll see how to set up and create screenshot tests, with examples.
-
 First you need to [setup the gradle plugin](#gradle-setup).
 
-Then [create a screenshot in a test](#creating-a-screenshot)!
+Then [you can create a screenshot in a test](#creating-a-screenshot).
 
-We talked about screenshot-tests-for-android at Droidcon NYC 2015, and this is a good introduction to the concepts involved, even though the API might be slightly different.
+We talked about *screenshot-tests-for-android* at Droidcon NYC 2015, and this is a good introduction to the concepts involved, even though the API might be slightly different.
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/No6iZIbh59Q" frameborder="0" allowfullscreen></iframe>
 
 ### Gradle Setup
 
-Setting up screenshot-tests-for-android in a gradle build is very
-straightforward if you're already using Gradle and the Android's
+Setting up *screenshot-tests-for-android* in a Gradle build is very
+straightforward if you're already using Gradle and the Android
 Gradle plugin. All you need to do is apply the
-screenshot-tests-for-android plugin in your build.gradle:
+*screenshot-tests-for-android* plugin in your build.gradle:
 
 ```groovy
   buildscript {
@@ -68,26 +57,24 @@ screenshot-tests-for-android plugin in your build.gradle:
 
 This plugin sets up a few convenience commands:
 
-`gradle screenshotTests` will run all the instrumentation tests, and then generate a report of all of the screenshots.
++ `gradle screenshotTests` will run all the instrumentation tests, and then generate a report of all of the screenshots.
++ `gradle recordMode screenshotTests` will run all the screenshot tests and record all the screenshots in your `screenshots/`. You can commit this directory into your repository.
++ `gradle verifyMode screenshotTests` runs all the screenshot tests and compares it against the previously recorded screenshots. If any of them fails, this command will fail. We expect you to run this command in continuous integration.
 
-`gradle recordMode screenshotTests` will run all the screenshot tests and record all the screenshots in your `screenshots/`. You can commit this directory into your repository.
-
-`gradle verifyMode screenshotTests` runs all the screenshot tests and compares it against the previously recorded screenshots. If any of them fails, this command will fail. We expect you to run this command in continuous integration.
-
-The plugin also sets up compile dependencies for your tests, so you can now just start calling the `Screenshot` API. See [Creating a screenshot](#creating-a-screenshot).
+The plugin also sets up compile dependencies for your tests, so you can now just start calling the `Screenshot` API. See the [Creating a screenshot](#creating-a-screenshot) section for more information.
 
 Take a look at our [example build.gradle](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/build.gradle).
 
 NOTE: By default this overrides your instrumentation test runner, and depending on your set up this can cause problems. See [Custom InstrumentationTestRunners](#custom-instrumentation-test-runners) for how to avoid this.
 
 
-#### AndroidManifest permissions
+**AndroidManifest permissions**
 
 The screenshots library needs the WRITE_EXTERNAL_STORAGE permission. For an instrumentation test for a library, add this permission to the manifest of the instrumentation apk. For a test for an application, add this permission to the app under test.
 
 ### Creating a screenshot
 
-Creating a screenshot from within a test is very easy.You can do this from either JUnit4 style or JUnit3 style instrumentation test.
+Creating a screenshot from within a test is very easy. You can do this from either JUnit4 style or JUnit3 style instrumentation tests:
 
 ```java
 public class MyTests {
@@ -119,7 +106,7 @@ public class MyTests {
 }
 ```
 
-We have an example of this at [SearchBarTest.java](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/src/androidTest/java/com/facebook/testing/screenshot/SearchBarTest.java). You can generate your screenshots using
+We have an example of this at [SearchBarTest.java](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/src/androidTest/java/com/facebook/testing/screenshot/SearchBarTest.java). You can generate your screenshots using:
 
 ```bash
 $ gradle screenshotTests
@@ -154,12 +141,11 @@ public class MyTestRunner extends AndroidJUnitRunner {
 }
 ```
 
-You should make your build.gradle point to your new test runner using
-`android.testInstrumentationRunner` property.
+You should make your build.gradle point to your new test runner using `android.testInstrumentationRunner` property.
 
 ### Contributions
 Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/CONTRIBUTING.md).
 
 ###License
 
-screenshot-tests-for-android is [BSD-licensed](https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE). We also provide an additional [patent grant](https://github.com/facebook/screenshot-tests-for-android/blob/master/PATENTS).
+*screenshot-tests-for-android* is [BSD-licensed](https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE). We also provide an additional [patent grant](https://github.com/facebook/screenshot-tests-for-android/blob/master/PATENTS).
