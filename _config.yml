@@ -3,8 +3,7 @@ title: screenshot-tests-for-android
 tagline: Fast, deterministic screenshot tests for android
 fbappid: ""
 description:
-#baseurl: https://facebook.github.io/screenshot-tests-for-android/
-baseurl: 
+baseurl: https://facebook.github.io/screenshot-tests-for-android/
 ghrepo: "facebook/screenshot-tests-for-android"
 
 # Build settings
