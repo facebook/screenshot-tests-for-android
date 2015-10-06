@@ -91,4 +91,18 @@ class ScreenshotsPluginTest {
 
     assert plugin.getTestApkOutput(project).contains("androidTest")
   }
+
+  @Test
+  public void testCanSetApkTarget() {
+    def plugin = new ScreenshotsPlugin()
+    project.getPluginManager().apply 'com.android.application'
+    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    setupProject()
+    project.screenshots.testApkTarget = "packageReleaseAndroidTest"
+
+    project.evaluate()
+    def deps = project.tasks.getByPath("pullScreenshots").getDependsOn()
+
+    assert deps.contains("packageReleaseAndroidTest")
+  }
 }

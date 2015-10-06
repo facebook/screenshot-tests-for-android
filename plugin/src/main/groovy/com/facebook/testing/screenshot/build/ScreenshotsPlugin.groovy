@@ -14,7 +14,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
   void apply(Project project) {
     project.extensions.create("screenshots", ScreenshotsPluginExtension)
 
-    def depTarget = project.screenshots.testApkTarget
     def recordMode = false
     def verifyMode = false
 
@@ -34,7 +33,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
     }
 
-    project.task('pullScreenshots', dependsOn: depTarget) << {
+    project.task('pullScreenshots') << {
       project.exec {
         def output = getTestApkOutput(project)
 
@@ -71,6 +70,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
       project.screenshotTests.dependsOn project.clearScreenshots
       project.screenshotTests.dependsOn project.connectedAndroidTest
       project.screenshotTests.dependsOn project.pullScreenshots
+
+      project.pullScreenshots.dependsOn project.screenshots.testApkTarget
     }
 
     if (!project.screenshots.customTestRunner) {
