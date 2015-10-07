@@ -20,8 +20,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
     def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource();
     def jarFile = new File(codeSource.getLocation().toURI().getPath());
 
-    println("Found jar file at " + jarFile.getAbsolutePath())
-
     def implementationVersion = getClass().getPackage().getImplementationVersion()
 
     if (!implementationVersion) {
