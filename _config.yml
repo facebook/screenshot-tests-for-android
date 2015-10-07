@@ -1,9 +1,10 @@
 permalink: /blog/:year/:month/:day/:title.html
 title: screenshot-tests-for-android
-tagline: Fast, Deterministic Screenshot Tests for iteration and tracking regressions
+tagline: Automated testing that helps prevent visual regressions in Android apps
 fbappid: ""
 description:
-baseurl: https://facebook.github.io/screenshot-tests-for-android/
+baseurl: /screenshot-tests-for-android
+url: https://facebook.github.io
 ghrepo: "facebook/screenshot-tests-for-android"
 
 # Build settings
@@ -28,7 +29,7 @@ redcarpet:
 gacode: "UA-44373548-12"
 color:
   primary: "#9e2b07"
-  secondary: "#e4e4e4"
+  secondary: "#fff"
   light: "#de4d1f"
   lighttext: "#fff"
   headertext: "#fff"
