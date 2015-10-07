@@ -18,7 +18,7 @@ at one go.
 
 ## Documentation
 
-Take a look at the documentation at http://facebook.github.io/screenshot-tests-for-android/docs/getting-started/
+Take a look at the documentation at http://facebook.github.io/screenshot-tests-for-android/#getting-started
 
 ## Requirements
 
