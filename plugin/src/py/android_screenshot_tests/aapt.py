@@ -17,6 +17,10 @@ def get_aapt_bin():
     build_tools = os.path.join(android_sdk, 'build-tools')
 
     all = list(glob.glob(os.path.join(build_tools, '*/aapt')))
+
+    if len(all) == 0:
+        raise RuntimeError("Could not find build-tools in " + android_sdk)
+
     bad = list(glob.glob(os.path.join(build_tools, 'android-*/aapt')))
     good = list(Set(all) - Set(bad))
 
