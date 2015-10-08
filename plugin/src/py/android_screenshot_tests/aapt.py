@@ -6,6 +6,7 @@ from __future__ import unicode_literals
 import os
 import glob
 from sets import Set
+from os.path import exists, join
 
 def get_aapt_bin():
     """Find the binary for aapt from $ANDROID_SDK"""
@@ -16,21 +17,15 @@ def get_aapt_bin():
 
     build_tools = os.path.join(android_sdk, 'build-tools')
 
-    all = list(glob.glob(os.path.join(build_tools, '*/aapt')))
+    versions = os.listdir(build_tools)
+    versions = sorted(versions, key=lambda x: "0000000" + x if x.startswith("android") else x, reverse=True)
 
-    if len(all) == 0:
-        raise RuntimeError("Could not find build-tools in " + android_sdk)
+    for v in versions:
+        aapt = join(build_tools, v, "aapt")
+        if exists(aapt):
+            return aapt
 
-    bad = list(glob.glob(os.path.join(build_tools, 'android-*/aapt')))
-    good = list(Set(all) - Set(bad))
-
-    good.sort()
-    bad.sort()
-
-    if len(good) == 0:
-        return bad[-1]
-
-    return good[-1]
+    raise RuntimeError("Could not find build-tools in " + android_sdk)
 
 def get_package(apk):
     output = _check_output([get_aapt_bin(), 'dump', 'badging', apk], stderr=os.devnull)
