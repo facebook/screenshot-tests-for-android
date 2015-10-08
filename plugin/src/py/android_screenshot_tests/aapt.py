@@ -10,6 +10,10 @@ from sets import Set
 def get_aapt_bin():
     """Find the binary for aapt from $ANDROID_SDK"""
     android_sdk = os.environ.get('ANDROID_SDK') or os.environ.get('ANDROID_HOME')
+
+    if not android_sdk:
+        raise RuntimeError("ANDROID_SDK or ANDROID_HOME needs to be set")
+
     build_tools = os.path.join(android_sdk, 'build-tools')
 
     all = list(glob.glob(os.path.join(build_tools, '*/aapt')))
