@@ -146,6 +146,5 @@ class TestPullScreenshots(unittest.TestCase):
             message = f.read()
             self.assertRegexpMatches(message, ".*3 screenshots.*")
 
-
 if __name__ == '__main__':
     unittest.main()

@@ -23,6 +23,7 @@ from . import metadata
 from .simple_puller import SimplePuller
 import glob
 import zipfile
+from . import aapt
 from . import common
 
 from sets import Set
@@ -224,29 +225,6 @@ def parse_package_line(line):
         if word.startswith("name='"):
             return word[len("name='"):-1]
 
-def get_aapt_bin():
-    """Find the binary for aapt from $ANDROID_SDK"""
-    android_sdk = os.environ.get('ANDROID_SDK') or os.environ.get('ANDROID_HOME')
-    build_tools = os.path.join(android_sdk, 'build-tools')
-
-    all = list(glob.glob(os.path.join(build_tools, '*/aapt')))
-    bad = list(glob.glob(os.path.join(build_tools, 'android-*/aapt')))
-    good = list(Set(all) - Set(bad))
-
-    good.sort()
-    bad.sort()
-
-    if len(good) == 0:
-        return bad[-1]
-
-    return good[-1]
-
-def get_package(apk):
-    output = _check_output([get_aapt_bin(), 'dump', 'badging', apk], stderr=os.devnull)
-    for line in output.split('\n'):
-        if line.startswith('package:'):
-            return parse_package_line(line)
-
 def main(argv):
     try:
         opt_list, rest_args = getopt.gnu_getopt(
@@ -267,7 +245,7 @@ def main(argv):
 
     if "--apk" in opts:
         # treat process as an apk instead
-        process = get_package(process)
+        process = aapt.get_package(process)
 
     puller_args = []
     if "-e" in opts:
