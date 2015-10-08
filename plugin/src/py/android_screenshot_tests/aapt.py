@@ -4,8 +4,6 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
-import glob
-from sets import Set
 from os.path import exists, join
 
 def get_aapt_bin():
