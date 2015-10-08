@@ -21,12 +21,10 @@ import getopt
 import shutil
 from . import metadata
 from .simple_puller import SimplePuller
-import glob
 import zipfile
 from . import aapt
 from . import common
 
-from sets import Set
 from os.path import join
 from os.path import abspath
 

@@ -3,6 +3,10 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import os
+import glob
+from sets import Set
+
 def get_aapt_bin():
     """Find the binary for aapt from $ANDROID_SDK"""
     android_sdk = os.environ.get('ANDROID_SDK') or os.environ.get('ANDROID_HOME')
