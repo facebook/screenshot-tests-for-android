@@ -16,7 +16,7 @@ layout or view changes work correctly in all configurations?
 
 *screenshot-tests-for-android* generates deterministic screenshots of views during a test run.
 
-By deterministic, we mean that every single run of your tests generates a pixel-perfect screenshot of the app as it would appear on a user's device. This screenshot can then be used to track changes and write screenshot-base tests. 
+By deterministic, we mean that every single run of your tests generates a pixel-perfect screenshot of the app as it would appear on a user's device. This screenshot can then be used to track changes and write screenshot-base tests.
 
 This is crucial because now you as a developer don't have to worry about threading and timing issues.
 
@@ -48,7 +48,7 @@ Gradle plugin. All you need to do is apply the
     // ...
     dependencies {
       // ...
-      classpath 'com.facebook.testing.screenshot:plugin:0.2.1'
+      classpath 'com.facebook.testing.screenshot:plugin:0.2.2'
     }
   }
 
