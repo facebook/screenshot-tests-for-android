@@ -5,6 +5,14 @@ import static org.junit.Assert.*
 import org.gradle.api.*
 import org.gradle.testfixtures.*
 
+class ScreenshotsPluginForTest extends ScreenshotsPlugin {
+  def runtimeDepAdded = false
+
+  // @Override
+  // void addRuntimeDep(Project project) {
+  //   //this.runtimeDepAdded = true
+  // }
+}
 
 class ScreenshotsPluginTest {
   def project;
@@ -51,7 +59,7 @@ class ScreenshotsPluginTest {
   @Test
   public void testHasTestDep() {
     project.getPluginManager().apply 'com.android.library'
-    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
     hasRuntimeDep()
 
@@ -74,7 +82,7 @@ class ScreenshotsPluginTest {
   @Test
   public void testApplicationHappyPath() {
     project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
 
     hasRuntimeDep()
@@ -85,7 +93,7 @@ class ScreenshotsPluginTest {
   public void testUsesTestApk() {
     def plugin = new ScreenshotsPlugin()
     project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
     project.evaluate()
 
@@ -96,7 +104,7 @@ class ScreenshotsPluginTest {
   public void testCanSetApkTarget() {
     def plugin = new ScreenshotsPlugin()
     project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply 'com.facebook.testing.screenshot'
+    project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
     project.screenshots.testApkTarget = "packageReleaseAndroidTest"
 
