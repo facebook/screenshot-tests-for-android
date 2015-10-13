@@ -6,12 +6,12 @@ import org.gradle.api.*
 import org.gradle.testfixtures.*
 
 class ScreenshotsPluginForTest extends ScreenshotsPlugin {
-  def runtimeDepAdded = false
+  static public runtimeDepAdded = false
 
-  // @Override
-  // void addRuntimeDep(Project project) {
-  //   //this.runtimeDepAdded = true
-  // }
+  @Override
+  void addRuntimeDep(Project project) {
+    runtimeDepAdded = true
+  }
 }
 
 class ScreenshotsPluginTest {
@@ -20,6 +20,11 @@ class ScreenshotsPluginTest {
   @Before
   public void setup() {
     project = ProjectBuilder.builder().build()
+  }
+
+  @After
+  public void tearDown() {
+    ScreenshotsPluginForTest.runtimeDepAdded = false
   }
 
   def setupProject() {
@@ -61,8 +66,8 @@ class ScreenshotsPluginTest {
     project.getPluginManager().apply 'com.android.library'
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
-    hasRuntimeDep()
 
+    assertTrue(ScreenshotsPluginForTest.runtimeDepAdded)
     project.evaluate()
   }
 
@@ -85,7 +90,6 @@ class ScreenshotsPluginTest {
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
 
-    hasRuntimeDep()
     project.evaluate()
   }
 
