@@ -71,7 +71,7 @@ class ScreenshotsPluginTest {
     project.evaluate()
   }
 
-  public void hasRuntimeDep() {
+  public void hasRuntimeDep(Project project) {
     def depSet = project.getConfigurations().getByName('androidTestCompile').getAllDependencies()
 
     def found = false
@@ -116,5 +116,15 @@ class ScreenshotsPluginTest {
     def deps = project.tasks.getByPath("pullScreenshots").getDependsOn()
 
     assert deps.contains("packageReleaseAndroidTest")
+  }
+
+  @Test
+  public void testAddRuntimeDep() {
+    project.getPluginManager().apply 'com.android.application'
+
+    def plugin = new ScreenshotsPlugin()
+    plugin.addRuntimeDep(project)
+
+    hasRuntimeDep(project);
   }
 }
