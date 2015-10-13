@@ -89,7 +89,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     if (!implementationVersion) {
       println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
-      implementationVersion = '0.2.1'
+      implementationVersion = '0.2.2'
     }
 
     project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)

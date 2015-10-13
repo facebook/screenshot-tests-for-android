@@ -22,3 +22,10 @@ task installAll(dependsOn: [
 task uploadAllArchives(dependsOn:
                     [":plugin:uploadArchives",
                      ":core:uploadArchives"])
+
+
+// Run all the tests prior to release. Also run integration_test.sh
+task releaseTests(dependsOn:
+                  [":plugin:pyTests",
+                   ":plugin:test",
+                   ":core:connectedAndroidTest"])
