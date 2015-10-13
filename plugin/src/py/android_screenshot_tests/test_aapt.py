@@ -8,7 +8,9 @@ from . import aapt
 import os
 import tempfile
 import shutil
-from os.path import join
+from os.path import join, dirname
+
+CURDIR = dirname(__file__)
 
 class TestAapt(unittest.TestCase):
     def setUp(self):
@@ -68,3 +70,7 @@ class TestAapt(unittest.TestCase):
             self.fail("expected exception")
         except RuntimeError as e:
             self.assertRegexpMatches(e.message, ".*Could not find build-tools.*")
+
+    def test_get_package_name(self):
+        self.assertEquals('com.facebook.testing.screenshot.examples',
+                          aapt.get_package(join(CURDIR, "example.apk")))

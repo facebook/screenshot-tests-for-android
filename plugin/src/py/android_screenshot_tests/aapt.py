@@ -4,7 +4,21 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 import os
+import subprocess
 from os.path import exists, join
+
+def _check_output(args, **kwargs):
+    with open(os.devnull) as f:
+        kwargs['stderr'] = f
+        return subprocess.check_output(args, **kwargs)
+
+def parse_package_line(line):
+    """The line looks like this:
+    package: name='com.facebook.testing.tests' versionCode='1' versionName=''"""
+
+    for word in line.split():
+        if word.startswith("name='"):
+            return word[len("name='"):-1]
 
 def get_aapt_bin():
     """Find the binary for aapt from $ANDROID_SDK"""
