@@ -20,15 +20,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource();
     def jarFile = new File(codeSource.getLocation().toURI().getPath());
 
-    def implementationVersion = getClass().getPackage().getImplementationVersion()
-
-    if (!implementationVersion) {
-      println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
-      implementationVersion = '0.2.1'
-    }
-
     if (project.screenshots.addCompileDeps) {
-      project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
+      addRuntimeDep(project)
     }
 
     project.task('pullScreenshots') << {
@@ -89,5 +82,16 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
   String getTestApkOutput(Project project) {
     return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
+  }
+
+  void addRuntimeDep(Project project) {
+    def implementationVersion = getClass().getPackage().getImplementationVersion()
+
+    if (!implementationVersion) {
+      println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
+      implementationVersion = '0.2.1'
+    }
+
+    project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
   }
 }
