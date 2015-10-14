@@ -150,7 +150,9 @@ class TestPullScreenshots(unittest.TestCase):
             self.assertRegexpMatches(message, ".*3 screenshots.*")
 
     def test_setup_paths(self):
-        pass
+        os.environ['ANDROID_SDK'] = "foobar"
+        pull_screenshots.setup_paths()
+        self.assertRegexpMatches(os.environ['PATH'], '.*:foobar/platform-tools.*')
 
 if __name__ == '__main__':
     unittest.main()
