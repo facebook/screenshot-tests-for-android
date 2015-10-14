@@ -8,6 +8,8 @@ import subprocess
 import tempfile
 from os.path import exists, join
 
+from . import common
+
 def _check_output(args, **kwargs):
     with tempfile.TemporaryFile() as f:
         kwargs['stderr'] = f
@@ -23,10 +25,7 @@ def parse_package_line(line):
 
 def get_aapt_bin():
     """Find the binary for aapt from $ANDROID_SDK"""
-    android_sdk = os.environ.get('ANDROID_SDK') or os.environ.get('ANDROID_HOME')
-
-    if not android_sdk:
-        raise RuntimeError("ANDROID_SDK or ANDROID_HOME needs to be set")
+    android_sdk = common.get_android_sdk()
 
     build_tools = os.path.join(android_sdk, 'build-tools')
 
