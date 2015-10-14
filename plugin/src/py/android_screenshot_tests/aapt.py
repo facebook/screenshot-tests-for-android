@@ -5,10 +5,11 @@ from __future__ import unicode_literals
 
 import os
 import subprocess
+import tempfile
 from os.path import exists, join
 
 def _check_output(args, **kwargs):
-    with open(os.devnull) as f:
+    with tempfile.TemporaryFile() as f:
         kwargs['stderr'] = f
         return subprocess.check_output(args, **kwargs)
 
