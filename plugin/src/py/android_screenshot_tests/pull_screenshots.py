@@ -215,6 +215,7 @@ def setup_paths():
     os.environ['PATH'] = os.environ['PATH'] + ":" + android_home + "/platform-tools/"
 
 def main(argv):
+    setup_paths()
     try:
         opt_list, rest_args = getopt.gnu_getopt(
             argv[1:],
