@@ -210,6 +210,10 @@ def pull_screenshots(process,
         print('  file://%s' % path_to_html)
         print("\n\n")
 
+def setup_paths():
+    android_home = common.get_android_sdk()
+    os.environ['PATH'] = os.environ['PATH'] + ":" + android_home + "/platform-tools/"
+
 def main(argv):
     try:
         opt_list, rest_args = getopt.gnu_getopt(

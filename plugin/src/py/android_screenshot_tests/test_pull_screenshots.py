@@ -63,8 +63,11 @@ class TestPullScreenshots(unittest.TestCase):
         self.tmpdir = None
         self.scripts = mockprocess.MockProc()
         self.oldstdout = sys.stdout
+        self.oldenviron = dict(os.environ)
 
     def tearDown(self):
+        os.environ.clear()
+        os.environ.update(self.oldenviron)
         if self.oldstdout:
             sys.stdout = self.oldstdout
 
@@ -145,6 +148,9 @@ class TestPullScreenshots(unittest.TestCase):
             f.seek(0)
             message = f.read()
             self.assertRegexpMatches(message, ".*3 screenshots.*")
+
+    def test_setup_paths(self):
+        pass
 
 if __name__ == '__main__':
     unittest.main()
