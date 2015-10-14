@@ -29,14 +29,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
         def output = getTestApkOutput(project)
 
         executable = 'python'
+        environment('PYTHONPATH', jarFile)
 
-        // I don't know how to only *add* variables, so I'm just propagating all. :(
-        environment = [
-            'PYTHONPATH': jarFile,
-            'ANDROID_HOME': System.getenv('ANDROID_HOME'),
-            'ANDROID_SDK': System.getenv('ANDROID_SDK'),
-            'PATH': System.getenv('PATH'),
-        ]
         args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
 
         if (recordMode) {
