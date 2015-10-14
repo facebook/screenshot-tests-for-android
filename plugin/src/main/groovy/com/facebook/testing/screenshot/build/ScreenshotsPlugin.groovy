@@ -36,7 +36,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
             'ANDROID_HOME': System.getenv('ANDROID_HOME'),
             'ANDROID_SDK': System.getenv('ANDROID_SDK'),
             'PATH': System.getenv('PATH'),
-            'ANDROID_SERIAL': System.getenv('ANDROID_SERIAL'),
         ]
         args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
 
