@@ -9,6 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
@@ -64,6 +65,10 @@ public class RecordBuilderImpl implements RecordBuilder {
     if (!charsetEncoder.canEncode(name)) {
       throw new IllegalArgumentException(
         "Screenshot names must have only latin characters: " + name);
+    }
+    if (name.contains(File.separator)) {
+      throw new IllegalArgumentException(
+        "Screenshot names cannot contain '" + File.separator + "': " + name);
     }
 
     mName = name;

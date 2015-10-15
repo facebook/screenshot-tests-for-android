@@ -255,6 +255,13 @@ public class ScreenshotImplTest {
       .record();
   }
 
+  @Test(expected=IllegalArgumentException.class)
+  public void testNamesContainingPathSeparatorsResultInException() {
+    mScreenshot.snap(mTextView)
+      .setName("simple/test")
+      .record();
+  }
+
   @Test
   public void testMultipleOfTileSize() throws Throwable {
     measureAndLayout(512, 512);
