@@ -3,7 +3,6 @@ package com.facebook.testing.screenshot.build
 import org.gradle.api.*
 
 class ScreenshotsPluginExtension {
-    def adb = "adb"
     def testApkTarget = "packageDebugAndroidTest"
     def customTestRunner = false
     def recordDir = "screenshots"
@@ -19,6 +18,9 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource();
     def jarFile = new File(codeSource.getLocation().toURI().getPath());
+
+    // We'll figure out the adb in afterEvaluate
+    def adb = null
 
     if (project.screenshots.addCompileDeps) {
       addRuntimeDep(project)
@@ -43,13 +45,14 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     project.task("clearScreenshots") << {
       project.exec {
-        executable = project.screenshots.adb
+        executable = adb
         args = ["shell", "rm", "-rf", "/sdcard/screenshots"]
         ignoreExitValue = true
       }
     }
 
     project.afterEvaluate {
+      adb = project.android.getAdbExe().toString()
       project.task("screenshotTests")
       project.screenshotTests.dependsOn project.clearScreenshots
       project.screenshotTests.dependsOn project.connectedAndroidTest
