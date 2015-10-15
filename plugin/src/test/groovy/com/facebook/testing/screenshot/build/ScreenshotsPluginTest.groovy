@@ -133,14 +133,11 @@ class ScreenshotsPluginTest {
   public void testUsingAdbConfigurationThrowsError() {
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply ScreenshotsPluginForTest
-    project.screenshots.adb = "foobar"
-    setupProject()
 
     try {
-      project.evaluate()
+      project.screenshots.adb = "foobar"
       fail("Expected exception")
-    } catch (ProjectConfigurationException e) {
-      IllegalArgumentException cause = (IllegalArgumentException) e.getCause();
+    } catch (IllegalArgumentException cause) {
       assertThat(cause.getMessage(), containsString("deprecated"));
     }
   }

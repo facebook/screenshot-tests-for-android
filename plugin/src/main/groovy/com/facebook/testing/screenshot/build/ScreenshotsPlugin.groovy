@@ -11,7 +11,9 @@ class ScreenshotsPluginExtension {
     // Deprecated. We automatically detect adb now. Using this will
     // throw an error.
     @Deprecated
-    def adb = null
+    public void setAdb(String path) {
+      throw new IllegalArgumentException("Use of 'adb' is deprecated, we automatically detect it now")
+    }
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
@@ -57,10 +59,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     project.afterEvaluate {
-      if (project.screenshots.adb) {
-        throw new IllegalArgumentException("Use of 'adb' is deprecated, we automatically detect it now")
-      }
-
       adb = project.android.getAdbExe().toString()
       project.task("screenshotTests")
       project.screenshotTests.dependsOn project.clearScreenshots
