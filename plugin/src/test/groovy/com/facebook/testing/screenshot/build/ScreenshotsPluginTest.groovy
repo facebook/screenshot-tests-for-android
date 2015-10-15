@@ -4,6 +4,7 @@ import org.junit.*
 import static org.junit.Assert.*
 import org.gradle.api.*
 import org.gradle.testfixtures.*
+import static org.hamcrest.Matchers.*
 
 class ScreenshotsPluginForTest extends ScreenshotsPlugin {
   static public runtimeDepAdded = false
@@ -126,5 +127,21 @@ class ScreenshotsPluginTest {
     plugin.addRuntimeDep(project)
 
     hasRuntimeDep(project);
+  }
+
+  @Test
+  public void testUsingAdbConfigurationThrowsError() {
+    project.getPluginManager().apply 'com.android.application'
+    project.getPluginManager().apply ScreenshotsPluginForTest
+    project.screenshots.adb = "foobar"
+    setupProject()
+
+    try {
+      project.evaluate()
+      fail("Expected exception")
+    } catch (ProjectConfigurationException e) {
+      IllegalArgumentException cause = (IllegalArgumentException) e.getCause();
+      assertThat(cause.getMessage(), containsString("deprecated"));
+    }
   }
 }
