@@ -4,6 +4,7 @@ import org.gradle.api.*
 
 class ScreenshotsPluginExtension {
     def testApkTarget = "packageDebugAndroidTest"
+    def connectedAndroidTestTarget = "connectedAndroidTest"
     def customTestRunner = false
     def recordDir = "screenshots"
     def addCompileDeps = true
@@ -62,7 +63,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       adb = project.android.getAdbExe().toString()
       project.task("screenshotTests")
       project.screenshotTests.dependsOn project.clearScreenshots
-      project.screenshotTests.dependsOn project.connectedAndroidTest
+      project.screenshotTests.dependsOn project.screenshots.connectedAndroidTestTarget
       project.screenshotTests.dependsOn project.pullScreenshots
 
       project.pullScreenshots.dependsOn project.screenshots.testApkTarget
