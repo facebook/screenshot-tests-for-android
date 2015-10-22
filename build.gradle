@@ -9,7 +9,6 @@ allprojects {
 }
 
 task uploadAllLocal(dependsOn: [
-     ":repoClean",
      ":plugin:uploadArchives",
      ":core:uploadArchives"]) {
 }
