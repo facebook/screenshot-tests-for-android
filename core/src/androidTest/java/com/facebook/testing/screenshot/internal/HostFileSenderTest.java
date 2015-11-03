@@ -9,12 +9,6 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Instrumentation;
 import android.os.Bundle;
 import android.support.test.runner.AndroidJUnit4;
@@ -24,6 +18,13 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 
 /**
@@ -58,9 +59,17 @@ public class HostFileSenderTest {
 
   private File newFile(String filename) throws IOException {
     File file = mFolder.newFile(filename);
-    try (PrintWriter printWriter = new PrintWriter(file)) {
+    PrintWriter printWriter = null;
+
+    try {
+      printWriter = new PrintWriter(file);
       printWriter.append("foobar");
+    } finally {
+      if (printWriter != null) {
+        printWriter.close();
+      }
     }
+
     return file;
   }
 

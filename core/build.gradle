@@ -26,7 +26,7 @@ dependencies {
     compile 'com.google.dexmaker:dexmaker:1.0'
     compile 'com.google.dexmaker:dexmaker-mockito:1.0'
 
-    androidTestCompile 'com.android.support:support-v4:21.0.0'
+    androidTestCompile 'com.android.support:support-v4:23.1.0'
     androidTestCompile 'com.android.support.test:rules:0.3'
     androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
 }
@@ -46,6 +46,7 @@ android {
 
     lintOptions {
         abortOnError false
+        disable 'InvalidPackage'
     }
 
     sourceSets {
