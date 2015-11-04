@@ -9,9 +9,10 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-
 import android.content.Context;
+import android.os.Environment;
+
+import java.io.File;
 
 /**
  * Provides a directory for an Album to store its screenshots in.
@@ -30,7 +31,8 @@ class ScreenshotDirectories {
   private File getSdcardDir(String type) {
 
     String parent = String.format(
-      "/sdcard/screenshots/%s/",
+      "%sscreenshots/%s/",
+      Environment.getExternalStorageDirectory().getPath(),
       mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);

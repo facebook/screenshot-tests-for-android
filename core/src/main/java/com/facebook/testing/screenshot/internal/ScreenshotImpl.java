@@ -9,10 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.concurrent.Callable;
-
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
@@ -24,10 +21,14 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
-import com.facebook.testing.screenshot.ScreenshotRunner;
 import com.facebook.testing.screenshot.WindowAttachment;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.Callable;
 
 /**
  * Implementation for Screenshot class.
@@ -170,6 +171,7 @@ public class ScreenshotImpl {
     }
   }
 
+  @TargetApi(Build.VERSION_CODES.KITKAT)
   private void drawTile(View measuredView, int i, int j, RecordBuilderImpl recordBuilder)
       throws IOException {
     int width = measuredView.getWidth();
@@ -245,11 +247,21 @@ public class ScreenshotImpl {
    */
   public void record(RecordBuilderImpl recordBuilder) {
     storeBitmap(recordBuilder);
-    try (OutputStream viewHieararchyDump = mAlbum.openViewHierarchyFile(recordBuilder.getName())) {
-      mViewHierarchy.deflate(recordBuilder.getView(), viewHieararchyDump);
+    OutputStream viewHierarchyDump = null;
+    try {
+      viewHierarchyDump = mAlbum.openViewHierarchyFile(recordBuilder.getName());
+      mViewHierarchy.deflate(recordBuilder.getView(), viewHierarchyDump);
       mAlbum.addRecord(recordBuilder);
     } catch (IOException e) {
       throw new RuntimeException(e);
+    } finally {
+      if (viewHierarchyDump != null) {
+        try {
+          viewHierarchyDump.close();
+        } catch (IOException e) {
+          Log.e("ScreenshotImpl", "Exception closing viewHierarchyDump", e);
+        }
+      }
     }
   }
 
