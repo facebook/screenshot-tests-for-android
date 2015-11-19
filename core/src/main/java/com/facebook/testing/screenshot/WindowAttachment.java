@@ -9,9 +9,12 @@
 
 package com.facebook.testing.screenshot;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.util.WeakHashMap;
 
 import android.content.Context;
@@ -24,7 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
-import static org.mockito.Mockito.*;
+import com.android.dx.stock.ProxyBuilder;
 
 public abstract class WindowAttachment {
 
@@ -154,12 +157,12 @@ public abstract class WindowAttachment {
         };
 
         values = new Object[] {
-          mock(cIWindowSession),
+          stub(cIWindowSession),
           window,
           display,
           viewRootImpl,
           new Handler(),
-          mock(cCallbacks)
+          stub(cCallbacks)
         };
       }
       else if (Build.VERSION.SDK_INT >= 16) {
@@ -174,11 +177,11 @@ public abstract class WindowAttachment {
         };
 
         values = new Object[] {
-          mock(cIWindowSession),
+          stub(cIWindowSession),
           window,
           viewRootImpl,
           new Handler(),
-          mock(cCallbacks)
+          stub(cCallbacks)
         };
       }
       else if (Build.VERSION.SDK_INT <= 15) {
@@ -190,10 +193,10 @@ public abstract class WindowAttachment {
         };
 
         values = new Object[] {
-          mock(cIWindowSession),
+          stub(cIWindowSession),
           window,
           new Handler(),
-          mock(cCallbacks)
+          stub(cCallbacks)
         };
       }
 
@@ -226,13 +229,48 @@ public abstract class WindowAttachment {
 
   private static Object createIWindow() throws Exception {
     Class cIWindow = Class.forName("android.view.IWindow");
-    Object ret = mock(cIWindow);
 
-    Method m = cIWindow.getMethod("asBinder");
+    // Since IWindow is an interface, I don't need dexmaker for this
+    InvocationHandler handler = new InvocationHandler() {
+        @Override
+        public Object invoke(Object proxy, Method method, Object[] args) {
+          if (method.getName().equals("asBinder")) {
+            return new Binder();
+          }
+          return null;
+        }
+      };
 
-    m.invoke(doReturn(new Binder()).when(ret));
+    Object ret = Proxy.newProxyInstance(
+      cIWindow.getClassLoader(),
+      new Class[] { cIWindow },
+      handler);
 
     return  ret;
+  }
+
+  private static Object stub(Class klass) {
+    try {
+      InvocationHandler handler = new InvocationHandler() {
+          @Override
+          public Object invoke(Object project, Method method, Object[] args) {
+            return null;
+          }
+        };
+
+      if (klass.isInterface()) {
+        return Proxy.newProxyInstance(
+          klass.getClassLoader(),
+          new Class[] { klass },
+          handler);
+      } else {
+        return ProxyBuilder.forClass(klass)
+          .handler(handler)
+          .build();
+      }
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static void setField(Object o, String fieldName, Object value) throws Exception {
