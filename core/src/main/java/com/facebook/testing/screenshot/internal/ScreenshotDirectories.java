@@ -10,6 +10,7 @@
 package com.facebook.testing.screenshot.internal;
 
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.os.Environment;
 
 import java.io.File;
@@ -25,14 +26,21 @@ class ScreenshotDirectories {
   }
 
   public File get(String type) {
+    checkPermissions();
     return getSdcardDir(type);
+  }
+
+  private void checkPermissions() {
+    int res = mContext.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE");
+    if (res != PackageManager.PERMISSION_GRANTED) {
+      throw new RuntimeException("We need WRITE_EXTERNAL_STORAGE permission for screenshot tests");
+    }
   }
 
   private File getSdcardDir(String type) {
 
     String parent = String.format(
-      "%sscreenshots/%s/",
-      Environment.getExternalStorageDirectory().getPath(),
+      "/sdcard/screenshots/%s/",
       mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
