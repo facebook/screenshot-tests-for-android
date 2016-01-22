@@ -59,6 +59,8 @@ public class ScreenshotImpl {
   private Canvas mCanvas = null;
   private ViewHierarchy mViewHierarchy;
   private boolean mEnableBitmapReconfigure = (Build.VERSION.SDK_INT >= 19);
+  /** Flag for dumping metadata to dump.xml when taking screenshots */
+  private boolean mShouldDumpMetadata = true;
 
   public void setTileSize(int tileSize) {
     mTileSize = tileSize;
@@ -77,9 +79,11 @@ public class ScreenshotImpl {
 
   /* package */ ScreenshotImpl(
       Album album,
-      ViewHierarchy viewHierarchy) {
+      ViewHierarchy viewHierarchy,
+      boolean shouldDumpMetadata) {
     mAlbum = album;
     mViewHierarchy = viewHierarchy;
+    mShouldDumpMetadata = shouldDumpMetadata;
   }
 
   /**
@@ -236,10 +240,10 @@ public class ScreenshotImpl {
       Context context,
       Bundle args,
       HostFileSender hostFileSender) {
-    String mode = args.getString("screenshot_mode");
+    boolean dump = args.getString("no_dump") == null;
     Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
     album.cleanup();
-    return new ScreenshotImpl(album, new ViewHierarchy());
+    return new ScreenshotImpl(album, new ViewHierarchy(), dump);
   }
 
   /**
@@ -247,6 +251,9 @@ public class ScreenshotImpl {
    */
   public void record(RecordBuilderImpl recordBuilder) {
     storeBitmap(recordBuilder);
+    if (!mShouldDumpMetadata) {
+      return;
+    }
     OutputStream viewHierarchyDump = null;
     try {
       viewHierarchyDump = mAlbum.openViewHierarchyFile(recordBuilder.getName());

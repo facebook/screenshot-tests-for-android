@@ -5,3 +5,6 @@
 /build
 repo
 examples/**/build
+.idea/
+local.properties
+*.iml
