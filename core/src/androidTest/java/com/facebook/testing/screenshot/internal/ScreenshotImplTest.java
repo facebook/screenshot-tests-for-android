@@ -9,22 +9,13 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.IllegalArgumentException;
-import java.lang.StringBuilder;
-import java.util.Locale;
-
 import android.app.Instrumentation;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
@@ -34,11 +25,26 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import junit.framework.Assert;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link ScreenshotImpl}
@@ -76,7 +82,7 @@ public class ScreenshotImplTest {
         }
       };
     // For most of the tests, we send a null album to verify against
-    mScreenshot = new ScreenshotImpl(mAlbumImpl, mViewHierarchy);
+    mScreenshot = new ScreenshotImpl(mAlbumImpl, mViewHierarchy, true);
   }
 
   @After
@@ -123,6 +129,32 @@ public class ScreenshotImplTest {
     String metadataContents = fileToString(metadata);
 
     MoreAsserts.assertContainsRegex("blahblah.*.xml", metadataContents);
+  }
+
+  @Test
+  public void testRecordBuilderImplSkipsHierarchyDumpFile() throws Throwable {
+    Bundle noDumpArgs = new Bundle();
+    noDumpArgs.putString("no_dump", "true");
+
+    Registry registry = Registry.getRegistry();
+    Bundle oldArguments = registry.arguments;
+    registry.arguments = noDumpArgs;
+    try {
+      mScreenshot = ScreenshotImpl.getInstance();
+      RecordBuilderImpl rb = mScreenshot.snap(mTextView)
+              .setName("blahblah");
+
+      rb.record();
+      mScreenshot.flush();
+
+      File dumpFile = new File(
+              mScreenshotDirectories.get("verify-in-test"),
+              "blahblah_dump.xml");
+
+      assertFalse(dumpFile.exists());
+    } finally {
+      registry.arguments = oldArguments;
+    }
   }
 
   private String fileToString(File file) {
