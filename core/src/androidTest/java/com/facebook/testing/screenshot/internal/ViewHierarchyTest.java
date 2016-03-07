@@ -28,6 +28,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.facebook.testing.screenshot.ViewHelpers;
+import com.facebook.testing.screenshot.plugin.PluginRegistry;
 import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
 import com.facebook.testing.screenshot.test.R;
 
@@ -160,6 +161,8 @@ public class ViewHierarchyTest extends InstrumentationTestCase {
 
   @Override
   public void tearDown() throws Exception {
+    PluginRegistry.removePlugin(mDumpTextPlugin);
+    PluginRegistry.removePlugin(mMyViewDumpPlugin);
     super.tearDown();
   }
 
@@ -216,7 +219,7 @@ public class ViewHierarchyTest extends InstrumentationTestCase {
       .setExactHeightPx(1000)
       .setExactWidthPx(20000)
       .layout();
-    mViewHierarchy.addPlugin(new MyViewDumpPlugin());
+    PluginRegistry.addPlugin(mMyViewDumpPlugin);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     mViewHierarchy.deflate(mView, os);
 
@@ -235,7 +238,7 @@ public class ViewHierarchyTest extends InstrumentationTestCase {
       .setExactHeightPx(1000)
       .setExactWidthPx(20000)
       .layout();
-    mViewHierarchy.addPlugin(new DumpText());
+    PluginRegistry.addPlugin(mDumpTextPlugin);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     mViewHierarchy.deflate(mView, os);
 
@@ -275,19 +278,19 @@ public class ViewHierarchyTest extends InstrumentationTestCase {
     }
   }
 
-  class MyViewDumpPlugin implements ViewDumpPlugin {
-    public void dump(View view, Map<String, String> output) {
-      output.put("foo", "bar");
-    }
-  }
-
-  class DumpText implements ViewDumpPlugin {
-    public void dump(View view, Map<String, String> output) {
-      if (view instanceof TextView) {
-        output.put("text", ((TextView) view).getText().toString());
+  private ViewDumpPlugin mMyViewDumpPlugin = new ViewDumpPlugin() {
+      public void dump(View view, Map<String, String> output) {
+        output.put("foo", "bar");
       }
-    }
-  }
+    };
+
+  private ViewDumpPlugin mDumpTextPlugin = new ViewDumpPlugin() {
+      public void dump(View view, Map<String, String> output) {
+        if (view instanceof TextView) {
+          output.put("text", ((TextView) view).getText().toString());
+        }
+      }
+    };
 
   private String getExtraValue(Element parent, String tagName) {
     NodeList nodeList = parent.getChildNodes();

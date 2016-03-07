@@ -19,9 +19,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import android.graphics.Point;
@@ -29,7 +27,9 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.testing.screenshot.plugin.PluginRegistry;
 import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -37,8 +37,6 @@ import org.w3c.dom.Element;
  * Dumps information about the view hierarchy.
  */
 public class ViewHierarchy {
-  private List<ViewDumpPlugin> mPlugins = new ArrayList<>();
-
   /**
    * Creates an XML dump for the view into given OutputStream
    *
@@ -56,13 +54,6 @@ public class ViewHierarchy {
     } catch (TransformerException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * Add a plugin for dumping more information out of views.
-   */
-  public void addPlugin(ViewDumpPlugin plugin) {
-    mPlugins.add(plugin);
   }
 
   private Document deflateToDocument(View view) {
@@ -97,7 +88,7 @@ public class ViewHierarchy {
     addTextNode(el, "bottom", String.valueOf(rect.bottom));
 
     Map<String, String> extraValues = new HashMap<>();
-    for (ViewDumpPlugin plugin : mPlugins) {
+    for (ViewDumpPlugin plugin : PluginRegistry.getPlugins()) {
       plugin.dump(view, extraValues);
     }
 
