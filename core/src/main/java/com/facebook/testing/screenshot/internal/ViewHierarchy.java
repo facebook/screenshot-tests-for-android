@@ -19,12 +19,17 @@ import javax.xml.transform.stream.StreamResult;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -32,6 +37,8 @@ import org.w3c.dom.Element;
  * Dumps information about the view hierarchy.
  */
 public class ViewHierarchy {
+  private List<ViewDumpPlugin> mPlugins = new ArrayList<>();
+
   /**
    * Creates an XML dump for the view into given OutputStream
    *
@@ -49,6 +56,13 @@ public class ViewHierarchy {
     } catch (TransformerException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Add a plugin for dumping more information out of views.
+   */
+  public void addPlugin(ViewDumpPlugin plugin) {
+    mPlugins.add(plugin);
   }
 
   private Document deflateToDocument(View view) {
@@ -82,6 +96,15 @@ public class ViewHierarchy {
     addTextNode(el, "right", String.valueOf(rect.right));
     addTextNode(el, "bottom", String.valueOf(rect.bottom));
 
+    Map<String, String> extraValues = new HashMap<>();
+    for (ViewDumpPlugin plugin : mPlugins) {
+      plugin.dump(view, extraValues);
+    }
+
+    for (Map.Entry<String, String> extraValue : extraValues.entrySet()) {
+      addExtraValue(el, extraValue.getKey(), extraValue.getValue());
+    }
+
     Element children = doc.createElement("children");
     el.appendChild(children);
 
@@ -94,6 +117,13 @@ public class ViewHierarchy {
       }
     }
     return el;
+  }
+
+  private void addExtraValue(Element parent, String name, String value) {
+    Element elem = parent.getOwnerDocument().createElement("extra-value");
+    elem.setAttribute("key", name);
+    elem.setTextContent(value);
+    parent.appendChild(elem);
   }
 
   private void addTextNode(Element parent, String name, String value) {

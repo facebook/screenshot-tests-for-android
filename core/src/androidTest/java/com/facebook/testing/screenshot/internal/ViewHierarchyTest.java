@@ -18,14 +18,17 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Rect;
 import android.test.InstrumentationTestCase;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.facebook.testing.screenshot.ViewHelpers;
+import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
 import com.facebook.testing.screenshot.test.R;
 
 import org.w3c.dom.Document;
@@ -208,4 +211,93 @@ public class ViewHierarchyTest extends InstrumentationTestCase {
                  node.getChild(1).getAbsoluteRect().top);
   }
 
+  public void testPluginDumps() throws Throwable {
+    ViewHelpers.setupView(mView)
+      .setExactHeightPx(1000)
+      .setExactWidthPx(20000)
+      .layout();
+    mViewHierarchy.addPlugin(new MyViewDumpPlugin());
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    mViewHierarchy.deflate(mView, os);
+
+
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+
+    Document doc = documentBuilder.parse(new ByteArrayInputStream(os.toByteArray()));
+    Element root = (Element) doc.getFirstChild();
+
+    assertEquals("bar", getExtraValue(root, "foo"));
+  }
+
+  public void testPluginDumpsRecursively() throws Throwable {
+    ViewHelpers.setupView(mView)
+      .setExactHeightPx(1000)
+      .setExactWidthPx(20000)
+      .layout();
+    mViewHierarchy.addPlugin(new DumpText());
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    mViewHierarchy.deflate(mView, os);
+
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilder documentBuilder = factory.newDocumentBuilder();
+
+    Document doc = documentBuilder.parse(new ByteArrayInputStream(os.toByteArray()));
+    Element root = (Element) doc.getFirstChild();
+
+    List<String> allText = new ArrayList<>();
+    getAllText(root, allText);
+    List<String> expected = new ArrayList<>();
+    expected.add("foobar");
+    expected.add("foobar2");
+    expected.add("foobar3");
+    expected.add("foobar4");
+
+    assertEquals(expected, allText);
+  }
+
+  private void getAllText(Element el, List<String> output) {
+    String text = getExtraValue(el, "text");
+    if (text != null) {
+      output.add(text);
+    }
+
+    NodeList children = el.getChildNodes();
+    for (int i = 0; i < children.getLength(); i++) {
+      Element e = (Element) children.item(i);
+      if (e.getNodeName().equals("children")) {
+        NodeList actualChildren = e.getChildNodes();
+        for (int j = 0; j < actualChildren.getLength(); j++) {
+          Element childEl = (Element) actualChildren.item(j);
+          getAllText(childEl, output);
+        }
+      }
+    }
+  }
+
+  class MyViewDumpPlugin implements ViewDumpPlugin {
+    public void dump(View view, Map<String, String> output) {
+      output.put("foo", "bar");
+    }
+  }
+
+  class DumpText implements ViewDumpPlugin {
+    public void dump(View view, Map<String, String> output) {
+      if (view instanceof TextView) {
+        output.put("text", ((TextView) view).getText().toString());
+      }
+    }
+  }
+
+  private String getExtraValue(Element parent, String tagName) {
+    NodeList nodeList = parent.getChildNodes();
+    for (int i = 0; i < nodeList.getLength(); i++) {
+      Element el = (Element)nodeList.item(i);
+      if (el.getAttribute("key").equals(tagName)) {
+        return el.getTextContent();
+      }
+    }
+
+    return null;
+  }
 }
