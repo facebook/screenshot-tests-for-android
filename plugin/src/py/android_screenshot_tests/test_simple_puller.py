@@ -23,11 +23,12 @@ class TestSimplePuller(unittest.TestCase):
     def setUp(self):
         self.puller = SimplePuller()
         self.serial = subprocess.check_output(
-            [get_adb(), "get-serialno"]).strip()
+            [get_adb(), "get-serialno"]).decode("utf-8").strip()
 
+        self.sdcard = self.puller.get_external_data_dir()
         subprocess.check_call([
             get_adb(), "shell",
-            "echo foobar > /sdcard/blah"])
+            "echo foobar > %s/blah" % self.sdcard])
 
     def tearDown(self):
         subprocess.check_call([
@@ -35,21 +36,22 @@ class TestSimplePuller(unittest.TestCase):
 
     def test_pull_integration(self):
         with tempfile.NamedTemporaryFile() as f:
-            self.puller.pull("/sdcard/blah", f.name)
+            self.puller.pull("%s/blah" % self.sdcard, f.name)
 
             with open(f.name, "r") as f2:
                 self.assertEquals("foobar\n", f2.read())
 
     def test_file_exists(self):
-        self.assertTrue(self.puller.remote_file_exists("/sdcard/blah"))
-        self.assertFalse(self.puller.remote_file_exists("/sdcard/sdfdsfdf"))
+        self.assertTrue(self.puller.remote_file_exists("%s/blah" % self.sdcard))
+        self.assertFalse(self.puller.remote_file_exists("%s/sdfdsfdf" % self.sdcard))
 
     def test_pull_with_filter(self):
         self.puller = SimplePuller(["-s", self.serial])
         self.test_pull_integration()
 
     def test_get_external_data_dir(self):
-        self.assertRegexpMatches(self.puller.get_external_data_dir(), '.*sdcard.*')
+        possible_answers = ['/sdcard', '/storage/sdcard']
+        self.assertIn(self.puller.get_external_data_dir(), possible_answers)
 
 if __name__ == '__main__':
     unittest.main()

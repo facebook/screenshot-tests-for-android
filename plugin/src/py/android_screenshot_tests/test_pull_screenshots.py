@@ -20,7 +20,10 @@ from . import pull_screenshots
 import tempfile
 import shutil
 
-from mock import *
+if sys.version_info >= (3,):
+    from unittest.mock import *
+else:
+    from mock import *
 
 from mockproc import mockprocess
 

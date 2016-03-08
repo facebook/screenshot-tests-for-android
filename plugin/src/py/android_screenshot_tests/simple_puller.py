@@ -26,7 +26,7 @@ class SimplePuller:
         output = subprocess.check_output(
             [get_adb()] + self._adb_args + ["shell",
                                         "test -e %s && echo EXISTS" % src])
-        return "EXISTS" in output
+        return "EXISTS" in output.decode('utf-8')
 
     def pull(self, src, dest):
         subprocess.check_output(
@@ -36,4 +36,4 @@ class SimplePuller:
     def get_external_data_dir(self):
         output = subprocess.check_output(
             [get_adb()] + self._adb_args + ["shell", "echo", "$EXTERNAL_STORAGE"])
-        return output.strip().split()[-1]
+        return output.decode('utf-8').strip().split()[-1]

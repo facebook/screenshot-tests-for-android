@@ -17,7 +17,7 @@ from . import common
 import shutil
 import tempfile
 
-class VerifyError(StandardError):
+class VerifyError(Exception):
     pass
 
 class Recorder:
