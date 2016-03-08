@@ -28,7 +28,6 @@ from . import common
 from os.path import join
 from os.path import abspath
 
-ROOT_SCREENSHOT_DIR = '/sdcard/screenshots'
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
 
 def usage():
@@ -138,7 +137,8 @@ def _copy_via_zip(src_zip, zip_path, dest):
         _copy_via_zip(head, tail if not zip_path else (tail + "/" + zip_path), dest)
 
 def pull_metadata(package, dir, adb_puller):
-    metadata_file = '%s/%s/screenshots-default/metadata.xml' % (ROOT_SCREENSHOT_DIR, package)
+    root_screenshot_dir = adb_puller.get_external_data_dir() + "/screenshots"
+    metadata_file = '%s/%s/screenshots-default/metadata.xml' % (root_screenshot_dir, package)
     old_metadata_file = '%s/%s/app_screenshots-default/metadata.xml' % (OLD_ROOT_SCREENSHOT_DIR, package)
 
     if adb_puller.remote_file_exists(metadata_file):

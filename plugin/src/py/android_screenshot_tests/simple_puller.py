@@ -31,3 +31,8 @@ class SimplePuller:
         subprocess.check_output(
             ["adb"] + self._adb_args + ["pull", src, dest],
             stderr=subprocess.STDOUT)
+
+    def get_external_data_dir(self):
+        output = subprocess.check_output(
+            ["adb"] + self._adb_args + ["shell", "echo", "$EXTERNAL_STORAGE"])
+        return output.strip().split()[-1]

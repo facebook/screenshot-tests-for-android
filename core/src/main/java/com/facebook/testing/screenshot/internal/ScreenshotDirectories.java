@@ -40,7 +40,8 @@ class ScreenshotDirectories {
   private File getSdcardDir(String type) {
 
     String parent = String.format(
-      "/sdcard/screenshots/%s/",
+      "%s/screenshots/%s/",
+      Environment.getExternalStorageDirectory().getPath(),
       mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);

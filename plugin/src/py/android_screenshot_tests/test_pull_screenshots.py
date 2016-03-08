@@ -36,6 +36,9 @@ class AdbPuller:
         src = CURRENT_DIR + "/fixtures/" + src
         return os.path.exists(src)
 
+    def get_external_data_dir(self):
+        return "/sdcard"
+
 class TestAdbHelpers(unittest.TestCase):
     def setUp(self):
         self.tmpdir = tempfile.mkdtemp(prefix="screenshots")

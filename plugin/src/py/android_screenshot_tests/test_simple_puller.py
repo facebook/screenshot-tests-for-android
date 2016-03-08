@@ -47,5 +47,8 @@ class TestSimplePuller(unittest.TestCase):
         self.puller = SimplePuller(["-s", self.serial])
         self.test_pull_integration()
 
+    def test_get_external_data_dir(self):
+        self.assertEquals("/sdcard", self.puller.get_external_data_dir())
+
 if __name__ == '__main__':
     unittest.main()
