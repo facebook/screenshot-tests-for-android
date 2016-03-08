@@ -13,7 +13,7 @@ import unittest
 import shutil
 import os
 from os.path import join, exists
-from recorder import Recorder, VerifyError
+from .recorder import Recorder, VerifyError
 
 from PIL import Image
 

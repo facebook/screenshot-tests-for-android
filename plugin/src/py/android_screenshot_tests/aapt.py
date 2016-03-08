@@ -34,7 +34,7 @@ def get_aapt_bin():
 
     for v in versions:
         aapt = join(build_tools, v, "aapt")
-        if exists(aapt):
+        if exists(aapt) or exists(aapt + ".exe"):
             return aapt
 
     raise RuntimeError("Could not find build-tools in " + android_sdk)

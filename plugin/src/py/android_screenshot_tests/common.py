@@ -25,3 +25,6 @@ def get_android_sdk():
         raise RuntimeError("ANDROID_SDK or ANDROID_HOME needs to be set")
 
     return os.path.expanduser(android_sdk)
+
+def get_adb():
+    return os.path.join(get_android_sdk(), "platform-tools", "adb")

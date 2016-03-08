@@ -221,7 +221,7 @@ def main(argv):
             argv[1:],
             "eds:",
             ["generate-png=", "filter-name-regex=", "apk", "record=", "verify="])
-    except getopt.GetoptError, err:
+    except getopt.GetoptError as err:
         usage()
         return 2
 

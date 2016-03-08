@@ -27,6 +27,9 @@ class TestCommon(unittest.TestCase):
         self.assertEquals("/tmp/foo", common.get_android_sdk())
 
     def test_tilde_is_expanded(self):
+        if os.name == "nt":
+            return
+
         os.environ['ANDROID_SDK'] = '~/foobar'
 
         home = os.environ['HOME']

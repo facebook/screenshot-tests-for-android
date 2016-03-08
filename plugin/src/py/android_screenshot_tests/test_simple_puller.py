@@ -17,20 +17,21 @@ import unittest
 from .simple_puller import SimplePuller
 import subprocess
 import tempfile
+from .common import get_adb
 
 class TestSimplePuller(unittest.TestCase):
     def setUp(self):
         self.puller = SimplePuller()
         self.serial = subprocess.check_output(
-            ["adb", "get-serialno"]).strip()
+            [get_adb(), "get-serialno"]).strip()
 
         subprocess.check_call([
-            "adb", "shell",
+            get_adb(), "shell",
             "echo foobar > /sdcard/blah"])
 
     def tearDown(self):
         subprocess.check_call([
-            "adb", "shell", "rm", "-f", "/sdcard/blah"])
+            get_adb(), "shell", "rm", "-f", "/sdcard/blah"])
 
     def test_pull_integration(self):
         with tempfile.NamedTemporaryFile() as f:
@@ -48,7 +49,7 @@ class TestSimplePuller(unittest.TestCase):
         self.test_pull_integration()
 
     def test_get_external_data_dir(self):
-        self.assertEquals("/sdcard", self.puller.get_external_data_dir())
+        self.assertRegexpMatches(self.puller.get_external_data_dir(), '.*sdcard.*')
 
 if __name__ == '__main__':
     unittest.main()
