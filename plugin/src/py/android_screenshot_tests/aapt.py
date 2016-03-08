@@ -13,7 +13,7 @@ from . import common
 def _check_output(args, **kwargs):
     with tempfile.TemporaryFile() as f:
         kwargs['stderr'] = f
-        return subprocess.check_output(args, **kwargs)
+        return subprocess.check_output(args, **kwargs).decode('utf-8')
 
 def parse_package_line(line):
     """The line looks like this:
