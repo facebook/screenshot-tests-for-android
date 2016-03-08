@@ -62,7 +62,8 @@ class TestAdbHelpers(unittest.TestCase):
 
 class TestPullScreenshots(unittest.TestCase):
     def setUp(self):
-        self.output_file = tempfile.mkstemp(prefix="final_screenshot", suffix=".png")[1]
+        fd, self.output_file = tempfile.mkstemp(prefix="final_screenshot", suffix=".png")
+        os.close(fd)
         os.unlink(self.output_file)
         self.tmpdir = None
         self.oldstdout = sys.stdout
