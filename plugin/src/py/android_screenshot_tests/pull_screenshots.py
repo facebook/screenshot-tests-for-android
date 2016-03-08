@@ -83,9 +83,9 @@ def generate_html(dir):
 
 def write_image(dir, html, screenshot):
     html.write('<table class="img-wrapper">')
-    for y in xrange(int(screenshot.find('tile_height').text)):
+    for y in range(int(screenshot.find('tile_height').text)):
         html.write('<tr>')
-        for x in xrange(int(screenshot.find('tile_width').text)):
+        for x in range(int(screenshot.find('tile_width').text)):
             html.write('<td>')
             image_file = "./" + common.get_image_file_name(screenshot.find('name').text, x, y)
 
