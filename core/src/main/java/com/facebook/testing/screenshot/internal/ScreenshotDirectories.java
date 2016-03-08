@@ -38,16 +38,15 @@ class ScreenshotDirectories {
   }
 
   private File getSdcardDir(String type) {
+    File externalStorage = Environment.getExternalStorageDirectory();
 
-    String parent = String.format(
-      "/sdcard/screenshots/%s/",
-      mContext.getPackageName());
+    String parent = String.format("/screenshots/%s/", mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
 
-    new File(parent).mkdirs();
+    new File(externalStorage, parent).mkdirs();
 
-    File dir = new File(child);
+    File dir = new File(externalStorage, child);
     dir.mkdir();
 
     if (!dir.exists()) {
