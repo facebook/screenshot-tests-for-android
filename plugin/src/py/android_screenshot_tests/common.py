@@ -24,4 +24,4 @@ def get_android_sdk():
     if not android_sdk:
         raise RuntimeError("ANDROID_SDK or ANDROID_HOME needs to be set")
 
-    return android_sdk
+    return os.path.expanduser(android_sdk)
