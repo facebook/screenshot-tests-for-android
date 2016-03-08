@@ -11,6 +11,7 @@ package com.facebook.testing.screenshot.internal;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
@@ -33,7 +34,12 @@ class ScreenshotDirectories {
   private void checkPermissions() {
     int res = mContext.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE");
     if (res != PackageManager.PERMISSION_GRANTED) {
-      throw new RuntimeException("We need WRITE_EXTERNAL_STORAGE permission for screenshot tests");
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        throw new RuntimeException("This does not currently work on API 23+, see "
+            + "https://github.com/facebook/screenshot-tests-for-android/issues/16 for details.");
+      } else {
+        throw new RuntimeException("We need WRITE_EXTERNAL_STORAGE permission for screenshot tests");
+      }
     }
   }
 
