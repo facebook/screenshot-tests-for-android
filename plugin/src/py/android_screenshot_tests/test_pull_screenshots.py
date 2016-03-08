@@ -25,8 +25,6 @@ if sys.version_info >= (3,):
 else:
     from mock import *
 
-from mockproc import mockprocess
-
 TESTING_PACKAGE = 'com.foo'
 CURRENT_DIR = os.path.dirname(__file__)
 
@@ -67,7 +65,6 @@ class TestPullScreenshots(unittest.TestCase):
         self.output_file = tempfile.mkstemp(prefix="final_screenshot", suffix=".png")[1]
         os.unlink(self.output_file)
         self.tmpdir = None
-        self.scripts = mockprocess.MockProc()
         self.oldstdout = sys.stdout
         self.oldenviron = dict(os.environ)
 
