@@ -140,10 +140,11 @@ class TestPullScreenshots(unittest.TestCase):
 
     def test_copy_file_inside_zip(self):
         with tempfile.NamedTemporaryFile() as f:
+            f.close()
             pull_screenshots._copy_file(CURRENT_DIR + '/fixtures/dummy.zip/AndroidManifest.xml',
                                         f.name)
-
-            assertRegex(self, f.read().decode('utf-8'), '.*manifest.*')
+            with open(f.name, "rt") as ff:
+                assertRegex(self, ff.read(), '.*manifest.*')
 
     def test_summary_happyPath(self):
         with tempfile.NamedTemporaryFile(mode='w+t') as f:
