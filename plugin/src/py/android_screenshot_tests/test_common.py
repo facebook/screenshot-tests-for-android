@@ -11,6 +11,7 @@
 import unittest
 import os
 from . import common
+import subprocess
 
 class TestCommon(unittest.TestCase):
     def setUp(self):
@@ -32,3 +33,6 @@ class TestCommon(unittest.TestCase):
         home = os.environ['HOME']
 
         self.assertEqual(os.path.join(home, 'foobar'), common.get_android_sdk())
+
+    def test_get_adb_can_run_in_subprocess(self):
+        subprocess.check_call(common.get_adb(), "devices")
