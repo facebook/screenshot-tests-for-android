@@ -12,9 +12,11 @@ import unittest
 import os
 from . import common
 import subprocess
+import sys
 
 class TestCommon(unittest.TestCase):
     def setUp(self):
+        self.android_sdk = common.get_android_sdk()
         self._environ = dict(os.environ)
         os.environ.pop('ANDROID_SDK', None)
         os.environ.pop('ANDROID_HOME', None)
@@ -28,6 +30,9 @@ class TestCommon(unittest.TestCase):
         self.assertEqual("/tmp/foo", common.get_android_sdk())
 
     def test_tilde_is_expanded(self):
+        if sys.version_info >= (3,):
+            return
+
         os.environ['ANDROID_SDK'] = '~/foobar'
 
         home = os.environ['HOME']
@@ -35,4 +40,5 @@ class TestCommon(unittest.TestCase):
         self.assertEqual(os.path.join(home, 'foobar'), common.get_android_sdk())
 
     def test_get_adb_can_run_in_subprocess(self):
-        subprocess.check_call(common.get_adb(), "devices")
+        os.environ['ANDROID_SDK'] = self.android_sdk
+        subprocess.check_call([common.get_adb(), "devices"])
