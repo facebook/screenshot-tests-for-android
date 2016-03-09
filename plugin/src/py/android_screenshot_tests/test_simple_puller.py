@@ -49,7 +49,8 @@ class TestSimplePuller(unittest.TestCase):
         self.test_pull_integration()
 
     def test_get_external_data_dir(self):
-        self.assertEqual("/sdcard", self.puller.get_external_data_dir())
+        accepted_dirs = ['/sdcard', '/storage/sdcard']
+        self.assertIn(self.puller.get_external_data_dir(), accepted_dirs)
 
 if __name__ == '__main__':
     unittest.main()
