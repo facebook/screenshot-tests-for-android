@@ -18,6 +18,8 @@ class TestAapt(unittest.TestCase):
         os.oldenviron = dict(os.environ)
         self.android_sdk = tempfile.mkdtemp()
         os.mkdir(join(self.android_sdk, "build-tools"))
+        os.environ['ANDROID_SDK'] = os.environ.get('ANDROID_SDK') or os.environ.get('ANDROID_HOME')
+        os.environ.pop('ANDROID_HOME', None)
 
     def tearDown(self):
         os.environ.clear()
@@ -54,8 +56,7 @@ class TestAapt(unittest.TestCase):
         self.assertEqual(join(self.android_sdk, "build-tools", "22.0", "aapt"), aapt.get_aapt_bin())
 
     def test_no_android_sdk(self):
-        del os.environ['ANDROID_SDK']
-        del os.environ['ANDROID_HOME']
+        os.environ.pop('ANDROID_SDK')
 
         try:
             aapt.get_aapt_bin()
