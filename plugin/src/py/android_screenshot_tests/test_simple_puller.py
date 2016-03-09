@@ -35,6 +35,7 @@ class TestSimplePuller(unittest.TestCase):
 
     def test_pull_integration(self):
         with tempfile.NamedTemporaryFile() as f:
+            f.close()
             self.puller.pull("/sdcard/blah", f.name)
 
             with open(f.name, "r") as f2:
