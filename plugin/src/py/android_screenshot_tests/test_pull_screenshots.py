@@ -15,7 +15,6 @@ from __future__ import unicode_literals
 import unittest
 import os
 import sys
-import subprocess
 from . import pull_screenshots
 import tempfile
 import shutil
@@ -131,14 +130,19 @@ class TestPullScreenshots(unittest.TestCase):
     #         self.assertTrue(os.path.exists(self.output_file))
 
     def test_copy_file_zip_aware_real_file(self):
-        with tempfile.NamedTemporaryFile(mode="w+t") as f, tempfile.NamedTemporaryFile(mode="w+t") as f2:
-            f.write("foobar")
-            f.close()
-            f2.close()
-            pull_screenshots._copy_file(f.name, f2.name)
+        self.tmpdir = tempfile.mkdtemp()
 
-            with open(f2.name, 'w+t') as ff:
-                self.assertEqual("foobar", ff.read())
+        f1 = os.path.join(self.tmpdir, "foo")
+        f2 = os.path.join(self.tmpdir, "bar")
+
+        with open(f1, "wt") as f:
+            f.write("foobar")
+            f.flush()
+
+        pull_screenshots._copy_file(f1, f2)
+
+        with open(f2, 'rt') as f:
+            self.assertEqual("foobar", f.read())
 
     def test_copy_file_inside_zip(self):
         with tempfile.NamedTemporaryFile() as f:
