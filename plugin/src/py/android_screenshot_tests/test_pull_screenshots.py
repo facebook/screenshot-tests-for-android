@@ -133,10 +133,12 @@ class TestPullScreenshots(unittest.TestCase):
     def test_copy_file_zip_aware_real_file(self):
         with tempfile.NamedTemporaryFile(mode="w+t") as f, tempfile.NamedTemporaryFile(mode="w+t") as f2:
             f.write("foobar")
-            f.flush()
+            f.close()
+            f2.close()
             pull_screenshots._copy_file(f.name, f2.name)
 
-            self.assertEqual("foobar", f2.read())
+            with open(f2.name, 'w+t') as ff:
+                self.assertEqual("foobar", ff.read())
 
     def test_copy_file_inside_zip(self):
         with tempfile.NamedTemporaryFile() as f:

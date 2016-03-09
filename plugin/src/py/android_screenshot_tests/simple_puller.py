@@ -30,7 +30,7 @@ class SimplePuller:
         return "EXISTS" in output
 
     def pull(self, src, dest):
-        common.check_output(
+        subprocess.check_call(
             [get_adb()] + self._adb_args + ["pull", src, dest],
             stderr=subprocess.STDOUT)
 

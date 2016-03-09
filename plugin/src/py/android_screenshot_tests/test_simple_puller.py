@@ -18,28 +18,32 @@ from .simple_puller import SimplePuller
 import subprocess
 import tempfile
 from .common import get_adb
+import shutil
+import os
+from . import common
 
 class TestSimplePuller(unittest.TestCase):
     def setUp(self):
         self.puller = SimplePuller()
-        self.serial = subprocess.check_output(
+        self.serial = common.check_output(
             [get_adb(), "get-serialno"]).strip()
 
         subprocess.check_call([
             get_adb(), "shell",
             "echo foobar > /sdcard/blah"])
+        self.tmpdir = tempfile.mkdtemp()
 
     def tearDown(self):
+        shutil.rmtree(self.tmpdir)
         subprocess.check_call([
             get_adb(), "shell", "rm", "-f", "/sdcard/blah"])
 
     def test_pull_integration(self):
-        with tempfile.NamedTemporaryFile() as f:
-            f.close()
-            self.puller.pull("/sdcard/blah", f.name)
+        file = os.path.join(self.tmpdir, "foo")
+        self.puller.pull("/sdcard/blah", file)
 
-            with open(f.name, "r") as f2:
-                self.assertEqual("foobar\n", f2.read())
+        with open(file, "rt") as f2:
+            self.assertEqual("foobar\n", f2.read())
 
     def test_file_exists(self):
         self.assertTrue(self.puller.remote_file_exists("/sdcard/blah"))
