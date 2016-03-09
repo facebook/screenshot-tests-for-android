@@ -17,20 +17,21 @@ import unittest
 from .simple_puller import SimplePuller
 import subprocess
 import tempfile
+from .common import get_adb
 
 class TestSimplePuller(unittest.TestCase):
     def setUp(self):
         self.puller = SimplePuller()
         self.serial = subprocess.check_output(
-            ["adb", "get-serialno"]).strip()
+            [get_adb(), "get-serialno"]).strip()
 
         subprocess.check_call([
-            "adb", "shell",
+            get_adb(), "shell",
             "echo foobar > /sdcard/blah"])
 
     def tearDown(self):
         subprocess.check_call([
-            "adb", "shell", "rm", "-f", "/sdcard/blah"])
+            get_adb(), "shell", "rm", "-f", "/sdcard/blah"])
 
     def test_pull_integration(self):
         with tempfile.NamedTemporaryFile() as f:
