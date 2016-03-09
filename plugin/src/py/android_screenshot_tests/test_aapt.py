@@ -40,20 +40,20 @@ class TestAapt(unittest.TestCase):
     def test_finds_an_aapt_happy_path(self):
         self._use_mock()
         self._add_aapt("21.0")
-        self.assertEqual(join(self.android_sdk, "build-tools/21.0/aapt"), aapt.get_aapt_bin())
+        self.assertEqual(join(self.android_sdk, "build-tools", "21.0", "aapt"), aapt.get_aapt_bin())
 
     def test_finds_the_aapt_with_highest_version(self):
         self._use_mock()
         self._add_aapt("21.0")
         self._add_aapt("22.0")
-        self.assertEqual(join(self.android_sdk, "build-tools/22.0/aapt"), aapt.get_aapt_bin())
+        self.assertEqual(join(self.android_sdk, "build-tools", "22.0", "aapt"), aapt.get_aapt_bin())
 
     def test_does_not_use_old_android_versions(self):
         self._use_mock()
         self._add_aapt("21.0")
         self._add_aapt("22.0")
         self._add_aapt("android-4.1")
-        self.assertEqual(join(self.android_sdk, "build-tools/22.0/aapt"), aapt.get_aapt_bin())
+        self.assertEqual(join(self.android_sdk, "build-tools", "22.0", "aapt"), aapt.get_aapt_bin())
 
     def test_no_android_sdk(self):
         os.environ.pop('ANDROID_SDK')

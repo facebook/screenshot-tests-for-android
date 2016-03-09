@@ -28,6 +28,9 @@ def get_android_sdk():
 
     return os.path.expanduser(android_sdk)
 
+def get_adb():
+    return os.path.join(get_android_sdk(), "platform-tools", "adb")
+
 # a version of subprocess.check_output that returns a utf-8 string
 def check_output(args, **kwargs):
     return subprocess.check_output(args, **kwargs).decode('utf-8')

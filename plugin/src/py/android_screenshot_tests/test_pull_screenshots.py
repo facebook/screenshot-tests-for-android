@@ -15,7 +15,6 @@ from __future__ import unicode_literals
 import unittest
 import os
 import sys
-import subprocess
 from . import pull_screenshots
 import tempfile
 import shutil
@@ -64,7 +63,8 @@ class TestAdbHelpers(unittest.TestCase):
 
 class TestPullScreenshots(unittest.TestCase):
     def setUp(self):
-        self.output_file = tempfile.mkstemp(prefix="final_screenshot", suffix=".png")[1]
+        fd, self.output_file = tempfile.mkstemp(prefix="final_screenshot", suffix=".png")
+        os.close(fd)
         os.unlink(self.output_file)
         self.tmpdir = None
         self.oldstdout = sys.stdout
@@ -130,19 +130,27 @@ class TestPullScreenshots(unittest.TestCase):
     #         self.assertTrue(os.path.exists(self.output_file))
 
     def test_copy_file_zip_aware_real_file(self):
-        with tempfile.NamedTemporaryFile(mode="w+t") as f, tempfile.NamedTemporaryFile(mode="w+t") as f2:
+        self.tmpdir = tempfile.mkdtemp()
+
+        f1 = os.path.join(self.tmpdir, "foo")
+        f2 = os.path.join(self.tmpdir, "bar")
+
+        with open(f1, "wt") as f:
             f.write("foobar")
             f.flush()
-            pull_screenshots._copy_file(f.name, f2.name)
 
-            self.assertEqual("foobar", f2.read())
+        pull_screenshots._copy_file(f1, f2)
+
+        with open(f2, 'rt') as f:
+            self.assertEqual("foobar", f.read())
 
     def test_copy_file_inside_zip(self):
         with tempfile.NamedTemporaryFile() as f:
+            f.close()
             pull_screenshots._copy_file(CURRENT_DIR + '/fixtures/dummy.zip/AndroidManifest.xml',
                                         f.name)
-
-            assertRegex(self, f.read().decode('utf-8'), '.*manifest.*')
+            with open(f.name, "rt") as ff:
+                assertRegex(self, ff.read(), '.*manifest.*')
 
     def test_summary_happyPath(self):
         with tempfile.NamedTemporaryFile(mode='w+t') as f:
