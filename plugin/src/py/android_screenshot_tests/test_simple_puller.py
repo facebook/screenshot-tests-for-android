@@ -37,7 +37,7 @@ class TestSimplePuller(unittest.TestCase):
             self.puller.pull("/sdcard/blah", f.name)
 
             with open(f.name, "r") as f2:
-                self.assertEquals("foobar\n", f2.read())
+                self.assertEqual("foobar\n", f2.read())
 
     def test_file_exists(self):
         self.assertTrue(self.puller.remote_file_exists("/sdcard/blah"))
@@ -48,7 +48,7 @@ class TestSimplePuller(unittest.TestCase):
         self.test_pull_integration()
 
     def test_get_external_data_dir(self):
-        self.assertEquals("/sdcard", self.puller.get_external_data_dir())
+        self.assertEqual("/sdcard", self.puller.get_external_data_dir())
 
 if __name__ == '__main__':
     unittest.main()

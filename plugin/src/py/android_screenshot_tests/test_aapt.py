@@ -9,6 +9,7 @@ import os
 import tempfile
 import shutil
 from os.path import join, dirname
+from .common import assertRegex
 
 CURDIR = dirname(__file__)
 
@@ -37,20 +38,20 @@ class TestAapt(unittest.TestCase):
     def test_finds_an_aapt_happy_path(self):
         self._use_mock()
         self._add_aapt("21.0")
-        self.assertEquals(join(self.android_sdk, "build-tools/21.0/aapt"), aapt.get_aapt_bin())
+        self.assertEqual(join(self.android_sdk, "build-tools/21.0/aapt"), aapt.get_aapt_bin())
 
     def test_finds_the_aapt_with_highest_version(self):
         self._use_mock()
         self._add_aapt("21.0")
         self._add_aapt("22.0")
-        self.assertEquals(join(self.android_sdk, "build-tools/22.0/aapt"), aapt.get_aapt_bin())
+        self.assertEqual(join(self.android_sdk, "build-tools/22.0/aapt"), aapt.get_aapt_bin())
 
     def test_does_not_use_old_android_versions(self):
         self._use_mock()
         self._add_aapt("21.0")
         self._add_aapt("22.0")
         self._add_aapt("android-4.1")
-        self.assertEquals(join(self.android_sdk, "build-tools/22.0/aapt"), aapt.get_aapt_bin())
+        self.assertEqual(join(self.android_sdk, "build-tools/22.0/aapt"), aapt.get_aapt_bin())
 
     def test_no_android_sdk(self):
         del os.environ['ANDROID_SDK']
@@ -60,7 +61,7 @@ class TestAapt(unittest.TestCase):
             aapt.get_aapt_bin()
             self.fail("expected exception")
         except RuntimeError as e:
-            self.assertRegexpMatches(e.message, ".*ANDROID_SDK.*")
+            assertRegex(self, e.args[0], ".*ANDROID_SDK.*")
 
     def test_no_build_tools(self):
         self._use_mock()
@@ -69,8 +70,8 @@ class TestAapt(unittest.TestCase):
             aapt.get_aapt_bin()
             self.fail("expected exception")
         except RuntimeError as e:
-            self.assertRegexpMatches(e.message, ".*Could not find build-tools.*")
+            assertRegex(self, e.args[0], ".*Could not find build-tools.*")
 
     def test_get_package_name(self):
-        self.assertEquals('com.facebook.testing.screenshot.examples',
+        self.assertEqual('com.facebook.testing.screenshot.examples',
                           aapt.get_package(join(CURDIR, "example.apk")))

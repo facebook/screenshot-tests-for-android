@@ -36,7 +36,7 @@ class TestMetadata(unittest.TestCase):
     def test_nothing_removed_for_empty_filter(self):
         metadata.filter_screenshots(self.tmp_metadata)
 
-        self.assertEquals(
+        self.assertEqual(
             self.get_num_screenshots_in(self.fixture_metadata),
             self.get_num_screenshots_in(self.tmp_metadata))
 
@@ -44,19 +44,19 @@ class TestMetadata(unittest.TestCase):
         metadata.filter_screenshots(self.tmp_metadata,
                                     name_regex="testAddPlaceIsShowing")
 
-        self.assertEquals(1, self.get_num_screenshots_in(self.tmp_metadata))
+        self.assertEqual(1, self.get_num_screenshots_in(self.tmp_metadata))
 
     def test_regex(self):
         metadata.filter_screenshots(self.tmp_metadata,
                                     name_regex=".*testAddPlaceIsShowing.*")
 
-        self.assertEquals(1, self.get_num_screenshots_in(self.tmp_metadata))
+        self.assertEqual(1, self.get_num_screenshots_in(self.tmp_metadata))
 
     def test_regex(self):
         metadata.filter_screenshots(self.tmp_metadata,
                                     name_regex=".*CheckinTitleBar.*")
 
-        self.assertEquals(7, self.get_num_screenshots_in(self.tmp_metadata))
+        self.assertEqual(7, self.get_num_screenshots_in(self.tmp_metadata))
 
     def get_num_screenshots_in(self, metadata_file):
         """Gets the number of screenshots in the given metadata file"""

@@ -24,11 +24,11 @@ class TestCommon(unittest.TestCase):
 
     def test_get_android_sdk_happy_path(self):
         os.environ['ANDROID_SDK'] = '/tmp/foo'
-        self.assertEquals("/tmp/foo", common.get_android_sdk())
+        self.assertEqual("/tmp/foo", common.get_android_sdk())
 
     def test_tilde_is_expanded(self):
         os.environ['ANDROID_SDK'] = '~/foobar'
 
         home = os.environ['HOME']
 
-        self.assertEquals(os.path.join(home, 'foobar'), common.get_android_sdk())
+        self.assertEqual(os.path.join(home, 'foobar'), common.get_android_sdk())

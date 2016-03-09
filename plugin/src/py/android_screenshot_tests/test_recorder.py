@@ -13,7 +13,7 @@ import unittest
 import shutil
 import os
 from os.path import join, exists
-from recorder import Recorder, VerifyError
+from .recorder import Recorder, VerifyError
 
 from PIL import Image
 
@@ -28,6 +28,7 @@ class TestRecorder(unittest.TestCase):
         im = Image.new("RGBA", dimens, color)
         filename = os.path.join(self.inputdir, name)
         im.save(filename, "PNG")
+        im.close()
         return filename
 
     def make_metadata(self, str):
@@ -99,13 +100,14 @@ class TestRecorder(unittest.TestCase):
 
         self.recorder.record()
 
-        im = Image.open(join(self.outputdir, "foobar.png"))
-        (w, h) = im.size
-        self.assertEquals(10, w)
-        self.assertEquals(20, h)
+        with Image.open(join(self.outputdir, "foobar.png")) as im:
+            (w, h) = im.size
 
-        self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
-        self.assertEquals((255, 0, 0, 255), im.getpixel((1, 11)))
+            self.assertEqual(10, w)
+            self.assertEqual(20, h)
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((1, 1)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((1, 11)))
 
     def test_one_row_tiles(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
@@ -121,13 +123,13 @@ class TestRecorder(unittest.TestCase):
 
         self.recorder.record()
 
-        im = Image.open(join(self.outputdir, "foobar.png"))
-        (w, h) = im.size
-        self.assertEquals(20, w)
-        self.assertEquals(10, h)
+        with Image.open(join(self.outputdir, "foobar.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(20, w)
+            self.assertEqual(10, h)
 
-        self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
-        self.assertEquals((255, 0, 0, 255), im.getpixel((11, 1)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((1, 1)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((11, 1)))
 
     def test_fractional_tiles(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
@@ -145,16 +147,16 @@ class TestRecorder(unittest.TestCase):
 
         self.recorder.record()
 
-        im = Image.open(join(self.outputdir, "foobar.png"))
-        (w, h) = im.size
-        self.assertEquals(19, w)
-        self.assertEquals(18, h)
+        with Image.open(join(self.outputdir, "foobar.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(19, w)
+            self.assertEqual(18, h)
 
-        self.assertEquals((0, 0, 255, 255), im.getpixel((1, 1)))
-        self.assertEquals((255, 0, 0, 255), im.getpixel((11, 1)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((1, 1)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((11, 1)))
 
-        self.assertEquals((0, 0, 255, 255), im.getpixel((11, 11)))
-        self.assertEquals((255, 0, 0, 255), im.getpixel((1, 11)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((11, 11)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((1, 11)))
 
     def test_verify_success(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")

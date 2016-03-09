@@ -10,14 +10,16 @@
 
 import xml.etree.ElementTree as ET
 import os
+import sys
 
 from os.path import join
 from PIL import Image, ImageChops
+
 from . import common
 import shutil
 import tempfile
 
-class VerifyError(StandardError):
+class VerifyError(Exception):
     pass
 
 class Recorder:
@@ -26,33 +28,39 @@ class Recorder:
         self._output = output
         self._realoutput = output
 
+    def _get_image_size(self, file_name):
+        with Image.open(file_name) as im:
+            return im.size
+
     def _copy(self, name, w, h):
-        tilewidth, tileheight = Image.open(join(self._input,
-                                                common.get_image_file_name(name, 0, 0))).size
+        tilewidth, tileheight = self._get_image_size(
+            join(self._input,
+                 common.get_image_file_name(name, 0, 0)))
 
         canvaswidth = 0
 
         for i  in range(w):
             input_file = common.get_image_file_name(name, i, 0)
-            canvaswidth += Image.open(join(self._input, input_file)).size[0]
+            canvaswidth += self._get_image_size(join(self._input, input_file))[0]
 
 
         canvasheight = 0
 
         for j in range(h):
             input_file = common.get_image_file_name(name, 0, j)
-            canvasheight += Image.open(join(self._input, input_file)).size[1]
+            canvasheight += self._get_image_size(join(self._input, input_file))[1]
 
         im = Image.new("RGBA", (canvaswidth, canvasheight))
 
         for i in range(w):
             for j in range(h):
                 input_file = common.get_image_file_name(name, i, j)
-                input_image = Image.open(join(self._input, input_file))
-
-                im.paste(input_image, (i * tilewidth, j * tileheight))
+                with Image.open(join(self._input, input_file)) as input_image:
+                    im.paste(input_image, (i * tilewidth, j * tileheight))
+                    input_image.close()
 
         im.save(join(self._output, name + ".png"))
+        im.close()
 
     def _get_metadata_root(self):
         return ET.parse(join(self._input, "metadata.xml")).getroot()
@@ -70,10 +78,12 @@ class Recorder:
         os.mkdir(self._output)
 
     def _is_image_same(self, file1, file2):
-        im1 = Image.open(file1)
-        im2 = Image.open(file2)
-
-        return ImageChops.difference(im1, im2).getbbox() is None
+        with Image.open(file1) as im1, Image.open(file2) as im2:
+            diff_image = ImageChops.difference(im1, im2)
+            try:
+                return diff_image.getbbox() is None
+            finally:
+                diff_image.close()
 
     def record(self):
         self._clean()

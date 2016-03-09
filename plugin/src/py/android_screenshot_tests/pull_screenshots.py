@@ -83,9 +83,9 @@ def generate_html(dir):
 
 def write_image(dir, html, screenshot):
     html.write('<table class="img-wrapper">')
-    for y in xrange(int(screenshot.find('tile_height').text)):
+    for y in range(int(screenshot.find('tile_height').text)):
         html.write('<tr>')
-        for x in xrange(int(screenshot.find('tile_width').text)):
+        for x in range(int(screenshot.find('tile_width').text)):
             html.write('<td>')
             image_file = "./" + common.get_image_file_name(screenshot.find('name').text, x, y)
 
@@ -128,7 +128,7 @@ def _copy_via_zip(src_zip, zip_path, dest):
     if os.path.exists(src_zip):
         zip = zipfile.ZipFile(src_zip)
         input = zip.open(zip_path, 'r')
-        with open(dest, 'w') as output:
+        with open(dest, 'wb') as output:
             output.write(input.read())
     else:
         # walk up the tree
@@ -221,7 +221,7 @@ def main(argv):
             argv[1:],
             "eds:",
             ["generate-png=", "filter-name-regex=", "apk", "record=", "verify="])
-    except getopt.GetoptError, err:
+    except getopt.GetoptError as err:
         usage()
         return 2
 

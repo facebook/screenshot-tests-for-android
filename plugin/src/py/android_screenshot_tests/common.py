@@ -9,6 +9,8 @@
 #
 
 import os
+import sys
+import subprocess
 
 def get_image_file_name(name, x, y):
     image_file = name
@@ -25,3 +27,14 @@ def get_android_sdk():
         raise RuntimeError("ANDROID_SDK or ANDROID_HOME needs to be set")
 
     return os.path.expanduser(android_sdk)
+
+# a version of subprocess.check_output that returns a utf-8 string
+def check_output(args, **kwargs):
+    return subprocess.check_output(args, **kwargs).decode('utf-8')
+
+# a compat version for py3, since assertRegexpMatches is deprecated
+def assertRegex(testcase, regex, string):
+    if sys.version_info >= (3,):
+        testcase.assertRegex(regex, string)
+    else:
+        testcase.assertRegexpMatches(regex, string)
