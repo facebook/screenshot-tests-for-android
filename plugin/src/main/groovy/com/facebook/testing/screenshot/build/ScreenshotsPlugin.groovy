@@ -8,6 +8,9 @@ class ScreenshotsPluginExtension {
     def customTestRunner = false
     def recordDir = "screenshots"
     def addCompileDeps = true
+    def referenceDir = ""
+    def noPull = false
+    def targetPackage = ""
 
     // Deprecated. We automatically detect adb now. Using this will
     // throw an error.
@@ -48,6 +51,64 @@ class ScreenshotsPlugin implements Plugin<Project> {
         } else if (verifyMode) {
           args += ["--verify", project.screenshots.recordDir]
         }
+      }
+    }
+
+    project.task('verifyLocalScreenshots') << {
+      project.exec {
+
+        executable = 'python'
+        environment('PYTHONPATH', jarFile)
+
+        def referenceDir = project.screenshots.referenceDir
+        def targetPackage = project.screenshots.targetPackage
+
+        if (!referenceDir) {
+          println(" >>> You must specify a referenceDir")
+          return;
+        }
+
+        if (!targetPackage) {
+          println(" >>> You must specify a targetPackage")
+          return;
+        }
+
+        println(" >>> Using (${referenceDir}) for screenshot verification")
+
+        args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
+        args += ["--verify", project.screenshots.recordDir]
+        args += ["--no-pull"]
+        args += ["--temp-dir", referenceDir]
+
+      }
+    }
+
+    project.task('recordLocalScreenshots') << {
+
+      project.exec {
+
+        executable = 'python'
+        environment('PYTHONPATH', jarFile)
+
+        def referenceDir = project.screenshots.referenceDir
+        def targetPackage = project.screenshots.targetPackage
+
+        if (!referenceDir) {
+          println(" >>> You must specify a referenceDir")
+          return;
+        }
+
+        if (!targetPackage) {
+          println(" >>> You must specify a targetPackage")
+          return;
+        }
+
+        println(" >>> Using (${referenceDir}) as screenshot source")
+
+        args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
+        args += ["--record", project.screenshots.recordDir]
+        args += ["--no-pull"]
+        args += ["--temp-dir", referenceDir]
       }
     }
 

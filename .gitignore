@@ -5,3 +5,4 @@
 /build
 repo
 examples/**/build
+.idea
