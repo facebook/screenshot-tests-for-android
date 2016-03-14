@@ -1,0 +1,22 @@
+<screenshots>
+  <screenshot>
+    <description />
+    <name>com.foo.ScriptsFixtureTest_testGetTextViewScreenshot</name>
+    <test_class>
+    com.facebook.testing.screenshot.ScriptsFixtureTest</test_class>
+    <test_name>testGetTextViewScreenshot</test_name>
+    <tile_width>1</tile_width>
+    <tile_height>1</tile_height>
+    <absolute_file_name>/sdcard/screenshots/com.foo/screenshots-default/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png</absolute_file_name>
+  </screenshot>
+  <screenshot>
+    <description />
+    <name>com.foo.ScriptsFixtureTest_testSecondScreenshot</name>
+    <test_class>
+    com.facebook.testing.screenshot.ScriptsFixtureTest</test_class>
+    <test_name>testSecondScreenshot</test_name>
+    <tile_width>1</tile_width>
+    <tile_height>1</tile_height>
+    <absolute_file_name>/sdcard/screenshots/com.foo/screenshots-default/com.foo.ScriptsFixtureTest_testSecondScreenshot.png</absolute_file_name>
+  </screenshot>
+</screenshots>

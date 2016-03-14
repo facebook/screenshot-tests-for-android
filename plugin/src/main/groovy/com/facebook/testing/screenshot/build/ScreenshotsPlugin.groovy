@@ -54,7 +54,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       }
     }
 
-    project.task('verifyLocalScreenshots') << {
+    project.task('localScreenshots') << {
       project.exec {
 
         executable = 'python'
@@ -63,52 +63,22 @@ class ScreenshotsPlugin implements Plugin<Project> {
         def referenceDir = project.screenshots.referenceDir
         def targetPackage = project.screenshots.targetPackage
 
-        if (!referenceDir) {
-          println(" >>> You must specify a referenceDir")
-          return;
-        }
-
-        if (!targetPackage) {
-          println(" >>> You must specify a targetPackage")
+        if (!referenceDir || !targetPackage) {
+          printLocalUsage(referenceDir, targetPackage)
           return;
         }
 
         println(" >>> Using (${referenceDir}) for screenshot verification")
 
         args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
-        args += ["--verify", project.screenshots.recordDir]
         args += ["--no-pull"]
         args += ["--temp-dir", referenceDir]
 
-      }
-    }
-
-    project.task('recordLocalScreenshots') << {
-
-      project.exec {
-
-        executable = 'python'
-        environment('PYTHONPATH', jarFile)
-
-        def referenceDir = project.screenshots.referenceDir
-        def targetPackage = project.screenshots.targetPackage
-
-        if (!referenceDir) {
-          println(" >>> You must specify a referenceDir")
-          return;
+        if (recordMode) {
+          args += ["--record", project.screenshots.recordDir]
+        } else {
+          args += ["--verify", project.screenshots.recordDir]
         }
-
-        if (!targetPackage) {
-          println(" >>> You must specify a targetPackage")
-          return;
-        }
-
-        println(" >>> Using (${referenceDir}) as screenshot source")
-
-        args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
-        args += ["--record", project.screenshots.recordDir]
-        args += ["--no-pull"]
-        args += ["--temp-dir", referenceDir]
       }
     }
 
@@ -131,9 +101,9 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     if (!project.screenshots.customTestRunner) {
-       project.android.defaultConfig {
-           testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
-       }
+      project.android.defaultConfig {
+        testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
+      }
     }
 
     project.task("recordMode") << {
@@ -147,6 +117,21 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
   String getTestApkOutput(Project project) {
     return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
+  }
+
+  void printLocalUsage(def referenceDir, def targetPackage) {
+    println(" >>> You must specify referenceDir=$referenceDir and targetPackage=$targetPackage")
+    println("""
+      EXAMPLE screenshot config
+
+      screenshots {
+        // For verification against local files, this parameter points to the directory containing all the files pulled from a device
+        referenceDir = relative/path/to/artifacts
+
+        // Your app's application id
+        targetPackage = "your.application.package"
+      }
+""")
   }
 
   void addRuntimeDep(Project project) {

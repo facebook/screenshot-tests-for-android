@@ -28,6 +28,17 @@ from .common import assertRegex
 
 TESTING_PACKAGE = 'com.foo'
 CURRENT_DIR = os.path.dirname(__file__)
+FIXTURE_DIR = CURRENT_DIR + '/fixtures/sdcard/screenshots/com.foo/screenshots-default'
+
+
+class LocalFileHelper:
+    def setup(self, dir):
+        shutil.copyfile(FIXTURE_DIR + "/metadata_no_errors.xml", dir + "/metadata.xml")
+        shutil.copyfile(FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png",
+                        dir + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png")
+        shutil.copyfile(FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png",
+                        dir + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png")
+
 
 class AdbPuller:
     def pull(self, src, dest):
@@ -40,6 +51,7 @@ class AdbPuller:
 
     def get_external_data_dir(self):
         return "/sdcard"
+
 
 class TestAdbHelpers(unittest.TestCase):
     def setUp(self):
@@ -60,6 +72,7 @@ class TestAdbHelpers(unittest.TestCase):
         pull_screenshots.pull_all("com.facebook.testing.tests", self.tmpdir, adb_puller=AdbPuller())
 
         self.assertTrue(os.path.exists(self.tmpdir + "/metadata.xml"))
+
 
 class TestPullScreenshots(unittest.TestCase):
     def setUp(self):
@@ -94,17 +107,17 @@ class TestPullScreenshots(unittest.TestCase):
     def test_index_html_created(self):
         self.tmpdir = tempfile.mkdtemp(prefix='screenshots')
         pull_screenshots.pull_screenshots(
-            TESTING_PACKAGE,
-            adb_puller=AdbPuller(),
-            temp_dir=self.tmpdir)
+                TESTING_PACKAGE,
+                adb_puller=AdbPuller(),
+                temp_dir=self.tmpdir)
         self.assertTrue(os.path.exists(self.tmpdir + "/index.html"))
 
     def test_image_is_linked(self):
         self.tmpdir = tempfile.mkdtemp(prefix='screenshots')
         pull_screenshots.pull_screenshots(
-            TESTING_PACKAGE,
-            adb_puller=AdbPuller(),
-            temp_dir=self.tmpdir)
+                TESTING_PACKAGE,
+                adb_puller=AdbPuller(),
+                temp_dir=self.tmpdir)
         with open(self.tmpdir + "/index.html", "r") as f:
             contents = f.read()
             assertRegex(self, contents, ".*com.foo.*")
@@ -166,6 +179,32 @@ class TestPullScreenshots(unittest.TestCase):
         os.environ['ANDROID_SDK'] = "foobar"
         pull_screenshots.setup_paths()
         assertRegex(self, os.environ['PATH'], '.*:foobar/platform-tools.*')
+
+    def test_no_pull_argument_does_not_use_adb_on_verify(self):
+        source = tempfile.mkdtemp()
+        dest = tempfile.mkdtemp()
+
+        LocalFileHelper().setup(source)
+        LocalFileHelper().setup(dest)
+
+        pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                          adb_puller=None,
+                                          perform_pull=False,
+                                          temp_dir=source,
+                                          verify=dest)
+
+    def test_no_pull_argument_does_not_use_adb_on_record(self):
+        source = tempfile.mkdtemp()
+        dest = tempfile.mkdtemp()
+
+        LocalFileHelper().setup(source)
+        LocalFileHelper().setup(dest)
+
+        pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                          adb_puller=None,
+                                          perform_pull=False,
+                                          temp_dir=source,
+                                          record=dest)
 
 if __name__ == '__main__':
     unittest.main()

@@ -33,7 +33,7 @@ class ScreenshotsPluginTest {
     def mainDir = project.projectDir.toString() + "/src/main/"
     new File(mainDir).mkdirs()
 
-    println("makig directories" + mainDir.toString())
+    println("making directories" + mainDir.toString())
 
     def manifest = new File(mainDir + "/AndroidManifest.xml")
 
@@ -140,5 +140,14 @@ class ScreenshotsPluginTest {
     } catch (IllegalArgumentException cause) {
       assertThat(cause.getMessage(), containsString("deprecated"));
     }
+  }
+
+  @Test
+  public void addsLocalScreenshotsTask() {
+    project.getPluginManager().apply 'com.android.application'
+    project.getPluginManager().apply ScreenshotsPluginForTest
+    setupProject()
+
+    assertTrue(project.tasks.localScreenshots instanceof Task)
   }
 }
