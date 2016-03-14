@@ -28,7 +28,7 @@ from .common import assertRegex
 
 TESTING_PACKAGE = 'com.foo'
 CURRENT_DIR = os.path.dirname(__file__)
-FIXTURE_DIR = CURRENT_DIR + '/fixtures/sdcard/screenshots/com.foo/screenshots-default'
+FIXTURE_DIR = '%s/fixtures/sdcard/screenshots/%s/screenshots-default' % (CURRENT_DIR, TESTING_PACKAGE)
 
 
 class LocalFileHelper:
