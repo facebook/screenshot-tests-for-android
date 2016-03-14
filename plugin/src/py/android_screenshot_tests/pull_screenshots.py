@@ -187,11 +187,15 @@ def pull_screenshots(process,
                      verify=None,
                      opt_generate_png=None):
 
+    # Must give a local directory when not pulling
+    if not perform_pull and temp_dir is None:
+        raise RuntimeError("""temp_dir must be given if --no-pull is present""")
+
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
 
     copy_assets(temp_dir)
 
-    if perform_pull is None or perform_pull is True:
+    if perform_pull is True:
         pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
 
     path_to_html = generate_html(temp_dir)

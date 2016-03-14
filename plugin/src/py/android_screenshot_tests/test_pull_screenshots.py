@@ -206,5 +206,17 @@ class TestPullScreenshots(unittest.TestCase):
                                           temp_dir=source,
                                           record=dest)
 
+    def test_no_pull_argument_must_have_temp_dir(self):
+
+        try:
+            pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                              adb_puller=None,
+                                              perform_pull=False,
+                                              temp_dir=None,
+                                              verify=tempfile.mkdtemp())
+            self.fail("expected exception")
+        except RuntimeError as e:
+            assertRegex(self, e.args[0], "temp_dir must be given if --no-pull is present")
+
 if __name__ == '__main__':
     unittest.main()
