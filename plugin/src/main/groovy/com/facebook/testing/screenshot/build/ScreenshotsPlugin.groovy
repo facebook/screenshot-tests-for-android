@@ -68,7 +68,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
           return;
         }
 
-        println(" >>> Using (${referenceDir}) for screenshot verification")
+        logger.quiet(" >>> Using (${referenceDir}) for screenshot verification")
 
         args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
         args += ["--no-pull"]
@@ -120,7 +120,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
   }
 
   void printLocalUsage(def referenceDir, def targetPackage) {
-    println(" >>> You must specify referenceDir=$referenceDir and targetPackage=$targetPackage")
+    println(" >>> You must specify referenceDir=[$referenceDir] and targetPackage=[$targetPackage]")
     println("""
       EXAMPLE screenshot config
 
@@ -138,7 +138,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
     def implementationVersion = getClass().getPackage().getImplementationVersion()
 
     if (!implementationVersion) {
-      println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
+      logger.warn("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
       implementationVersion = '0.2.4'
     }
 
