@@ -125,8 +125,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
       EXAMPLE screenshot config
 
       screenshots {
-        // For verification against local files, this parameter points to the directory containing all the files pulled from a device
-        referenceDir = relative/path/to/artifacts
+        // This parameter points to the directory containing all the files pulled from a device
+        referenceDir = path/to/artifacts
 
         // Your app's application id
         targetPackage = "your.application.package"
