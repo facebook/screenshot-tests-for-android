@@ -17,6 +17,10 @@ import java.util.List;
 public class PluginRegistry {
   private static ArrayList<ViewDumpPlugin> sPlugins = new ArrayList<>();
 
+  static {
+    sPlugins.add(new TextViewDumper());
+  }
+
   /**
    * Adds a new plugin
    */
