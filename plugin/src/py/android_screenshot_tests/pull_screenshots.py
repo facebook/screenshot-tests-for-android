@@ -246,6 +246,9 @@ def main(argv):
         # treat process as an apk instead
         process = aapt.get_package(process)
 
+    # treat the "" given back from opts as True
+    should_perform_pull = False if "--no-pull" in opts else True
+
     puller_args = []
     if "-e" in opts:
         puller_args.append("-e")
@@ -257,7 +260,7 @@ def main(argv):
         puller_args += ["-s", opts["-s"]]
 
     return pull_screenshots(process,
-                            perform_pull=opts.get('--no-pull'),
+                            perform_pull=should_perform_pull,
                             temp_dir=opts.get('--temp-dir'),
                             filter_name_regex=opts.get('--filter-name-regex'),
                             opt_generate_png=opts.get('--generate-png'),

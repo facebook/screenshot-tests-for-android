@@ -107,17 +107,17 @@ class TestPullScreenshots(unittest.TestCase):
     def test_index_html_created(self):
         self.tmpdir = tempfile.mkdtemp(prefix='screenshots')
         pull_screenshots.pull_screenshots(
-                TESTING_PACKAGE,
-                adb_puller=AdbPuller(),
-                temp_dir=self.tmpdir)
+            TESTING_PACKAGE,
+            adb_puller=AdbPuller(),
+            temp_dir=self.tmpdir)
         self.assertTrue(os.path.exists(self.tmpdir + "/index.html"))
 
     def test_image_is_linked(self):
         self.tmpdir = tempfile.mkdtemp(prefix='screenshots')
         pull_screenshots.pull_screenshots(
-                TESTING_PACKAGE,
-                adb_puller=AdbPuller(),
-                temp_dir=self.tmpdir)
+            TESTING_PACKAGE,
+            adb_puller=AdbPuller(),
+            temp_dir=self.tmpdir)
         with open(self.tmpdir + "/index.html", "r") as f:
             contents = f.read()
             assertRegex(self, contents, ".*com.foo.*")

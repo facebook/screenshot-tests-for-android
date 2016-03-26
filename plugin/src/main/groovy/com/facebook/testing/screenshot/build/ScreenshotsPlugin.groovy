@@ -64,7 +64,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
         def targetPackage = project.screenshots.targetPackage
 
         if (!referenceDir || !targetPackage) {
-          printLocalUsage(referenceDir, targetPackage)
+          printLocalUsage(getLogger(), referenceDir, targetPackage)
           return;
         }
 
@@ -119,9 +119,9 @@ class ScreenshotsPlugin implements Plugin<Project> {
     return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
   }
 
-  void printLocalUsage(def referenceDir, def targetPackage) {
-    println(" >>> You must specify referenceDir=[$referenceDir] and targetPackage=[$targetPackage]")
-    println("""
+  void printLocalUsage(def logger, def referenceDir, def targetPackage) {
+    logger.error(" >>> You must specify referenceDir=[$referenceDir] and targetPackage=[$targetPackage]")
+    logger.error("""
       EXAMPLE screenshot config
 
       screenshots {
