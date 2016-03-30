@@ -145,8 +145,11 @@ def pull_metadata(package, dir, adb_puller):
         adb_puller.pull(metadata_file, join(dir, 'metadata.xml'))
     elif adb_puller.remote_file_exists(old_metadata_file):
         adb_puller.pull(old_metadata_file, join(dir, 'metadata.xml'))
+        metadata_file = old_metdata_file
     else:
         create_empty_metadata_file(dir)
+
+    return metadata_file.replace("metadata.xml", "")
 
 def create_empty_metadata_file(dir):
     with open(join(dir, 'metadata.xml'), 'w') as out:
@@ -154,24 +157,26 @@ def create_empty_metadata_file(dir):
 <screenshots>
 </screenshots>""")
 
-def pull_images(dir, adb_puller):
+def pull_images(dir, device_dir, adb_puller):
     root = ET.parse(join(dir, 'metadata.xml')).getroot()
     for s in root.iter('screenshot'):
-        filename_nodes = s.findall('absolute_file_name')
+        filename_nodes = s.findall('relative_file_name')
         for filename_node in filename_nodes:
-            adb_puller.pull(filename_node.text, join(dir, os.path.basename(filename_node.text)))
+            adb_puller.pull(
+                device_dir + "/" + filename_node.text,
+                join(dir, os.path.basename(filename_node.text)))
         dump_node = s.find('view_hierarchy')
         if dump_node is not None:
-            adb_puller.pull(dump_node.text, join(dir, os.path.basename(dump_node.text)))
+            adb_puller.pull(device_dir + "/" + dump_node.text, join(dir, os.path.basename(dump_node.text)))
 
 def pull_all(package, dir, adb_puller):
-    pull_metadata(package, dir, adb_puller=adb_puller)
-    pull_images(dir, adb_puller=adb_puller)
+    device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
+    pull_images(dir, device_dir, adb_puller=adb_puller)
 
 def pull_filtered(package, dir, adb_puller, filter_name_regex=None):
-    pull_metadata(package, dir, adb_puller=adb_puller)
+    device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
     metadata.filter_screenshots(join(dir, 'metadata.xml'), name_regex=filter_name_regex)
-    pull_images(dir, adb_puller=adb_puller)
+    pull_images(dir, device_dir, adb_puller=adb_puller)
 
 def _summary(dir):
     root = ET.parse(join(dir, 'metadata.xml')).getroot()

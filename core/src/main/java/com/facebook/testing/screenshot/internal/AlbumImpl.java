@@ -199,7 +199,7 @@ public class AlbumImpl implements Album {
     File viewHierarchy = getViewHierarchyFile(recordBuilder.getName());
 
     if (viewHierarchy.exists()) {
-      addTextNode("view_hierarchy", viewHierarchy.getAbsolutePath());
+      addTextNode("view_hierarchy", getRelativePath(viewHierarchy, mDir));
       viewHierarchy.setReadable(/* readable = */ true, /* ownerOnly = */false);
     }
 
@@ -234,7 +234,29 @@ public class AlbumImpl implements Album {
         addTextNode(
           "absolute_file_name",
           file.getAbsolutePath());
+
+        addTextNode(
+          "relative_file_name",
+          getRelativePath(file, mDir));
       }
+    }
+  }
+
+  /**
+   * Returns the relative path of file from dir
+   */
+  private String getRelativePath(File file, File dir) {
+    try {
+      String filePath = file.getCanonicalPath();
+      String dirPath = dir.getCanonicalPath();
+
+      if (filePath.startsWith(dirPath)) {
+        return filePath.substring(dirPath.length() + 1);
+      }
+
+      return filePath;
+    } catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 
