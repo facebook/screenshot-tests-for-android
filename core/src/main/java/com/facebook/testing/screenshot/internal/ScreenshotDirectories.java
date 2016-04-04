@@ -58,7 +58,7 @@ class ScreenshotDirectories {
     dir.mkdir();
 
     if (!dir.exists()) {
-      throw new RuntimeException("Failed to create the directory for screenshots, do you have WRITE_EXTERNAL_STORAGE permission?");
+      throw new RuntimeException("Failed to create the directory for screenshots. Is your sdcard directory read-only?");
     }
 
     setWorldWriteable(dir);
