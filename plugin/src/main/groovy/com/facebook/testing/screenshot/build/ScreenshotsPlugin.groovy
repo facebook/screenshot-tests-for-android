@@ -54,7 +54,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
     project.task("clearScreenshots") << {
       project.exec {
         executable = adb
-        args = ["shell", "rm", "-rf", "/sdcard/screenshots"]
+        args = ["shell", "rm", "-rf", "\$EXTERNAL_STORAGE/screenshots"]
         ignoreExitValue = true
       }
     }
