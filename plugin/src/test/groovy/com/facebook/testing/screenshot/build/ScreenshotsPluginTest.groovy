@@ -148,6 +148,6 @@ class ScreenshotsPluginTest {
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
 
-    assertTrue(project.tasks.localScreenshots instanceof Task)
+    assertTrue(project.tasks.pullScreenshotsFromDirectory instanceof Task)
   }
 }

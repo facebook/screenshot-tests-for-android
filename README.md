@@ -84,7 +84,7 @@ The location of the screenshot artifacts can be configured in the project's buil
 
 Then, screenshots may be verified by executing the following:
 ```bash
-  $ gradle verifyMode localScreenshots
+  $ gradle verifyMode pullScreenshotsFromDirectory
 ```
 
 To record, simply change `verifyMode` to `recordMode` and the local screenshots will become the master copy

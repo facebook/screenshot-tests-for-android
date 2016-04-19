@@ -54,7 +54,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       }
     }
 
-    project.task('localScreenshots') << {
+    project.task('pullScreenshotsFromDirectory') << {
       project.exec {
 
         executable = 'python'
