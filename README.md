@@ -68,7 +68,7 @@ You can install all the artifacts to your local maven repository using
 ## Running With a Remote Service
 
 For usage with a remote testing service (e.g. Google Cloud Test Lab) where ADB is not available directly the plugin supports a "disconnected" 
-workflow.  Collect all screenshots artifacts into a single directory and run the plugin in "local mode". 
+workflow.  Collect all screenshots artifacts into a single directory and run the plugin in "local mode" using the pullScreenshotsFromDirectory task
 
 ### Example
 The location of the screenshot artifacts can be configured in the project's build.gradle:

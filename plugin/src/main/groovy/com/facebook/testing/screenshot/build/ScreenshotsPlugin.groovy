@@ -8,8 +8,9 @@ class ScreenshotsPluginExtension {
     def customTestRunner = false
     def recordDir = "screenshots"
     def addCompileDeps = true
+
+    // Only used for the pullScreenshotsFromDirectory task
     def referenceDir = ""
-    def noPull = false
     def targetPackage = ""
 
     // Deprecated. We automatically detect adb now. Using this will
@@ -64,7 +65,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
         def targetPackage = project.screenshots.targetPackage
 
         if (!referenceDir || !targetPackage) {
-          printLocalUsage(getLogger(), referenceDir, targetPackage)
+          printPullFromDirectoryUsage(getLogger(), referenceDir, targetPackage)
           return;
         }
 
@@ -119,7 +120,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
     return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
   }
 
-  void printLocalUsage(def logger, def referenceDir, def targetPackage) {
+  void printPullFromDirectoryUsage(def logger, def referenceDir, def targetPackage) {
     logger.error(" >>> You must specify referenceDir=[$referenceDir] and targetPackage=[$targetPackage]")
     logger.error("""
       EXAMPLE screenshot config

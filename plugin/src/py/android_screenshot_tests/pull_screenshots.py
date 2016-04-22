@@ -187,9 +187,8 @@ def pull_screenshots(process,
                      verify=None,
                      opt_generate_png=None):
 
-    # Must give a local directory when not pulling
     if not perform_pull and temp_dir is None:
-        raise RuntimeError("""temp_dir must be given if --no-pull is present""")
+        raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
 
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
 
@@ -246,8 +245,7 @@ def main(argv):
         # treat process as an apk instead
         process = aapt.get_package(process)
 
-    # treat the "" given back from opts as True
-    should_perform_pull = False if "--no-pull" in opts else True
+    should_perform_pull = ("--no-pull" not in opts)
 
     puller_args = []
     if "-e" in opts:
