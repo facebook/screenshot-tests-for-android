@@ -185,15 +185,23 @@ def _summary(dir):
 
 def pull_screenshots(process,
                      adb_puller,
+                     perform_pull=True,
                      temp_dir=None,
                      filter_name_regex=None,
                      record=None,
                      verify=None,
                      opt_generate_png=None):
+
+    if not perform_pull and temp_dir is None:
+        raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
+
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
+
     copy_assets(temp_dir)
 
-    pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
+    if perform_pull is True:
+        pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
+
     path_to_html = generate_html(temp_dir)
 
     if record or verify:
@@ -225,7 +233,7 @@ def main(argv):
         opt_list, rest_args = getopt.gnu_getopt(
             argv[1:],
             "eds:",
-            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify="])
+            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=", "no-pull"])
     except getopt.GetoptError as err:
         usage()
         return 2
@@ -242,6 +250,8 @@ def main(argv):
         # treat process as an apk instead
         process = aapt.get_package(process)
 
+    should_perform_pull = ("--no-pull" not in opts)
+
     puller_args = []
     if "-e" in opts:
         puller_args.append("-e")
@@ -253,6 +263,8 @@ def main(argv):
         puller_args += ["-s", opts["-s"]]
 
     return pull_screenshots(process,
+                            perform_pull=should_perform_pull,
+                            temp_dir=opts.get('--temp-dir'),
                             filter_name_regex=opts.get('--filter-name-regex'),
                             opt_generate_png=opts.get('--generate-png'),
                             record=opts.get('--record'),

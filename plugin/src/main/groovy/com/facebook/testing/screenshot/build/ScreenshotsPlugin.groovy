@@ -9,6 +9,10 @@ class ScreenshotsPluginExtension {
     def recordDir = "screenshots"
     def addCompileDeps = true
 
+    // Only used for the pullScreenshotsFromDirectory task
+    def referenceDir = ""
+    def targetPackage = ""
+
     // Deprecated. We automatically detect adb now. Using this will
     // throw an error.
     @Deprecated
@@ -51,6 +55,34 @@ class ScreenshotsPlugin implements Plugin<Project> {
       }
     }
 
+    project.task('pullScreenshotsFromDirectory') << {
+      project.exec {
+
+        executable = 'python'
+        environment('PYTHONPATH', jarFile)
+
+        def referenceDir = project.screenshots.referenceDir
+        def targetPackage = project.screenshots.targetPackage
+
+        if (!referenceDir || !targetPackage) {
+          printPullFromDirectoryUsage(getLogger(), referenceDir, targetPackage)
+          return;
+        }
+
+        logger.quiet(" >>> Using (${referenceDir}) for screenshot verification")
+
+        args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
+        args += ["--no-pull"]
+        args += ["--temp-dir", referenceDir]
+
+        if (recordMode) {
+          args += ["--record", project.screenshots.recordDir]
+        } else {
+          args += ["--verify", project.screenshots.recordDir]
+        }
+      }
+    }
+
     project.task("clearScreenshots") << {
       project.exec {
         executable = adb
@@ -70,9 +102,9 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     if (!project.screenshots.customTestRunner) {
-       project.android.defaultConfig {
-           testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
-       }
+      project.android.defaultConfig {
+        testInstrumentationRunner = 'com.facebook.testing.screenshot.ScreenshotTestRunner'
+      }
     }
 
     project.task("recordMode") << {
@@ -88,11 +120,26 @@ class ScreenshotsPlugin implements Plugin<Project> {
     return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().getSingleFile().getAbsolutePath()
   }
 
+  void printPullFromDirectoryUsage(def logger, def referenceDir, def targetPackage) {
+    logger.error(" >>> You must specify referenceDir=[$referenceDir] and targetPackage=[$targetPackage]")
+    logger.error("""
+      EXAMPLE screenshot config
+
+      screenshots {
+        // This parameter points to the directory containing all the files pulled from a device
+        referenceDir = path/to/artifacts
+
+        // Your app's application id
+        targetPackage = "your.application.package"
+      }
+""")
+  }
+
   void addRuntimeDep(Project project) {
     def implementationVersion = getClass().getPackage().getImplementationVersion()
 
     if (!implementationVersion) {
-      println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
+      logger.warn("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
       implementationVersion = '0.4'
     }
 

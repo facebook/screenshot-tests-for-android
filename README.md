@@ -65,6 +65,30 @@ You can install all the artifacts to your local maven repository using
   $ gradle installAll
 ```
 
+## Running With a Remote Service
+
+For usage with a remote testing service (e.g. Google Cloud Test Lab) where ADB is not available directly the plugin supports a "disconnected" 
+workflow.  Collect all screenshots artifacts into a single directory and run the plugin in "local mode" using the pullScreenshotsFromDirectory task
+
+### Example
+The location of the screenshot artifacts can be configured in the project's build.gradle:
+```groovy
+  screenshots {
+      // Points to the directory containing all the files pulled from a device
+      referenceDir = path/to/artifacts
+
+      // Your app's application id
+      targetPackage = "your.application.package"
+  }
+```
+
+Then, screenshots may be verified by executing the following:
+```bash
+  $ gradle verifyMode pullScreenshotsFromDirectory
+```
+
+To record, simply change `verifyMode` to `recordMode` and the local screenshots will become the master copy
+
 ## Join the screenshot-tests-for-android community
 
 * Website: http://facebook.github.io/screenshot-tests-for-android

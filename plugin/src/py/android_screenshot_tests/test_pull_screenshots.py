@@ -28,6 +28,17 @@ from .common import assertRegex
 
 TESTING_PACKAGE = 'com.foo'
 CURRENT_DIR = os.path.dirname(__file__)
+FIXTURE_DIR = '%s/fixtures/sdcard/screenshots/%s/screenshots-default' % (CURRENT_DIR, TESTING_PACKAGE)
+
+
+class LocalFileHelper:
+    def setup(self, dir):
+        shutil.copyfile(FIXTURE_DIR + "/metadata_no_errors.xml", dir + "/metadata.xml")
+        shutil.copyfile(FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png",
+                        dir + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png")
+        shutil.copyfile(FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png",
+                        dir + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png")
+
 
 class AdbPuller:
     def pull(self, src, dest):
@@ -40,6 +51,7 @@ class AdbPuller:
 
     def get_external_data_dir(self):
         return "/sdcard"
+
 
 class TestAdbHelpers(unittest.TestCase):
     def setUp(self):
@@ -60,6 +72,7 @@ class TestAdbHelpers(unittest.TestCase):
         pull_screenshots.pull_all("com.facebook.testing.tests", self.tmpdir, adb_puller=AdbPuller())
 
         self.assertTrue(os.path.exists(self.tmpdir + "/metadata.xml"))
+
 
 class TestPullScreenshots(unittest.TestCase):
     def setUp(self):
@@ -166,6 +179,44 @@ class TestPullScreenshots(unittest.TestCase):
         os.environ['ANDROID_SDK'] = "foobar"
         pull_screenshots.setup_paths()
         assertRegex(self, os.environ['PATH'], '.*:foobar/platform-tools.*')
+
+    def test_no_pull_argument_does_not_use_adb_on_verify(self):
+        source = tempfile.mkdtemp()
+        dest = tempfile.mkdtemp()
+
+        LocalFileHelper().setup(source)
+        LocalFileHelper().setup(dest)
+
+        pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                          adb_puller=None,
+                                          perform_pull=False,
+                                          temp_dir=source,
+                                          verify=dest)
+
+    def test_no_pull_argument_does_not_use_adb_on_record(self):
+        source = tempfile.mkdtemp()
+        dest = tempfile.mkdtemp()
+
+        LocalFileHelper().setup(source)
+        LocalFileHelper().setup(dest)
+
+        pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                          adb_puller=None,
+                                          perform_pull=False,
+                                          temp_dir=source,
+                                          record=dest)
+
+    def test_no_pull_argument_must_have_temp_dir(self):
+
+        try:
+            pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                              adb_puller=None,
+                                              perform_pull=False,
+                                              temp_dir=None,
+                                              verify=tempfile.mkdtemp())
+            self.fail("expected exception")
+        except RuntimeError as e:
+            assertRegex(self, e.args[0], "temp_dir must be given if --no-pull is present")
 
 if __name__ == '__main__':
     unittest.main()
