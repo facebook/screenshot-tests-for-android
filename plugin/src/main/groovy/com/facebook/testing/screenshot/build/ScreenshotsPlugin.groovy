@@ -139,7 +139,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
     def implementationVersion = getClass().getPackage().getImplementationVersion()
 
     if (!implementationVersion) {
-      logger.warn("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
+      println("WARNING: you shouldn't see this in normal operation, file a bug report if this is not a framework test")
       implementationVersion = '0.4'
     }
 
