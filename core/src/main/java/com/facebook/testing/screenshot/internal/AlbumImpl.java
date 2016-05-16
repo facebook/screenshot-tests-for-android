@@ -215,6 +215,10 @@ public class AlbumImpl implements Album {
       saveTiling(recordBuilder);
     }
 
+    if (recordBuilder.getGroup() != null) {
+      addTextNode("group", recordBuilder.getGroup());
+    }
+
     mAllNames.add(recordBuilder.getName());
 
     mXmlSerializer.endTag(null, "screenshot");
