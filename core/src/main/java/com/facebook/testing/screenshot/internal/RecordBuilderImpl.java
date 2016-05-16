@@ -34,6 +34,8 @@ public class RecordBuilderImpl implements RecordBuilder {
   private String mTestClass;
   private String mTestName;
   private String mError;
+  private String mGroup;
+
   private Tiling mTiling = new Tiling(1, 1);
   private View mView;
   private final Map<String, String> mExtras = new HashMap<String, String>();
@@ -149,6 +151,12 @@ public class RecordBuilderImpl implements RecordBuilder {
     checkState();
   }
 
+  @Override
+  public RecordBuilderImpl setGroup(String groupName) {
+    mGroup = groupName;
+    return this;
+  }
+
   /**
    * Sanity checks that the record is ready to be persisted
    */
@@ -191,5 +199,9 @@ public class RecordBuilderImpl implements RecordBuilder {
 
   public Map<String, String> getExtras() {
     return mExtras;
+  }
+
+  public String getGroup() {
+    return mGroup;
   }
 }

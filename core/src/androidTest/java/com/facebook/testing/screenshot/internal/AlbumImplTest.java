@@ -235,6 +235,25 @@ public class AlbumImplTest {
         .getTextContent());
   }
 
+  @Test
+  public void testSavesGroup() throws Throwable {
+    mAlbumImpl.addRecord(
+      new RecordBuilderImpl(null)
+      .setName("xyz")
+      .setTiling(Tiling.singleTile(mFooFile))
+      .setGroup("foo_bar"));
+
+    mAlbumImpl.flush();
+
+    Document document = parseMetadata();
+    assertEquals(
+      "foo_bar",
+      ((Element) ((Element) ((Element) document.getElementsByTagName("screenshots").item(0))
+        .getElementsByTagName("screenshot").item(0))
+        .getElementsByTagName("group").item(0))
+        .getTextContent());
+  }
+
   private Document parseMetadata() throws Throwable  {
     File file = mScreenshotDirectories.get("screenshots");
 

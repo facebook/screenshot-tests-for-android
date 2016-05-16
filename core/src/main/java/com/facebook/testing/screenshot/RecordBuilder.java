@@ -37,6 +37,12 @@ public interface RecordBuilder {
   public RecordBuilder addExtra(String key, String value);
 
   /**
+   * Groups similar or identical screenshots which makes it easier to
+   * compare.
+   */
+  public RecordBuilder setGroup(String groupName);
+
+  /**
    * Finish the recording.
    */
   public void record();
