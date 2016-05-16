@@ -216,7 +216,7 @@ class TestPullScreenshots(unittest.TestCase):
                                               verify=tempfile.mkdtemp())
             self.fail("expected exception")
         except RuntimeError as e:
-            assertRegex(self, e.args[0], "temp_dir must be given if --no-pull is present")
+            assertRegex(self, e.args[0], "You must supply a directory for temp_dir")
 
 if __name__ == '__main__':
     unittest.main()
