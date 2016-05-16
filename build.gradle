@@ -20,7 +20,9 @@ task installAll(dependsOn: [
 
 task uploadAllArchives(dependsOn:
                     [":plugin:uploadArchives",
-                     ":core:uploadArchives"])
+                     ":core:uploadArchives"]) << {
+  println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
+}
 
 
 // Run all the tests prior to release. Also run integration_test.sh
