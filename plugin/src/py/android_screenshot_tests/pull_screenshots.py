@@ -38,8 +38,7 @@ def sort_screenshots(screenshots):
     def sort_key(screenshot):
         group = screenshot.find('group')
 
-        if group is not None:
-            group = group.text
+        group = group.text if group is not None else ""
 
         return (group, screenshot.find('name').text)
 
