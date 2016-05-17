@@ -18,6 +18,7 @@ import sys
 from . import pull_screenshots
 import tempfile
 import shutil
+import xml.etree.ElementTree as ET
 
 if sys.version_info >= (3,):
     from unittest.mock import *
@@ -217,6 +218,19 @@ class TestPullScreenshots(unittest.TestCase):
             self.fail("expected exception")
         except RuntimeError as e:
             assertRegex(self, e.args[0], "You must supply a directory for temp_dir")
+
+    def test_screenshots_with_same_group_ordered_together(self):
+        xml = ET.fromstring("""<screenshots>
+          <screenshot><name>one</name><group>foo</group></screenshot>
+          <screenshot><name>two</name></screenshot>
+          <screenshot><name>three</name><group>foo</group></screenshot>
+        </screenshots>""")
+
+        screenshots = pull_screenshots.sort_screenshots(xml.iter('screenshot'))
+
+        self.assertEquals(
+            ["two", "one", "three"],
+            [x.find('name').text for x in screenshots])
 
 if __name__ == '__main__':
     unittest.main()

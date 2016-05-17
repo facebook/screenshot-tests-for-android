@@ -34,6 +34,17 @@ def usage():
     print >>sys.stderr, "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]"
     return
 
+def sort_screenshots(screenshots):
+    def sort_key(screenshot):
+        group = screenshot.find('group')
+
+        if group is not None:
+            group = group.text
+
+        return (group, screenshot.find('name').text)
+
+    return sorted(list(screenshots), key=sort_key)
+
 def generate_html(dir):
     root = ET.parse(join(dir, 'metadata.xml')).getroot()
     alternate = False
@@ -50,10 +61,17 @@ def generate_html(dir):
         html.write('<body>')
 
         html.write('<!-- begin results -->')
-        for screenshot in root.iter('screenshot'):
+
+        for screenshot in sort_screenshots(root.iter('screenshot')):
             alternate = not alternate
             html.write('<div class="screenshot %s">' % ('alternate' if alternate else ''))
             html.write('<div class="screenshot_name">%s</div>' % (screenshot.find('name').text))
+
+            group = screenshot.find('group')
+
+            if group:
+                html.write('<div class="screenshot_group">%s</div>' % group.text)
+
             html.write('<button class="view_dump" data-name="%s">Dump view hierarchy</button>' % (screenshot.find('name').text))
 
             extras = screenshot.find('extras')
