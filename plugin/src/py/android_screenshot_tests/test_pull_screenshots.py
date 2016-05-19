@@ -40,13 +40,19 @@ class LocalFileHelper:
         shutil.copyfile(FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png",
                         dir + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png")
 
+def assert_nice_filename(filename):
+    if "//" in filename:
+        raise RuntimeError("%s is not a canonical filename and can cause problems that are hard to debug"
+                           % filename)
 
 class AdbPuller:
     def pull(self, src, dest):
+        assert_nice_filename(src)
         src = CURRENT_DIR + "/fixtures/" + src
         shutil.copyfile(src, dest)
 
     def remote_file_exists(self, src):
+        assert_nice_filename(src)
         src = CURRENT_DIR + "/fixtures/" + src
         return os.path.exists(src)
 
@@ -231,6 +237,19 @@ class TestPullScreenshots(unittest.TestCase):
         self.assertEquals(
             ["two", "one", "three"],
             [x.find('name').text for x in screenshots])
+
+
+class TestAndroidJoin(unittest.TestCase):
+    def test_simple(self):
+        self.assertEquals("/foo/bar",
+                          pull_screenshots.android_path_join("/foo", "bar"))
+        self.assertEquals("/foo/bar",
+                          pull_screenshots.android_path_join("/foo/", "bar"))
+
+    def test_multiple(self):
+        self.assertEquals("/foo/bar/car",
+                          pull_screenshots.android_path_join("/foo", "bar/", "car"))
+
 
 if __name__ == '__main__':
     unittest.main()

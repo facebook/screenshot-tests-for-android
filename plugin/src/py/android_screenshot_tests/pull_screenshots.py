@@ -153,10 +153,34 @@ def _copy_via_zip(src_zip, zip_path, dest):
 
         _copy_via_zip(head, tail if not zip_path else (tail + "/" + zip_path), dest)
 
+def _android_path_join_two(a, b):
+    if not a.endswith("/"):
+        a += "/"
+
+    return a + b
+
+def android_path_join(a, *args):
+    """Similar to os.path.join(), but might differ in behavior on Windows"""
+
+    if args == []:
+        return a
+
+    if len(args) == 1:
+        return _android_path_join_two(a, args[0])
+
+    return android_path_join(android_path_join(a, args[0]), *args[1:])
+
 def pull_metadata(package, dir, adb_puller):
-    root_screenshot_dir = adb_puller.get_external_data_dir() + "/screenshots"
-    metadata_file = '%s/%s/screenshots-default/metadata.xml' % (root_screenshot_dir, package)
-    old_metadata_file = '%s/%s/app_screenshots-default/metadata.xml' % (OLD_ROOT_SCREENSHOT_DIR, package)
+    root_screenshot_dir = android_path_join(adb_puller.get_external_data_dir(), "screenshots")
+    metadata_file = android_path_join(
+        root_screenshot_dir,
+        package,
+        'screenshots-default/metadata.xml')
+
+    old_metadata_file = android_path_join(
+        OLD_ROOT_SCREENSHOT_DIR,
+        package,
+        'app_screenshots-default/metadata.xml')
 
     if adb_puller.remote_file_exists(metadata_file):
         adb_puller.pull(metadata_file, join(dir, 'metadata.xml'))
@@ -170,7 +194,9 @@ def pull_metadata(package, dir, adb_puller):
 
 def create_empty_metadata_file(dir):
     with open(join(dir, 'metadata.xml'), 'w') as out:
-        out.write("""<?xml version="1.0" encoding="UTF-8"?>
+        out.write(
+
+    """<?xml version="1.0" encoding="UTF-8"?>
 <screenshots>
 </screenshots>""")
 
@@ -180,11 +206,11 @@ def pull_images(dir, device_dir, adb_puller):
         filename_nodes = s.findall('relative_file_name')
         for filename_node in filename_nodes:
             adb_puller.pull(
-                device_dir + "/" + filename_node.text,
+                android_path_join(device_dir, filename_node.text),
                 join(dir, os.path.basename(filename_node.text)))
         dump_node = s.find('view_hierarchy')
         if dump_node is not None:
-            adb_puller.pull(device_dir + "/" + dump_node.text, join(dir, os.path.basename(dump_node.text)))
+            adb_puller.pull(android_path_join(device_dir, dump_node.text), join(dir, os.path.basename(dump_node.text)))
 
 def pull_all(package, dir, adb_puller):
     device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
