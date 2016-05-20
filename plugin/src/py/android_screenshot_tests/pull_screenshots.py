@@ -154,6 +154,9 @@ def _copy_via_zip(src_zip, zip_path, dest):
         _copy_via_zip(head, tail if not zip_path else (tail + "/" + zip_path), dest)
 
 def _android_path_join_two(a, b):
+    if b.startswith("/"):
+        return b
+
     if not a.endswith("/"):
         a += "/"
 

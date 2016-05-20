@@ -250,6 +250,10 @@ class TestAndroidJoin(unittest.TestCase):
         self.assertEquals("/foo/bar/car",
                           pull_screenshots.android_path_join("/foo", "bar/", "car"))
 
+    def test_root(self):
+        self.assertEquals("/bar",
+                          pull_screenshots.android_path_join("/foo", "/bar"))
+
 
 if __name__ == '__main__':
     unittest.main()
