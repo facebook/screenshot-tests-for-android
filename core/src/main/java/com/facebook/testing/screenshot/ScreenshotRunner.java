@@ -18,6 +18,9 @@ import com.facebook.testing.screenshot.internal.ScreenshotImpl;
 /**
  * The ScreenshotRunner needs to be called from the top level
  * Instrumentation runner before and after all the tests run.
+ *
+ * You don't need to call this directly if you're using {@code
+ * ScreenshotTestRunner} as your instrumentation.
  */
 public abstract class ScreenshotRunner {
   /**

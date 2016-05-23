@@ -19,6 +19,7 @@ from . import pull_screenshots
 import tempfile
 import shutil
 import xml.etree.ElementTree as ET
+from os.path import join
 
 if sys.version_info >= (3,):
     from unittest.mock import *
@@ -46,19 +47,27 @@ def assert_nice_filename(filename):
                            % filename)
 
 class AdbPuller:
+    def __init__(self, fixture_dir=join(CURRENT_DIR, "fixtures")):
+        self.fixture_dir = fixture_dir
+
     def pull(self, src, dest):
+        self._valid_src(src)
         assert_nice_filename(src)
-        src = CURRENT_DIR + "/fixtures/" + src
+        src = self.fixture_dir + src
         shutil.copyfile(src, dest)
 
     def remote_file_exists(self, src):
+        self._valid_src(src)
         assert_nice_filename(src)
-        src = CURRENT_DIR + "/fixtures/" + src
+        src = self.fixture_dir + src
         return os.path.exists(src)
+
+    def _valid_src(self, src):
+        if not src.startswith("/"):
+            raise RuntimeError("src must be absolute, not: " + src)
 
     def get_external_data_dir(self):
         return "/sdcard"
-
 
 class TestAdbHelpers(unittest.TestCase):
     def setUp(self):
@@ -238,6 +247,25 @@ class TestPullScreenshots(unittest.TestCase):
             ["two", "one", "three"],
             [x.find('name').text for x in screenshots])
 
+    def test_invalid_xml(self):
+        source = join(tempfile.mkdtemp(), "foo")
+        shutil.copytree(join(CURRENT_DIR, "fixtures"), source)
+
+        metadata_file = join(source, "sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
+        self.assertTrue(os.path.exists(metadata_file))
+
+        with open(metadata_file, "w") as f:
+            f.write("<invalid-xml>")
+            f.flush()
+
+        adb_puller = AdbPuller(source)
+
+        try:
+            pull_screenshots.pull_screenshots(TESTING_PACKAGE,
+                                              adb_puller=adb_puller)
+            self.fail("expected exception")
+        except RuntimeError as e:
+            assertRegex(self, e.args[0], ".*ScreenshotRunner.*")
 
 class TestAndroidJoin(unittest.TestCase):
     def test_simple(self):

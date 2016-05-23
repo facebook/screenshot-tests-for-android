@@ -221,6 +221,7 @@ def pull_all(package, dir, adb_puller):
 
 def pull_filtered(package, dir, adb_puller, filter_name_regex=None):
     device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
+    _validate_metadata(dir)
     metadata.filter_screenshots(join(dir, 'metadata.xml'), name_regex=filter_name_regex)
     pull_images(dir, device_dir, adb_puller=adb_puller)
 
@@ -228,6 +229,12 @@ def _summary(dir):
     root = ET.parse(join(dir, 'metadata.xml')).getroot()
     count = len(root.findall('screenshot'))
     print("Found %d screenshots" % count)
+
+def _validate_metadata(dir):
+    try:
+        ET.parse(join(dir, 'metadata.xml'))
+    except ET.ParseError as e:
+        raise RuntimeError("Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation")
 
 def pull_screenshots(process,
                      adb_puller,
@@ -247,6 +254,8 @@ def pull_screenshots(process,
 
     if perform_pull is True:
         pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
+
+    _validate_metadata(temp_dir)
 
     path_to_html = generate_html(temp_dir)
 
