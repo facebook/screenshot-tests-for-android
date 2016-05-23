@@ -9,8 +9,15 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Instrumentation;
 import android.os.Bundle;
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 
 import org.junit.Before;
@@ -18,13 +25,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
-
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 /**
@@ -214,5 +215,21 @@ public class HostFileSenderTest {
     assertTrue(file.exists());
     mHostFileSender.send(file);
     assertTrue(file.exists());
+  }
+
+  @Test
+  public void testFixesExternalDirectory() throws Throwable {
+    Bundle args = new Bundle();
+    String externalDirectory = System.getenv("EXTERNAL_STORAGE");
+    assertThat(externalDirectory,
+               is(not(isEmptyOrNullString())));
+
+    ScreenshotDirectories sd = new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
+    File file = sd.get("default");
+    mHostFileSender.send(file);
+
+    assertThat(mStatus.get(0).getString("HostFileSender_filename"),
+               startsWith(externalDirectory));
+
   }
 }

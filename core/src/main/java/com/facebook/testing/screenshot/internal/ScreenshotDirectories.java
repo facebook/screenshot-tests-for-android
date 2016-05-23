@@ -44,10 +44,15 @@ class ScreenshotDirectories {
   }
 
   private File getSdcardDir(String type) {
+    String externalStorage = System.getenv("EXTERNAL_STORAGE");
+
+    if (externalStorage == null) {
+      throw new RuntimeException("No $EXTERNAL_STORAGE has been set on the device, please report this bug!");
+    }
 
     String parent = String.format(
       "%s/screenshots/%s/",
-      Environment.getExternalStorageDirectory().getPath(),
+      externalStorage,
       mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
