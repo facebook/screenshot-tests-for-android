@@ -4,6 +4,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import java.io.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -32,7 +33,9 @@ public class MainHandler extends AbstractHandler {
 
     response.setContentType("html/text");
     response.setStatus(200);
-    response.getWriter().write("<html><body>OK</body></html>");
+
+    Writer writer = response.getWriter();
+    writer.write("<html><body>OK</body></html>");
     response.flushBuffer();
     baseRequest.setHandled(true);
   }

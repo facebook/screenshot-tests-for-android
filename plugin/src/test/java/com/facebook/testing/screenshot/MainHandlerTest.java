@@ -52,6 +52,12 @@ public class MainHandlerTest {
 
   @Test
   public void testSingleScreenshot() throws Throwable {
+    File file = writeMetadata("<screenshots>" + oneScreenshot + "<screenshots>");
+    MainHandler handler = new MainHandler(file);
+
+    String output = getOutput(handler);
+
+    //assertThat(output, containsString("com.foo.ScriptsFixtureTest"));
   }
 
   private File writeMetadata(String contents) throws IOException {
