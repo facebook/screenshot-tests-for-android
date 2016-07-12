@@ -14,7 +14,8 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.Mockito.*;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
-
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class MainHandlerTest {
   @Rule
@@ -32,6 +33,9 @@ public class MainHandlerTest {
 
   public String getOutput(MainHandler handler) {
     Request request = mock(Request.class);
+    HttpServletResponse response = mock(HttpServletResponse.class);
+    HttpServletRequest servletRequest = mock(HttpServletRequest.class);
+
     return "<html>";
   }
 }
