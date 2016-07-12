@@ -11,6 +11,10 @@ import org.junit.Rule;
 import org.junit.rules.*;
 import static org.junit.Assert.*;
 import static org.hamcrest.Matchers.*;
+import static org.mockito.Mockito.*;
+import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.handler.AbstractHandler;
+
 
 public class MainHandlerTest {
   @Rule
@@ -27,6 +31,7 @@ public class MainHandlerTest {
   }
 
   public String getOutput(MainHandler handler) {
+    Request request = mock(Request.class);
     return "<html>";
   }
 }
