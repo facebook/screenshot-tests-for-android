@@ -21,15 +21,43 @@ public class MainHandlerTest {
   @Rule
   public TemporaryFolder mTempDir = new TemporaryFolder();
 
+  String oneScreenshot =
+      "  <screenshot>\n" +
+      "    <description />\n" +
+      "    " +
+      " <name>com.foo.ScriptsFixtureTest_testGetTextViewScreenshot</name>\n" +
+      "    <test_class>\n" +
+      "    " +
+      " com.facebook.testing.screenshot.ScriptsFixtureTest</test_class>\n" +
+      "    " +
+      " <test_name>testGetTextViewScreenshot</test_name>\n" +
+      "    <tile_width>1</tile_width>\n" +
+      "    <tile_height>1</tile_height>\n" +
+      "    " +
+      " <relative_file_name>com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png</relative_file_name>\n" +
+      "    " +
+      " <view_hierarchy>one_dump.xml</view_hierarchy>\n" +
+      "  </screenshot>\n";
+
+
   @Test
   public void testBasics() throws Throwable {
-    File file = mTempDir.newFile("metadata.xml");
-    Files.write("<screenshots></screenshots>", file, Charsets.UTF_8);
+    File file = writeMetadata("<screenshots></screenshots>");
     MainHandler handler = new MainHandler(file);
 
     String output = getOutput(handler);
     assertThat(output, containsString("<html>"));
     assertThat(output, containsString("</html>"));
+  }
+
+  @Test
+  public void testSingleScreenshot() throws Throwable {
+  }
+
+  private File writeMetadata(String contents) throws IOException {
+    File file = mTempDir.newFile("metadata.xml");
+    Files.write(contents, file, Charsets.UTF_8);
+    return file;
   }
 
   public String getOutput(MainHandler handler) throws Exception {
