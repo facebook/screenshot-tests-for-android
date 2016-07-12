@@ -31,13 +31,19 @@ public class MainHandlerTest {
     assertThat(output, containsString("<html>"));
   }
 
-  public String getOutput(MainHandler handler) throws IOException {
+  public String getOutput(MainHandler handler) throws Exception {
     Request request = mock(Request.class);
     StringWriter stringWriter = new StringWriter();
     HttpServletResponse response = mock(HttpServletResponse.class);
     HttpServletRequest servletRequest = mock(HttpServletRequest.class);
-    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter));
+    when(response.getWriter()).thenReturn(new PrintWriter(stringWriter, true));
 
-    return "<html>";
+    handler.handle(
+        "",
+        request,
+        servletRequest,
+        response);
+
+    return stringWriter.toString();
   }
 }
