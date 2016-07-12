@@ -3,6 +3,7 @@
 package com.facebook.testing.screenshot;
 
 import org.junit.Before;
+import org.junit.After;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import java.net.URL;
@@ -17,6 +18,11 @@ public class WebServerTest {
   public void before() throws Throwable {
     mWebServer = new WebServer(PORT);
     mWebServer.start();
+  }
+
+  @After
+  public void after() throws Throwable {
+    mWebServer.stop();
   }
 
   @Test
