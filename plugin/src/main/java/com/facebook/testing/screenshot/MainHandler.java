@@ -34,7 +34,7 @@ public class MainHandler extends AbstractHandler {
     response.setContentType("html/text");
     response.setStatus(200);
 
-    Writer writer = response.getWriter();
+    PrintWriter writer = new PrintWriter(response.getWriter(), true);
     writer.write("<html><body>OK</body></html>");
     response.flushBuffer();
     baseRequest.setHandled(true);
