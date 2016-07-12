@@ -29,6 +29,7 @@ public class MainHandlerTest {
 
     String output = getOutput(handler);
     assertThat(output, containsString("<html>"));
+    assertThat(output, containsString("</html>"));
   }
 
   public String getOutput(MainHandler handler) throws Exception {
