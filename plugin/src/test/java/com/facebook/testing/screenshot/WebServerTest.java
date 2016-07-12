@@ -27,11 +27,18 @@ public class WebServerTest {
 
   @Test
   public void testAccessEndpoint() throws Throwable {
-    URL url = new URL("http://localhost:" + PORT + "/blahblah");
+    URL url = new URL("http://localhost:" + PORT + "/404");
     try (InputStream connection = url.openStream()) {
       fail("expected exception");
     } catch (FileNotFoundException e) {
       // at least we're connected
+    }
+  }
+
+  @Test
+  public void testAssertMainHandler() throws Throwable {
+    URL url = new URL("http://localhost:" + PORT + "/");
+    try (InputStream connection = url.openStream()) {
     }
   }
 }
