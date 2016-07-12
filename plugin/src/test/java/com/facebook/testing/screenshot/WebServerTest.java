@@ -30,6 +30,7 @@ public class WebServerTest {
 
     File file = mTempDir.newFile("metadata.xml");
     Files.write("<screenshots></screenshots>", file, Charsets.UTF_8);
+    mWebServer.setMetadataFile(file);
   }
 
   @After
