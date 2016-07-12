@@ -25,7 +25,7 @@ public class WebServer {
   public void start() {
     mServer = new Server(mPort);
 
-    Handler rootHandler = new MainHandler();
+    Handler rootHandler = new MainHandler(mMetatdataFile);
     ContextHandler rootContextHandler = new ContextHandler("/");
     rootContextHandler.setHandler(rootHandler);
 

@@ -1,16 +1,23 @@
 package com.facebook.testing.screenshot;
 
-import org.eclipse.jetty.server.*;
-import java.util.*;
-import java.io.IOException;
-import org.eclipse.jetty.server.handler.AbstractHandler;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.jetty.server.handler.ContextHandler;
-import org.eclipse.jetty.server.handler.ContextHandlerCollection;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
+
+import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public class MainHandler extends AbstractHandler {
+  private File mMetadataFile;
+
+  public MainHandler(File metadataFile) {
+    mMetadataFile = metadataFile;
+  }
+
   @Override
   public void handle(
       String target,
