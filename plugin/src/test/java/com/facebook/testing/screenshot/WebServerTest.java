@@ -8,6 +8,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import java.net.URL;
 import java.io.*;
+import static org.hamcrest.Matchers.*;
 
 public class WebServerTest {
   int PORT = 10021;
@@ -39,6 +40,8 @@ public class WebServerTest {
   public void testAssertMainHandler() throws Throwable {
     URL url = new URL("http://localhost:" + PORT + "/");
     try (InputStream connection = url.openStream()) {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(connection));
+      assertThat(reader.readLine(), containsString("html"));
     }
   }
 }
