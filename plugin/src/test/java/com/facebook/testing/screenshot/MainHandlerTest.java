@@ -10,6 +10,7 @@ import org.junit.*;
 import org.junit.Rule;
 import org.junit.rules.*;
 import static org.junit.Assert.*;
+import static org.hamcrest.Matchers.*;
 
 public class MainHandlerTest {
   @Rule
@@ -20,6 +21,12 @@ public class MainHandlerTest {
     File file = mTempDir.newFile("metadata.xml");
     Files.write("<screenshots></screenshots>", file, Charsets.UTF_8);
     MainHandler handler = new MainHandler(file);
+
+    String output = getOutput(handler);
+    assertThat(output, containsString("<html>"));
   }
 
+  public String getOutput(MainHandler handler) {
+    return "<html>";
+  }
 }
