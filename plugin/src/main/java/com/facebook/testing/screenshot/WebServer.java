@@ -51,24 +51,4 @@ public class WebServer {
     }
   }
 
-  private class MainHandler extends AbstractHandler {
-    @Override
-    public void handle(
-        String target,
-        Request baseRequest,
-        HttpServletRequest request,
-        HttpServletResponse response) throws IOException, ServletException {
-
-      String basePath = baseRequest.getPathInfo();
-      if (basePath != null && basePath.equals("/404")) {
-        return;
-      }
-
-      response.setContentType("html/text");
-      response.setStatus(200);
-      response.getWriter().write("<html><body>OK</body></html>");
-      response.flushBuffer();
-      baseRequest.setHandled(true);
-    }
-  }
 }
