@@ -2,22 +2,24 @@
 
 package com.facebook.testing.screenshot;
 
-import org.eclipse.jetty.server.*;
+import java.io.File;
 import java.util.*;
-import java.io.IOException;
-import org.eclipse.jetty.server.handler.AbstractHandler;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
+import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ContextHandlerCollection;
 
 public class WebServer {
   private int mPort;
   private Server mServer;
+  private File mMetatdataFile;
 
   public WebServer(int port) {
     mPort = port;
+  }
+
+  public void setMetadataFile(File file) {
+    mMetatdataFile = file;
   }
 
   public void start() {
