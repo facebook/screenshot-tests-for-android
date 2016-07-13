@@ -7,9 +7,15 @@ jar {
 
 apply plugin: 'maven'
 
+repositories {
+  mavenCentral()
+}
 
 dependencies {
     compile gradleApi()
+    compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
+
+    testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
     testCompile 'com.android.tools.build:gradle:1.3.1'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
@@ -48,6 +54,10 @@ task pyTests(type: Exec) {
 task py3Tests(type: Exec) {
      workingDir file('./src/py')
      commandLine 'python3', '-m', 'unittest', 'discover'
+}
+
+task sampleServer() << {
+  file = new File("plugin/src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
 }
 
 apply from: rootProject.file("release.gradle")
