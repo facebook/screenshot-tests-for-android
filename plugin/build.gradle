@@ -58,7 +58,9 @@ task py3Tests(type: Exec) {
 
 task startSampleServer(type: JavaExec, dependsOn: "jar") {
   classpath "build/classes/main"
-  classpath += sourceSets.main.runtimeClasspath
+  classpath += sourceSets.main.runtimeClasspath.filter { File file ->
+    return !file.getAbsolutePath().contains("/servlet-api");
+  }
 
   main "com.facebook.testing.screenshot.WebServer"
   args "src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/"

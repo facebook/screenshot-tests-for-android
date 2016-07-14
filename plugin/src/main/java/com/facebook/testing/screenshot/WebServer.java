@@ -5,6 +5,7 @@ package com.facebook.testing.screenshot;
 import java.io.File;
 import java.util.*;
 
+import org.eclipse.jetty.util.resource.FileResource;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.ContextHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -31,20 +32,26 @@ public class WebServer {
     rootContextHandler.setHandler(rootHandler);
 
     ResourceHandler resourceHandler = new ResourceHandler();
+    ContextHandler resourceContextHandler = new ContextHandler("/static");
+    resourceContextHandler.setHandler(resourceHandler);
 
     if (mRoot != null) {
-      resourceHandler.setDirectoriesListed(true);
+      //resourceHandler.setDirectoriesListed(true);
+      if (!mRoot.exists()) {
+        throw new RuntimeException("couldn't find path");
+      }
       resourceHandler.setResourceBase(mRoot.getAbsolutePath());
     }
 
     Handler[] handlers = new Handler[] {
+      resourceContextHandler,
       rootContextHandler,
-      resourceHandler,
     };
 
     ContextHandlerCollection contexts = new ContextHandlerCollection();
     contexts.setHandlers(handlers);
     mServer.setHandler(contexts);
+
     try {
       mServer.start();
     } catch (Exception e) {
