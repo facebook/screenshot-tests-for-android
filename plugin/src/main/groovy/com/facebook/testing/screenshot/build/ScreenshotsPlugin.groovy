@@ -1,6 +1,7 @@
 package com.facebook.testing.screenshot.build
 
 import org.gradle.api.*
+import com.facebook.testing.screenshot.WebServer
 
 class ScreenshotsPluginExtension {
     def testApkTarget = "packageDebugAndroidTest"
@@ -55,6 +56,33 @@ class ScreenshotsPlugin implements Plugin<Project> {
       }
     }
 
+    project.task('pullScreenshotsToTempDir') << {
+      project.exec {
+        def output = getTestApkOutput(project)
+
+        executable = 'python'
+        environment('PYTHONPATH', jarFile)
+
+        args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString(), \
+                '--temp-dir', temporaryDir]
+      }
+    }
+
+    project.task('screenshotTestsV2') << {
+      def webServer = new WebServer(10001);
+      System.out.println(project.pullScreenshotsToTempDir.temporaryDir)
+      webServer.setRoot(project.pullScreenshotsToTempDir.temporaryDir)
+
+      System.out.println("View screenshots at: http://localhost:10001")
+      webServer.start()
+
+      // For some reason, the server starts asynchronously here. I
+      // don't know what's up, but I need to hang forever.
+      while (webServer.isRunning()) {
+        Thread.sleep(1000)
+      }
+    }
+
     project.task('pullScreenshotsFromDirectory') << {
       project.exec {
 
@@ -97,6 +125,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       project.screenshotTests.dependsOn project.clearScreenshots
       project.screenshotTests.dependsOn project.screenshots.connectedAndroidTestTarget
       project.screenshotTests.dependsOn project.pullScreenshots
+      project.screenshotTestsV2.dependsOn project.pullScreenshotsToTempDir
 
       project.pullScreenshots.dependsOn project.screenshots.testApkTarget
     }

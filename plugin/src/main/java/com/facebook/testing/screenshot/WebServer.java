@@ -59,6 +59,10 @@ public class WebServer {
     }
   }
 
+  public boolean isRunning() {
+    return mServer != null && mServer.isRunning();
+  }
+
   public void stop() {
     if (mServer != null) {
       try {
