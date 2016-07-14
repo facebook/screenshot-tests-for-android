@@ -32,7 +32,7 @@ public class WebServer {
     rootContextHandler.setHandler(rootHandler);
 
     ResourceHandler resourceHandler = new ResourceHandler();
-    ContextHandler resourceContextHandler = new ContextHandler("/static");
+    ContextHandler resourceContextHandler = new ContextHandler("/s");
     resourceContextHandler.setHandler(resourceHandler);
 
     if (mRoot != null) {
