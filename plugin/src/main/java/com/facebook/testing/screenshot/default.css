@@ -1,0 +1,29 @@
+body {
+    background: #D3D3D3;
+}
+
+img {
+}
+
+.img-wrapper {
+    background-image: url("background.png");
+}
+
+div.screenshot {
+    padding: 10px;
+}
+
+div.alternate {
+    background: #E0E0E0;
+}
+
+div.screenshot_error {
+    color: red;
+}
+
+table {
+    border-collapse: collapse;
+}
+th, tr, td {
+    padding: 0;
+}

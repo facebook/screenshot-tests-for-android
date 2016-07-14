@@ -42,18 +42,25 @@ public class MainHandler extends AbstractHandler {
       return;
     }
 
+
+    if (basePath != null && basePath.equals("/default.css")) {
+      writeResource("default.css", "text/css", response);
+      return;
+    }
+
     response.setContentType("text/html");
     response.setStatus(200);
-
     PrintWriter writer = new PrintWriter(response.getWriter(), true);
+    writer.println(String.valueOf(basePath));
+
     writer.println("<!DOCTYPE html>");
     writer.println("<!DOCTYPE html>");
     writer.write("<head>");
     writer.write("<script src='https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script>");
     writer.write("<script src='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js'></script>");
-    writer.write("<script src='/public/default.js'></script>");
+    writer.write("<script src='/default.js'></script>");
     writer.write("<link rel='stylesheet' href='https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css' />");
-    writer.write("<link rel='stylesheet' href='/public/default.css'></head>");
+    writer.write("<link rel='stylesheet' href='/default.css'></head>");
 
     writer.println("<html>");
 
@@ -65,6 +72,19 @@ public class MainHandler extends AbstractHandler {
     writer.println("</html>");
     response.flushBuffer();
     baseRequest.setHandled(true);
+  }
+
+  private void writeResource(String name, String mime, HttpServletResponse response) throws IOException, ServletException {
+    response.setStatus(200);
+    response.setContentType(mime);
+    try (InputStream stream = getClass().getResourceAsStream(name)) {
+      BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
+      String line;
+      PrintWriter writer = new PrintWriter(response.getWriter(), true);
+      while ((line = reader.readLine()) != null) {
+        writer.println(line);
+      }
+    }
   }
 
   static class Element {
@@ -124,7 +144,7 @@ public class MainHandler extends AbstractHandler {
     }
 
     String str = "";
-    for (int i = 0; i < extras.getChildNodes().writeImagewriteImagegetLength(); i++) {
+    for (int i = 0; i < extras.getChildNodes().getLength(); i++) {
       writer.println("extras unsupported");
     }
   }

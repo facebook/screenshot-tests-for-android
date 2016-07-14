@@ -20,6 +20,12 @@ dependencies {
     testCompile 'org.hamcrest:hamcrest-all:1.3'
 }
 
+jar {
+  from ('src/main/java') {
+    include '**/*.css'
+  }
+}
+
 repositories {
     mavenCentral()
 }
@@ -57,13 +63,14 @@ task py3Tests(type: Exec) {
 }
 
 task startSampleServer(type: JavaExec, dependsOn: "jar") {
-  classpath "build/classes/main"
+  classpath "build/libs/plugin-" + VERSION_NAME + ".jar"
   classpath += sourceSets.main.runtimeClasspath.filter { File file ->
     return !file.getAbsolutePath().contains("/servlet-api");
   }
 
   main "com.facebook.testing.screenshot.WebServer"
   args "src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/"
+
 }
 
 task sampleServer() << {
