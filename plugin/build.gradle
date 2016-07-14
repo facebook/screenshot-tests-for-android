@@ -56,4 +56,8 @@ task py3Tests(type: Exec) {
      commandLine 'python3', '-m', 'unittest', 'discover'
 }
 
+task sampleServer() << {
+  file = new File("plugin/src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
+}
+
 apply from: rootProject.file("release.gradle")

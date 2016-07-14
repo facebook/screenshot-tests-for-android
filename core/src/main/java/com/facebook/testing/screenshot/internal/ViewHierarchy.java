@@ -25,6 +25,7 @@ import java.util.Map;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -89,6 +90,10 @@ public class ViewHierarchy {
     addTextNode(el, "top", String.valueOf(rect.top));
     addTextNode(el, "right", String.valueOf(rect.right));
     addTextNode(el, "bottom", String.valueOf(rect.bottom));
+    if (Build.VERSION.SDK_INT >= 11) {
+      addTextNode(el, "isLayoutRequested", String.valueOf(view.isLayoutRequested()));
+    }
+    addTextNode(el, "isDirty", String.valueOf(view.isDirty()));
 
     Map<String, String> extraValues = new HashMap<>();
     for (ViewDumpPlugin plugin : PluginRegistry.getPlugins()) {
