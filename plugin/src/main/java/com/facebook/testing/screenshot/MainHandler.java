@@ -48,10 +48,14 @@ public class MainHandler extends AbstractHandler {
       return;
     }
 
+    if (basePath != null && basePath.equals("/default.js")) {
+      writeResource("default.js", "text/javascript", response);
+      return;
+    }
+
     response.setContentType("text/html");
     response.setStatus(200);
     PrintWriter writer = new PrintWriter(response.getWriter(), true);
-    writer.println(String.valueOf(basePath));
 
     writer.println("<!DOCTYPE html>");
     writer.println("<!DOCTYPE html>");
@@ -131,7 +135,6 @@ public class MainHandler extends AbstractHandler {
         writer.println("</div>");
       }
 
-      writer.println("END");
     } catch (SAXException|ParserConfigurationException|IOException e) {
       throw new RuntimeException(e);
     }
