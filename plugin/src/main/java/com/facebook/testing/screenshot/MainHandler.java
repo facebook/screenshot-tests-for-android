@@ -31,13 +31,14 @@ public class MainHandler extends AbstractHandler {
       return;
     }
 
-    response.setContentType("html/text");
+    response.setContentType("text/html");
     response.setStatus(200);
 
     PrintWriter writer = new PrintWriter(response.getWriter(), true);
     writer.println("<!DOCTYPE html>");
     writer.println("<html>");
     writer.println("<body>");
+    writer.println("OK");
     writer.println("</body>");
     writer.println("</html>");
     response.flushBuffer();

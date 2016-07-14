@@ -56,6 +56,15 @@ task py3Tests(type: Exec) {
      commandLine 'python3', '-m', 'unittest', 'discover'
 }
 
+task startSampleServer(type: JavaExec, dependsOn: "jar") {
+  classpath "build/classes/main"
+  classpath += sourceSets.main.runtimeClasspath
+
+  main "com.facebook.testing.screenshot.WebServer"
+
+  args "foobar"
+}
+
 task sampleServer() << {
   file = new File("plugin/src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
 }

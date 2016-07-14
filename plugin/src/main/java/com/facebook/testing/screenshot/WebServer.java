@@ -53,4 +53,8 @@ public class WebServer {
     }
   }
 
+  public static void main(String[] args) {
+    WebServer server = new WebServer(10001);
+    server.start();
+  }
 }
