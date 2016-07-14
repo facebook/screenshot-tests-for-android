@@ -13,10 +13,10 @@ import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.AbstractHandler;
 
 public class MainHandler extends AbstractHandler {
-  private File mMetadataFile;
+  private File mRoot;
 
-  public MainHandler(File metadataFile) {
-    mMetadataFile = metadataFile;
+  public MainHandler(File root) {
+    mRoot = root;
   }
 
   @Override

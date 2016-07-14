@@ -18,7 +18,7 @@ public class WebServer {
     mPort = port;
   }
 
-  public void setMetadataFile(File file) {
+  public void setRoot(File file) {
     mMetatdataFile = file;
   }
 
@@ -55,6 +55,7 @@ public class WebServer {
 
   public static void main(String[] args) {
     WebServer server = new WebServer(10001);
+    server.setRoot(new File(args[0]));
     server.start();
   }
 }

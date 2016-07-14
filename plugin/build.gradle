@@ -61,8 +61,7 @@ task startSampleServer(type: JavaExec, dependsOn: "jar") {
   classpath += sourceSets.main.runtimeClasspath
 
   main "com.facebook.testing.screenshot.WebServer"
-
-  args "foobar"
+  args "src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/"
 }
 
 task sampleServer() << {
