@@ -22,7 +22,7 @@ public class RemoteFileHandlerTest {
   @Before
   public void before() throws Throwable {
     device = mock(IDevice.class);
-    handler = new RemoteFileHandler(device);
+    handler = new RemoteFileHandler(device, "/sdcard/foo/");
   }
 
   @Test

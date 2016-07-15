@@ -27,7 +27,7 @@ import org.w3c.dom.Element;
 import java.io.File;
 
 public class RemoteFileHandler extends AbstractHandler {
-  public RemoteFileHandler(IDevice device) {
+  public RemoteFileHandler(IDevice device, String path) {
   }
 
   @Override
