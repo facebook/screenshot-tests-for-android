@@ -15,6 +15,7 @@ import com.android.ddmlib.IDevice;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.jetty.server.*;
+import java.io.*;
 
 public class RemoteFileHandlerTest {
   private IDevice device;
@@ -22,6 +23,7 @@ public class RemoteFileHandlerTest {
   private Request mRequest;
   private HttpServletRequest mServletRequest;
   private HttpServletResponse mServletResponse;
+  private StringWriter mStringWriter = new StringWriter();
 
   @Before
   public void before() throws Throwable {
@@ -30,6 +32,7 @@ public class RemoteFileHandlerTest {
     mRequest = mock(Request.class);
     mServletRequest = mock(HttpServletRequest.class);
     mServletResponse = mock(HttpServletResponse.class);
+    when(mServletResponse.getWriter()).thenReturn(new PrintWriter(mStringWriter, true));
   }
 
   @Test
