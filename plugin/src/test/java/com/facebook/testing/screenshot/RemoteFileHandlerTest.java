@@ -14,15 +14,24 @@ import org.junit.Test;
 import org.junit.Rule;
 import static org.junit.Assert.fail;
 import com.android.ddmlib.IDevice;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import org.eclipse.jetty.server.*;
 
 public class RemoteFileHandlerTest {
   private IDevice device;
   private RemoteFileHandler handler;
+  private Request mRequest;
+  private HttpServletRequest mServletRequest;
+  private HttpServletResponse mServletResponse;
 
   @Before
   public void before() throws Throwable {
     device = mock(IDevice.class);
     handler = new RemoteFileHandler(device, "/sdcard/foo/");
+    mRequest = mock(Request.class);
+    mServletRequest = mock(HttpServletRequest.class);
+    mServletResponse = mock(HttpServletResponse.class);
   }
 
   @Test
