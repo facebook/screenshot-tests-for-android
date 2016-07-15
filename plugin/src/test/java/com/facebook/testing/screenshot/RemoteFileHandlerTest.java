@@ -17,10 +17,12 @@ import com.android.ddmlib.IDevice;
 
 public class RemoteFileHandlerTest {
   private IDevice device;
+  private RemoteFileHandler handler;
 
   @Before
   public void before() throws Throwable {
     device = mock(IDevice.class);
+    handler = new RemoteFileHandler(device);
   }
 
   @Test
