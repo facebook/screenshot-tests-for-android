@@ -3,11 +3,9 @@
 package com.facebook.testing.screenshot;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
+import org.mockito.stubbing.Answer;
+import org.mockito.invocation.InvocationOnMock;
 import org.junit.Before;
 import org.junit.After;
 import org.junit.Test;
@@ -38,5 +36,18 @@ public class RemoteFileHandlerTest {
   public void testPullsFile() throws Throwable {
     handler.handle("/bleh.png", mRequest, mServletRequest, mServletResponse);
     verify(device).pullFile(eq("/sdcard/foo/bleh.png"), any(String.class));
+  }
+
+  @Test
+  public void testRetrievesRightContent() throws Throwable {
+    doAnswer(
+        new Answer() {
+          @Override
+          public Object answer(InvocationOnMock invocation) {
+            return null;
+          }
+        }).when(device).pullFile(any(String.class), any(String.class));
+
+    handler.handle("/bleh.png", mRequest, mServletRequest, mServletResponse);
   }
 }
