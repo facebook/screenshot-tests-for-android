@@ -3,7 +3,7 @@
 package com.facebook.testing.screenshot;
 
 import org.eclipse.jetty.server.handler.*;
-import com.android.ddmlib.IDevice;
+import com.android.ddmlib.*;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -41,6 +41,15 @@ public class RemoteFileHandler extends AbstractHandler {
       Request baseRequest,
       HttpServletRequest request,
       HttpServletResponse response) throws IOException, ServletException {
+    String remoteFile = getRemoteFile(target);
+    try {
+      mDevice.pullFile(remoteFile, "/tmp");
+    } catch (AdbCommandRejectedException|TimeoutException|SyncException e) {
+      throw new IOException(e);
+    }
+  }
 
+  private String getRemoteFile(String target) {
+    return mPath + target;
   }
 }

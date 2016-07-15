@@ -28,14 +28,15 @@ public class RemoteFileHandlerTest {
   @Before
   public void before() throws Throwable {
     device = mock(IDevice.class);
-    handler = new RemoteFileHandler(device, "/sdcard/foo/");
+    handler = new RemoteFileHandler(device, "/sdcard/foo");
     mRequest = mock(Request.class);
     mServletRequest = mock(HttpServletRequest.class);
     mServletResponse = mock(HttpServletResponse.class);
   }
 
   @Test
-  public void testHandleRequest() throws Throwable {
+  public void testPullsFile() throws Throwable {
     handler.handle("/bleh.png", mRequest, mServletRequest, mServletResponse);
+    verify(device).pullFile(eq("/sdcard/foo/bleh.png"), any(String.class));
   }
 }
