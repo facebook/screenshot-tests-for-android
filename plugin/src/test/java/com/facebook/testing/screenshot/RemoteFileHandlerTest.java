@@ -36,6 +36,6 @@ public class RemoteFileHandlerTest {
 
   @Test
   public void testHandleRequest() throws Throwable {
-
+    handler.handle("/bleh.png", mRequest, mServletRequest, mServletResponse);
   }
 }
