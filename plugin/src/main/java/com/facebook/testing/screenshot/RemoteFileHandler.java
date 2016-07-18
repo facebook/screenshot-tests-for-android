@@ -43,7 +43,17 @@ public class RemoteFileHandler extends AbstractHandler {
       HttpServletResponse response) throws IOException, ServletException {
     String remoteFile = getRemoteFile(target);
     try {
-      mDevice.pullFile(remoteFile, "/tmp");
+      File tempFile = File.createTempFile("screenshot", "png");
+      mDevice.pullFile(remoteFile, tempFile.getAbsolutePath());
+
+      OutputStream os = response.getOutputStream();
+      try (FileInputStream is = new FileInputStream(tempFile)) {
+        int b;
+        while ((b = is.read()) != -1) {
+          os.write(b);
+        }
+      }
+      os.flush();
     } catch (AdbCommandRejectedException|TimeoutException|SyncException e) {
       throw new IOException(e);
     }
