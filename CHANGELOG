@@ -1,0 +1,5 @@
+
+* 0.4.2
+
+  - Support for Android gradle plugin 2.2.0
+  - Make ViewHierarchy dump more useful information
