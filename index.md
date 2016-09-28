@@ -48,7 +48,7 @@ Gradle plugin. All you need to do is apply the
     // ...
     dependencies {
       // ...
-      classpath 'com.facebook.testing.screenshot:plugin:0.2.3'
+      classpath 'com.facebook.testing.screenshot:plugin:0.4.2'
     }
   }
 
