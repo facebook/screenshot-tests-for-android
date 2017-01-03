@@ -1,4 +1,4 @@
-package com.example.nadera.myapplication;
+package com.example.screenshots;
 
 import android.os.Bundle;
 import android.support.multidex.MultiDex;

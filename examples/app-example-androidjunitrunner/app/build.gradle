@@ -9,12 +9,12 @@ android {
     defaultConfig {
 
         multiDexEnabled true
-        applicationId "com.example.nadera.myapplication"
+        applicationId "com.example.screenshots"
         minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
-        testInstrumentationRunner "com.example.nadera.myapplication.CustomTestRunner"
+        testInstrumentationRunner "com.example.screenshots.CustomTestRunner"
     }
     buildTypes {
         release {

@@ -1,4 +1,4 @@
-package com.example.nadera.myapplication;
+package com.example.screenshots;
 
 
 import android.support.test.espresso.ViewInteraction;
