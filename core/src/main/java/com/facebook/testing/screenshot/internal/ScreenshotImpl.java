@@ -17,12 +17,15 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.facebook.testing.screenshot.WindowAttachment;
 
@@ -189,6 +192,8 @@ public class ScreenshotImpl {
     }
     clearCanvas(mCanvas);
 
+    drawTextureViews(measuredView, width, height, left, top, right, bottom, mCanvas);
+
     drawClippedView(measuredView, left, top, mCanvas);
     String tempName = mAlbum.writeBitmap(recordBuilder.getName(), i, j, mBitmap);
     if (tempName == null) {
@@ -210,6 +215,21 @@ public class ScreenshotImpl {
 
   private void clearCanvas(Canvas canvas) {
     canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.SRC);
+  }
+
+  private void drawTextureViews(View view, int width, int height, int left, int top, int right, int bottom, Canvas canvas) {
+    if (view instanceof TextureView) {
+      TextureView textureView = (TextureView) view;
+      Bitmap b = textureView.getBitmap(width, height);
+      canvas.translate(-left, -top);
+      canvas.drawBitmap(b, new Rect(left, top, right, bottom), new Rect(left, top, right, bottom), null);
+      canvas.translate(left, top);
+    } else if (view instanceof ViewGroup) {
+      ViewGroup viewGroup = (ViewGroup) view;
+      for (int i = 0; i < viewGroup.getChildCount(); i++) {
+        drawTextureViews(viewGroup.getChildAt(i), width, height, left, top, right, bottom, canvas);
+      }
+    }
   }
 
   /**
