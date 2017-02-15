@@ -194,7 +194,7 @@ public class ScreenshotImpl {
 
     drawTextureViews(measuredView, width, height, left, top, right, bottom, mCanvas);
 
-    drawClippedView(measuredView, left, top, mCanvas);
+    //drawClippedView(measuredView, left, top, mCanvas);
     String tempName = mAlbum.writeBitmap(recordBuilder.getName(), i, j, mBitmap);
     if (tempName == null) {
       throw new NullPointerException();
