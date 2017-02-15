@@ -16,10 +16,10 @@ public class MapboxSimpleMapActivityTest {
 
   @Test
   public void checksMapboxSimpleMap() {
-    // Wait 3 seconds until the map gets completely loaded
+    // Wait 5 seconds until the map gets completely loaded
     // TODO Use a custom idling resource to avoid sleep
     try {
-      Thread.sleep(3000);
+      Thread.sleep(5000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
