@@ -134,6 +134,7 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
       });
 
     assertNotNull(view.getWindowToken());
+    assertTrue(view.isShown());
   }
 
 
