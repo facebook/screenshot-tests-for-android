@@ -3,6 +3,7 @@ body {
 }
 
 img {
+    display:block;
 }
 
 .img-wrapper {
@@ -24,6 +25,14 @@ div.screenshot_error {
 table {
     border-collapse: collapse;
 }
-th, tr, td {
+
+table, th, tr, td, img{
     padding: 0;
+    margin: 0;
+    border: 0;
+}
+
+table {
+    border-spacing: 0;
+    border-collapse: collapse;
 }
