@@ -134,9 +134,10 @@ public abstract class WindowAttachment {
       Class cAttachInfo = Class.forName("android.view.View$AttachInfo");
       Class cViewRootImpl = null;
 
-      if (Build.VERSION.SDK_INT >= 11) {
+      if (Build.VERSION.SDK_INT >= 14) {
         cViewRootImpl = Class.forName("android.view.ViewRootImpl");
       } else {
+        // honeyComb and gingerbread
         cViewRootImpl = Class.forName("android.view.ViewRoot");
       }
 
