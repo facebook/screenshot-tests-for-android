@@ -59,7 +59,9 @@ public class ScreenshotImpl {
   private int mTileSize = 512;
 
   private Bitmap mBitmap = null;
+  private Bitmap textureBitmap = null;
   private Canvas mCanvas = null;
+  private Canvas textureCanvas = null;
   private ViewHierarchy mViewHierarchy;
   private boolean mEnableBitmapReconfigure = (Build.VERSION.SDK_INT >= 19);
 
@@ -67,6 +69,8 @@ public class ScreenshotImpl {
     mTileSize = tileSize;
     mBitmap = null;
     mCanvas = null;
+    textureBitmap = null;
+    textureCanvas = null;
   }
 
   // VisibleForTesting
@@ -189,13 +193,16 @@ public class ScreenshotImpl {
     if (mEnableBitmapReconfigure) {
       mBitmap.reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
       mCanvas = new Canvas(mBitmap);
+      textureBitmap.reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
+      textureCanvas = new Canvas(textureBitmap);
     }
     clearCanvas(mCanvas);
+    clearCanvas(textureCanvas);
 
-    drawTextureViews(measuredView, width, height, left, top, right, bottom, mCanvas);
-
-    //drawClippedView(measuredView, left, top, mCanvas);
-    String tempName = mAlbum.writeBitmap(recordBuilder.getName(), i, j, mBitmap);
+    drawTextureViews(measuredView, width, height, left, top, right, bottom, textureCanvas);
+    drawClippedView(measuredView, left, top, mCanvas);
+    Bitmap merged = mergeBitmap(textureBitmap, mBitmap);
+    String tempName = mAlbum.writeBitmap(recordBuilder.getName(), i, j, merged);
     if (tempName == null) {
       throw new NullPointerException();
     }
@@ -211,6 +218,14 @@ public class ScreenshotImpl {
       mTileSize,
       Bitmap.Config.ARGB_8888);
     mCanvas = new Canvas(mBitmap);
+    if (textureBitmap != null) {
+      return;
+    }
+    textureBitmap = Bitmap.createBitmap(
+      mTileSize,
+      mTileSize,
+      Bitmap.Config.ARGB_8888);
+    textureCanvas = new Canvas(textureBitmap);
   }
 
   private void clearCanvas(Canvas canvas) {
@@ -246,6 +261,14 @@ public class ScreenshotImpl {
     canvas.translate(-left, -top);
     view.draw(canvas);
     canvas.translate(left, top);
+  }
+
+  private Bitmap mergeBitmap(Bitmap background, Bitmap foreground) {
+    Bitmap result = Bitmap.createBitmap(background.getWidth(), background.getHeight(), background.getConfig());
+    Canvas canvas = new Canvas(result);
+    canvas.drawBitmap(background, 0f, 0f, null);
+    canvas.drawBitmap(foreground, 0f, 0f, null);
+    return result;
   }
 
   /**
