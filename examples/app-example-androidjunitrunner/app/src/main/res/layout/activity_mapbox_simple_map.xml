@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,5 +10,9 @@
         android:id="@+id/mapView"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        mapbox:mapbox_renderTextureMode="true"/>
+        app:mapbox_renderTextureMode="true"
+        app:mapbox_cameraTargetLat="38.907192"
+        app:mapbox_cameraTargetLng="-77.036871"
+        app:mapbox_styleUrl="@string/mapbox_style_mapbox_streets"
+        app:mapbox_cameraZoom="12"/>
 </LinearLayout>

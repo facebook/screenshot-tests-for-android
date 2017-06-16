@@ -36,7 +36,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     testCompile 'junit:junit:4.12'
 
-    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.0.0-SNAPSHOT@aar') {
+    compile('com.mapbox.mapboxsdk:mapbox-android-sdk:5.1.0-beta.4@aar') {
         transitive = true
     }
     compile('com.mapbox.mapboxsdk:mapbox-android-ui:2.0.0-beta.1') {
