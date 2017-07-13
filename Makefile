@@ -39,3 +39,7 @@ integration-tests: env-check
 	cd examples/app-example && ./gradlew screenshotTests
 
 	$(MAKE) cleanup
+
+version-tag:
+	git tag v$(OLD_VERSION)
+	git push origin v$(OLD_VERSION)
