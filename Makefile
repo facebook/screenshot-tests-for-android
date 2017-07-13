@@ -8,6 +8,8 @@ FILES_WITH_VERSIONS = \
 
 OLD_VERSION=$(shell grep VERSION_NAME gradle.properties |  cut -d '=' -f 2)
 
+TMPFILE:=$(shell mktemp)
+
 .PHONY:
 	@true
 
@@ -36,7 +38,9 @@ integration-tests: env-check
 	./gradlew :core:install
 
 	cd examples/app-example && ./gradlew connectedAndroidTest
-	cd examples/app-example && ./gradlew screenshotTests
+	cd examples/app-example && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
+
+	grep "Found 3 screenshots" $(TMPFILE)
 
 	$(MAKE) cleanup
 
