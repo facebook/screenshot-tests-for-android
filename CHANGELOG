@@ -1,3 +1,7 @@
+* 0.4.3
+
+  - Added more examples
+  - Fixed a longstanding issue where we showed a horizontal break in the screenshots every 512 pixels.
 
 * 0.4.2
 
