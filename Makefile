@@ -32,7 +32,7 @@ cleanup:
 	rm -rf */build/
 	rm -rf examples/one/build/
 
-integration-tests: | env-check cleanup install-local app-example-tests cleanup
+integration-tests: | env-check cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
 	@true
 
 app-example-tests:
@@ -40,6 +40,12 @@ app-example-tests:
 	cd examples/app-example && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
 
 	grep "Found 3 screenshots" $(TMPFILE)
+
+app-example-androidjunitrunner-tests:
+	cd examples/app-example-androidjunitrunner && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
+
+	grep "Found 2 screenshots" $(TMPFILE)
+
 
 install-local:
 	./gradlew :plugin:install
