@@ -9,11 +9,10 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
+import android.graphics.Bitmap;
+
 import java.io.IOException;
 import java.io.OutputStream;
-
-import android.graphics.Bitmap;
 
 /**
  * Stores metadata about an album of screenshots during an
@@ -25,17 +24,17 @@ public interface Album {
    * Writes the bitmap corresponding to the screenshot with the name
    * {@code name} in the {@code (tilei, tilej)} position.
    */
-  public String writeBitmap(String name, int tilei, int tilej, Bitmap bitmap) throws IOException;
+  String writeBitmap(String name, int tilei, int tilej, Bitmap bitmap) throws IOException;
 
   /**
    * Call after all the screenshots are done.
    */
-  public void flush();
+  void flush();
 
   /**
    * Cleanup any disk state associated with this album.
    */
-  public void cleanup();
+  void cleanup();
 
   /**
    * Opens a stream to dump the view hierarchy into. This should be
@@ -44,10 +43,10 @@ public interface Album {
    * It is the callers responsibility to call {@code close()} on the
    * returned stream.
    */
-  public OutputStream openViewHierarchyFile(String name) throws IOException;
+  OutputStream openViewHierarchyFile(String name) throws IOException;
 
   /**
    * This is called after every record is finally set up.
    */
-  public void addRecord(RecordBuilderImpl recordBuilder) throws IOException;
+  void addRecord(RecordBuilderImpl recordBuilder) throws IOException;
 }
