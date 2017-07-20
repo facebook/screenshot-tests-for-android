@@ -6,7 +6,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.2.0'
+        classpath 'com.android.tools.build:gradle:2.3.3'
         classpath 'com.facebook.testing.screenshot:plugin:0.4.4-beta'
     }
 }
@@ -21,7 +21,7 @@ repositories {
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "26.0.0"
 
     sourceSets {
     }
