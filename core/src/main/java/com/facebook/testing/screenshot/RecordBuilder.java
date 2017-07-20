@@ -20,12 +20,12 @@ public interface RecordBuilder {
    * screenshots in the same test, then you have to explicitly specify
    * names to disambiguate.
    */
-  public RecordBuilder setName(String name);
+  RecordBuilder setName(String name);
 
   /**
    * Set a long description of the what the screenshot is about.
    */
-  public RecordBuilder setDescription(String description);
+  RecordBuilder setDescription(String description);
 
   /**
    * Add extra metadata about this screenshots.
@@ -34,16 +34,16 @@ public interface RecordBuilder {
    * metadata, but we'll try to provide this as debugging information
    * whenever you're viewing screenshots.
    */
-  public RecordBuilder addExtra(String key, String value);
+  RecordBuilder addExtra(String key, String value);
 
   /**
    * Groups similar or identical screenshots which makes it easier to
    * compare.
    */
-  public RecordBuilder setGroup(String groupName);
+  RecordBuilder setGroup(String groupName);
 
   /**
    * Finish the recording.
    */
-  public void record();
+  void record();
 }
