@@ -3,7 +3,7 @@ package com.facebook.testing.screenshot.build
 import org.gradle.api.*
 
 class ScreenshotsPluginExtension {
-    def testApkTarget = "packageDebugAndroidTest"
+    def testApkTarget = "assembleAndroidTest"
     def connectedAndroidTestTarget = "connectedAndroidTest"
     def customTestRunner = false
     def recordDir = "screenshots"
