@@ -6,15 +6,15 @@ def isReleaseBuild() {
 }
 
 def getRepositoryUrl() {
-    return hasProperty('repositoryUrl') ? property('repositoryUrl') : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+    return findProperty('repositoryUrl') ? property('repositoryUrl') : "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
 }
 
 def getRepositoryUsername() {
-    return hasProperty('repositoryUsername') ? property('repositoryUsername') : ""
+    return findProperty('repositoryUsername') ? property('repositoryUsername') : ""
 }
 
 def getRepositoryPassword() {
-    return hasProperty('repositoryPassword') ? property('repositoryPassword') : ""
+    return findProperty('repositoryPassword') ? property('repositoryPassword') : ""
 }
 
 def configureScreenshotTestsForAndroidPom(def pom) {

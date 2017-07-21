@@ -8,6 +8,7 @@ jar {
 apply plugin: 'maven'
 
 repositories {
+  jcenter()
   mavenCentral()
 }
 
@@ -16,12 +17,8 @@ dependencies {
     compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
 
     testCompile group: 'org.mockito', name: 'mockito-all', version: '1.9.5'
-    testCompile 'com.android.tools.build:gradle:1.3.1'
+    testCompile 'com.android.tools.build:gradle:2.3.3'
     testCompile 'org.hamcrest:hamcrest-all:1.3'
-}
-
-repositories {
-    mavenCentral()
 }
 
 group='com.facebook.testing.screenshot'
@@ -56,8 +53,10 @@ task py3Tests(type: Exec) {
      commandLine 'python3', '-m', 'unittest', 'discover'
 }
 
-task sampleServer() << {
-  file = new File("plugin/src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
+task sampleServer() {
+    doLast {
+        file = new File("plugin/src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
+    }
 }
 
 apply from: rootProject.file("release.gradle")

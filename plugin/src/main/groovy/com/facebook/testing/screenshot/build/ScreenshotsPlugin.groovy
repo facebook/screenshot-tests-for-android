@@ -38,56 +38,62 @@ class ScreenshotsPlugin implements Plugin<Project> {
       addRuntimeDep(project)
     }
 
-    project.task('pullScreenshots') << {
-      project.exec {
-        def output = getTestApkOutput(project)
+    project.task('pullScreenshots') {
+      doLast {
+        project.exec {
+          def output = getTestApkOutput(project)
 
-        executable = 'python'
-        environment('PYTHONPATH', jarFile)
+          executable = 'python'
+          environment('PYTHONPATH', jarFile)
 
-        args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
+          args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
 
-        if (recordMode) {
-          args += ["--record", project.screenshots.recordDir]
-        } else if (verifyMode) {
-          args += ["--verify", project.screenshots.recordDir]
+          if (recordMode) {
+            args += ["--record", project.screenshots.recordDir]
+          } else if (verifyMode) {
+            args += ["--verify", project.screenshots.recordDir]
+          }
         }
       }
     }
 
-    project.task('pullScreenshotsFromDirectory') << {
-      project.exec {
+    project.task('pullScreenshotsFromDirectory') {
+      doLast {
+        project.exec {
 
-        executable = 'python'
-        environment('PYTHONPATH', jarFile)
+          executable = 'python'
+          environment('PYTHONPATH', jarFile)
 
-        def referenceDir = project.screenshots.referenceDir
-        def targetPackage = project.screenshots.targetPackage
+          def referenceDir = project.screenshots.referenceDir
+          def targetPackage = project.screenshots.targetPackage
 
-        if (!referenceDir || !targetPackage) {
-          printPullFromDirectoryUsage(getLogger(), referenceDir, targetPackage)
-          return;
-        }
+          if (!referenceDir || !targetPackage) {
+            printPullFromDirectoryUsage(getLogger(), referenceDir, targetPackage)
+            return;
+          }
 
-        logger.quiet(" >>> Using (${referenceDir}) for screenshot verification")
+          logger.quiet(" >>> Using (${referenceDir}) for screenshot verification")
 
-        args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
-        args += ["--no-pull"]
-        args += ["--temp-dir", referenceDir]
+          args = ['-m', 'android_screenshot_tests.pull_screenshots', targetPackage]
+          args += ["--no-pull"]
+          args += ["--temp-dir", referenceDir]
 
-        if (recordMode) {
-          args += ["--record", project.screenshots.recordDir]
-        } else {
-          args += ["--verify", project.screenshots.recordDir]
+          if (recordMode) {
+            args += ["--record", project.screenshots.recordDir]
+          } else {
+            args += ["--verify", project.screenshots.recordDir]
+          }
         }
       }
     }
 
-    project.task("clearScreenshots") << {
-      project.exec {
-        executable = adb
-        args = ["shell", "rm", "-rf", "\$EXTERNAL_STORAGE/screenshots"]
-        ignoreExitValue = true
+    project.task("clearScreenshots") {
+      doLast {
+        project.exec {
+          executable = adb
+          args = ["shell", "rm", "-rf", "\$EXTERNAL_STORAGE/screenshots"]
+          ignoreExitValue = true
+        }
       }
     }
 
@@ -107,12 +113,16 @@ class ScreenshotsPlugin implements Plugin<Project> {
       }
     }
 
-    project.task("recordMode") << {
-      recordMode = true
+    project.task("recordMode") {
+      doLast {
+        recordMode = true
+      }
     }
 
-    project.task("verifyMode") << {
-      verifyMode = true
+    project.task("verifyMode") {
+      doLast {
+        verifyMode = true
+      }
     }
   }
 

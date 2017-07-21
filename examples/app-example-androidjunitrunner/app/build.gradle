@@ -5,7 +5,7 @@ project.screenshots.customTestRunner = true
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.0"
+    buildToolsVersion "26.0.0"
     defaultConfig {
 
         multiDexEnabled true

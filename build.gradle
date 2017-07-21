@@ -20,8 +20,10 @@ task installAll(dependsOn: [
 
 task uploadAllArchives(dependsOn:
                     [":plugin:uploadArchives",
-                     ":core:uploadArchives"]) << {
-  println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
+                     ":core:uploadArchives"]) {
+    doLast {
+        println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
+    }
 }
 
 
