@@ -48,6 +48,11 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
           args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
 
+          def referenceDir = project.screenshots.referenceDir
+          if(referenceDir) {
+            args += ["--temp-dir", referenceDir]
+          }
+
           if (recordMode) {
             args += ["--record", project.screenshots.recordDir]
           } else if (verifyMode) {
