@@ -26,7 +26,7 @@ class SimplePuller:
     def remote_file_exists(self, src):
         output = common.check_output(
             [get_adb()] + self._adb_args + ["shell",
-                                        "test -e %s && echo EXISTS" % src])
+                                        "test -e %s && echo EXISTS || echo DOES_NOT_EXIST" % src])
         return "EXISTS" in output
 
     def pull(self, src, dest):
