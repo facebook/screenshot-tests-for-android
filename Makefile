@@ -28,9 +28,8 @@ set-release:
 	done
 
 cleanup:
-	rm -rf ~/.m2 ~/.gradle/caches
-	rm -rf */build/
-	rm -rf examples/one/build/
+	rm -rf ~/.m2/repository/com/facebook/testing/screenshot/ 
+	./gradlew clean
 
 integration-tests: | env-check cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
 	@true
