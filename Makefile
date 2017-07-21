@@ -54,3 +54,8 @@ install-local:
 version-tag:
 	git tag v$(OLD_VERSION)
 	git push origin v$(OLD_VERSION)
+
+prod-integration-tests: env-check
+	$(MAKE) cleanup
+	cd examples/app-example && ./gradlew connectedAndroidTest
+	cd examples/app-example && ./gradlew screenshotTests
