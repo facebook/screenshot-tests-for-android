@@ -9,17 +9,28 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
+import android.os.ParcelFileDescriptor;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Locale;
 
 /**
  * Provides a directory for an Album to store its screenshots in.
  */
 class ScreenshotDirectories {
+  private static final String[] REQUIRED_PERMISSIONS = new String[] {
+      // Constants used to alleviate potential API level conflicts
+      "android.permission.WRITE_EXTERNAL_STORAGE",
+      "android.permission.READ_EXTERNAL_STORAGE"
+  };
+
   private Context mContext;
 
   public ScreenshotDirectories(Context context) {
@@ -32,13 +43,41 @@ class ScreenshotDirectories {
   }
 
   private void checkPermissions() {
-    int res = mContext.checkCallingOrSelfPermission("android.permission.WRITE_EXTERNAL_STORAGE");
-    if (res != PackageManager.PERMISSION_GRANTED) {
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-        throw new RuntimeException("This does not currently work on API 23+, see "
-            + "https://github.com/facebook/screenshot-tests-for-android/issues/16 for details.");
-      } else {
-        throw new RuntimeException("We need WRITE_EXTERNAL_STORAGE permission for screenshot tests");
+    for (String permission : REQUIRED_PERMISSIONS) {
+      if (mContext.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+        continue;
+      }
+      if (Build.VERSION.SDK_INT < 23) {
+        throw new RuntimeException("We need " + permission + " permission for screenshot tests");
+      }
+      Context targetContext = Registry.getRegistry().instrumentation.getTargetContext();
+      grantPermission(targetContext, permission);
+      grantPermission(mContext, permission);
+    }
+  }
+
+  private void grantPermission(Context context, String permission) {
+    if (Build.VERSION.SDK_INT < 23) {
+      return;
+    }
+    UiAutomation automation = Registry.getRegistry().instrumentation.getUiAutomation();
+    String command = String.format(
+        Locale.ENGLISH,
+        "pm grant %s %s",
+        context.getPackageName(),
+        permission);
+    ParcelFileDescriptor pfd = automation.executeShellCommand(command);
+    InputStream stream = new FileInputStream(pfd.getFileDescriptor());
+    try {
+      byte[] buffer = new byte[1024];
+      while (stream.read(buffer) != -1) {
+        // Consume stdout to ensure the command completes
+      }
+    } catch (IOException ignored) {
+    } finally {
+      try {
+        stream.close();
+      } catch (IOException ignored) {
       }
     }
   }

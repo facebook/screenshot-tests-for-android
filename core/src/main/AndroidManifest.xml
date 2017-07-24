@@ -3,4 +3,5 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.facebook.testing.screenshot">
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+   <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 </manifest>
