@@ -250,6 +250,9 @@ def pull_screenshots(process,
 
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
 
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+
     copy_assets(temp_dir)
 
     if perform_pull is True:
