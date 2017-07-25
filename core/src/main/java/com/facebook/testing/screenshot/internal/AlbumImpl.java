@@ -1,13 +1,20 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 package com.facebook.testing.screenshot.internal;
+
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Xml;
+
+import org.xmlpull.v1.XmlSerializer;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,13 +23,6 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Xml;
-
-import org.xmlpull.v1.XmlSerializer;
 
 /**
  * A "local" implementation of Album.
@@ -42,6 +42,25 @@ public class AlbumImpl implements Album {
   AlbumImpl(ScreenshotDirectories screenshotDirectories, String name, HostFileSender hostFileSender) {
     mDir = screenshotDirectories.get(name);
     mHostFileSender = hostFileSender;
+  }
+
+  /**
+   * Creates a "local" album that stores all the images on the local
+   * disk.
+   */
+  public static AlbumImpl createLocal(Context context, String name) {
+    return new AlbumImpl(new ScreenshotDirectories(context), name, null);
+  }
+
+  /**
+   * Creates an album that streams the images as they are created onto
+   * the host machine.
+   */
+  public static AlbumImpl createStreaming(
+      Context context,
+      String name,
+      HostFileSender hostFileSender) {
+    return new AlbumImpl(new ScreenshotDirectories(context), name, hostFileSender);
   }
 
   @Override
@@ -180,10 +199,10 @@ public class AlbumImpl implements Album {
     if (mAllNames.contains(recordBuilder.getName())) {
       if (recordBuilder.hasExplicitName()) {
         throw new AssertionError("Can't create multiple screenshots with the same name: "
-                                 + recordBuilder.getName());
+            + recordBuilder.getName());
       } else {
         throw new AssertionError("Can't create multiple screenshots from the same test, or " +
-                                 "use .setName() to name each screenshot differently");
+            "use .setName() to name each screenshot differently");
       }
     }
 
@@ -229,19 +248,19 @@ public class AlbumImpl implements Album {
     Tiling tiling = recordBuilder.getTiling();
     for (int i = 0; i < tiling.getWidth(); i++) {
       for (int j = 0; j < tiling.getHeight(); j++) {
-        File file = getScreenshotFileInternal(tiling.getAt(i,j));
+        File file = getScreenshotFileInternal(tiling.getAt(i, j));
 
         if (!file.exists() && mHostFileSender == null) {
           throw new RuntimeException("The tile file doesn't exist");
         }
 
         addTextNode(
-          "absolute_file_name",
-          file.getAbsolutePath());
+            "absolute_file_name",
+            file.getAbsolutePath());
 
         addTextNode(
-          "relative_file_name",
-          getRelativePath(file, mDir));
+            "relative_file_name",
+            getRelativePath(file, mDir));
       }
     }
   }
@@ -289,24 +308,5 @@ public class AlbumImpl implements Album {
     }
 
     return String.format("%s_%s_%s", name, String.valueOf(i), String.valueOf(j));
-  }
-
-  /**
-   * Creates a "local" album that stores all the images on the local
-   * disk.
-   */
-  public static AlbumImpl createLocal(Context context, String name) {
-    return new AlbumImpl(new ScreenshotDirectories(context), name, null);
-  }
-
-  /**
-   * Creates an album that streams the images as they are created onto
-   * the host machine.
-   */
-  public static AlbumImpl createStreaming(
-      Context context,
-      String name,
-      HostFileSender hostFileSender) {
-    return new AlbumImpl(new ScreenshotDirectories(context), name, hostFileSender);
   }
 }

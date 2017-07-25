@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -74,8 +74,8 @@ public class ViewHelpers {
   private void layoutInternal() {
     do {
       mView.measure(
-        mWidthMeasureSpec,
-        mHeightMeasureSpec);
+          mWidthMeasureSpec,
+          mHeightMeasureSpec);
       layoutView();
     } while (mView.isLayoutRequested());
   }
@@ -164,27 +164,13 @@ public class ViewHelpers {
    * views, each child has its own ViewTreeObserver.)
    */
   private void dispatchPreDraw(View view) {
-    while (view.getViewTreeObserver().dispatchOnPreDraw()) {}
+    while (view.getViewTreeObserver().dispatchOnPreDraw()) {
+    }
 
     if (view instanceof ViewGroup) {
       ViewGroup vg = (ViewGroup) view;
-      for (int i = 0 ; i < vg.getChildCount(); i++) {
+      for (int i = 0; i < vg.getChildCount(); i++) {
         dispatchPreDraw(vg.getChildAt(i));
-      }
-    }
-  }
-
-  public class AfterLayout {
-    public Bitmap draw() {
-      WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(mView);
-      try {
-        Bitmap bmp = Bitmap.createBitmap(
-          mView.getWidth(), mView.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bmp);
-        mView.draw(canvas);
-        return bmp;
-      } finally {
-        detacher.detach();
       }
     }
   }
@@ -196,6 +182,21 @@ public class ViewHelpers {
   private int dpToPx(int dp) {
     Resources resources = mView.getContext().getResources();
     return (int) TypedValue.applyDimension(
-       TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+        TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+  }
+
+  public class AfterLayout {
+    public Bitmap draw() {
+      WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(mView);
+      try {
+        Bitmap bmp = Bitmap.createBitmap(
+            mView.getWidth(), mView.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bmp);
+        mView.draw(canvas);
+        return bmp;
+      } finally {
+        detacher.detach();
+      }
+    }
   }
 }

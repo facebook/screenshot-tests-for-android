@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -17,10 +17,10 @@ import android.os.Bundle;
  * easy cleanup.
  */
 public class Registry {
+  private static Registry sRegistry;
   public Instrumentation instrumentation;
   public Bundle arguments;
 
-  private static Registry sRegistry;
   public static Registry getRegistry() {
     if (sRegistry == null) {
       sRegistry = new Registry();
