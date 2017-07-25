@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,18 +9,23 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.lang.reflect.Method;
-
 import android.util.Log;
+
 import junit.framework.TestCase;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.lang.reflect.Method;
 
 /**
  * Detect the test name and class that is being run currently.
  */
 public class TestNameDetector {
   private static final String UNKNOWN = "unknown";
+
+  private TestNameDetector() {
+  }
 
   /**
    * Get the current test class in a standard JUnit3 or JUnit4 test,
@@ -79,8 +84,5 @@ public class TestNameDetector {
     } catch (NoSuchMethodException e) {
       return false;
     }
-  }
-
-  private TestNameDetector() {
   }
 }

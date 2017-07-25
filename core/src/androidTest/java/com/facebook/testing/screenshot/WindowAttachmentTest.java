@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -22,9 +22,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.junit.Assert.*;
+
+import static android.support.test.espresso.action.ViewActions.click;
+import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 /**
  * Tests {@link WindowAttachment}
@@ -32,14 +32,13 @@ import static org.junit.Assert.*;
 @RunWith(AndroidJUnit4.class)
 public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyActivity> {
 
-  public WindowAttachmentTest() {
-    super(MyActivity.class);
-  }
-
   private Context mContext;
   private int mAttachedCalled = 0;
   private int mDetachedCalled = 0;
   private KeyguardManager.KeyguardLock mLock;
+  public WindowAttachmentTest() {
+    super(MyActivity.class);
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -47,7 +46,7 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
     injectInstrumentation(InstrumentationRegistry.getInstrumentation());
     super.setUp();
     KeyguardManager km = (KeyguardManager)
-      getInstrumentation().getTargetContext().getSystemService(Context.KEYGUARD_SERVICE);
+        getInstrumentation().getTargetContext().getSystemService(Context.KEYGUARD_SERVICE);
     mLock = km.newKeyguardLock("SelectAtTagActivityTest");
     mLock.disableKeyguard();
   }
@@ -100,18 +99,18 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
 
     getActivity();
     InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-        @Override
-        public void run() {
-          view[0] = new MyView(getActivity());
-          getActivity().setContentView(view[0]);
-        }
-      });
+      @Override
+      public void run() {
+        view[0] = new MyView(getActivity());
+        getActivity().setContentView(view[0]);
+      }
+    });
 
     InstrumentationRegistry.getInstrumentation().waitForIdleSync();
 
     // Call some espress method to make sure we're ready:
     Espresso.onView(withId(android.R.id.content))
-      .perform(click());
+        .perform(click());
 
     mAttachedCalled = 0;
     mDetachedCalled = 0;
@@ -127,15 +126,14 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
   public void testSetAttachInfo() throws Throwable {
     final MyView view = new MyView(mContext);
     InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-        @Override
-        public void run() {
-          WindowAttachment.setAttachInfo(view);
-        }
-      });
+      @Override
+      public void run() {
+        WindowAttachment.setAttachInfo(view);
+      }
+    });
 
     assertNotNull(view.getWindowToken());
   }
-
 
   public class MyView extends View {
     public MyView(Context context) {
@@ -172,5 +170,4 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
       mDetachedCalled++;
     }
   }
-
 }
