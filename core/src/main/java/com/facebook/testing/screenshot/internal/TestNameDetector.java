@@ -27,19 +27,15 @@ public class TestNameDetector {
    * or "unknown" if we couldn't detect it.
    */
   public static String getTestClass() {
-    try {
-      throw new RuntimeException();
-    } catch (RuntimeException e) {
-      StackTraceElement[] stack = e.getStackTrace();
-      for (StackTraceElement elem : stack) {
-        try {
-          if (isTestElement(elem)) {
-            return elem.getClassName();
-          }
-        } catch (ClassNotFoundException c) {
-          Log.e("ScreenshotImpl", "Class not found in stack", c);
-          return UNKNOWN;
+    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+    for (StackTraceElement elem : stack) {
+      try {
+        if (isTestElement(elem)) {
+          return elem.getClassName();
         }
+      } catch (ClassNotFoundException c) {
+        Log.e("ScreenshotImpl", "Class not found in stack", c);
+        return UNKNOWN;
       }
     }
     return "unknown";
@@ -50,21 +46,17 @@ public class TestNameDetector {
    * "unknown" if we couldn't detect it.
    */
   public static String getTestName() {
-    try {
-      throw new RuntimeException();
-    } catch (RuntimeException e) {
-      StackTraceElement[] stack = e.getStackTrace();
-      String testClass = getTestClass();
+    StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+    String testClass = getTestClass();
 
-      // Find the first call from this class:
-      String finalName = UNKNOWN;
-      for (StackTraceElement elem : stack) {
-        if (testClass.equals(elem.getClassName())) {
-          finalName = elem.getMethodName();
-        }
+    // Find the first call from this class:
+    String finalName = UNKNOWN;
+    for (StackTraceElement elem : stack) {
+      if (testClass.equals(elem.getClassName())) {
+        finalName = elem.getMethodName();
       }
-      return finalName;
     }
+    return finalName;
   }
 
   private static boolean isTestCase(Class<?> clazz) {
