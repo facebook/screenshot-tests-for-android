@@ -35,7 +35,7 @@ class ScreenshotDirectories {
     if (res != PackageManager.PERMISSION_GRANTED) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         throw new RuntimeException("This does not currently work on API 23+, see "
-                + "https://github.com/facebook/screenshot-tests-for-android/issues/16 for details.");
+          + "https://github.com/facebook/screenshot-tests-for-android/issues/16 for details.");
       } else {
         throw new RuntimeException("We need WRITE_EXTERNAL_STORAGE permission for screenshot tests");
       }
@@ -50,9 +50,9 @@ class ScreenshotDirectories {
     }
 
     String parent = String.format(
-            "%s/screenshots/%s/",
-            externalStorage,
-            mContext.getPackageName());
+      "%s/screenshots/%s/",
+      externalStorage,
+      mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
 

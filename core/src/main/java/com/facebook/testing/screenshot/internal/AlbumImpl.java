@@ -178,10 +178,10 @@ public class AlbumImpl implements Album {
     if (mAllNames.contains(recordBuilder.getName())) {
       if (recordBuilder.hasExplicitName()) {
         throw new AssertionError("Can't create multiple screenshots with the same name: "
-                + recordBuilder.getName());
+          + recordBuilder.getName());
       } else {
         throw new AssertionError("Can't create multiple screenshots from the same test, or " +
-                "use .setName() to name each screenshot differently");
+          "use .setName() to name each screenshot differently");
       }
     }
 
@@ -234,12 +234,12 @@ public class AlbumImpl implements Album {
         }
 
         addTextNode(
-                "absolute_file_name",
-                file.getAbsolutePath());
+          "absolute_file_name",
+          file.getAbsolutePath());
 
         addTextNode(
-                "relative_file_name",
-                getRelativePath(file, mDir));
+          "relative_file_name",
+          getRelativePath(file, mDir));
       }
     }
   }
@@ -302,9 +302,9 @@ public class AlbumImpl implements Album {
    * the host machine.
    */
   public static AlbumImpl createStreaming(
-          Context context,
-          String name,
-          HostFileSender hostFileSender) {
+    Context context,
+    String name,
+    HostFileSender hostFileSender) {
     return new AlbumImpl(new ScreenshotDirectories(context), name, hostFileSender);
   }
 }

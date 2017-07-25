@@ -66,8 +66,8 @@ public class ViewHierarchy {
 
     try {
       doc = DocumentBuilderFactory.newInstance()
-              .newDocumentBuilder()
-              .newDocument();
+        .newDocumentBuilder()
+        .newDocument();
     } catch (ParserConfigurationException e) {
       throw new RuntimeException(e);
     }
@@ -83,10 +83,10 @@ public class ViewHierarchy {
     addTextNode(el, "name", view.getClass().getName());
 
     Rect rect = new Rect(
-            topLeft.x + view.getLeft(),
-            topLeft.y + view.getTop(),
-            topLeft.x + view.getRight(),
-            topLeft.y + view.getBottom());
+      topLeft.x + view.getLeft(),
+      topLeft.y + view.getTop(),
+      topLeft.x + view.getRight(),
+      topLeft.y + view.getBottom());
 
     addTextNode(el, "left", String.valueOf(rect.left));
     addTextNode(el, "top", String.valueOf(rect.top));

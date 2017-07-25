@@ -76,8 +76,8 @@ public class ScreenshotImpl {
   }
 
   /* package */ ScreenshotImpl(
-          Album album,
-          ViewHierarchy viewHierarchy) {
+    Album album,
+    ViewHierarchy viewHierarchy) {
     mAlbum = album;
     mViewHierarchy = viewHierarchy;
   }
@@ -94,8 +94,8 @@ public class ScreenshotImpl {
           return snapActivity(activity);
         }
       })
-              .setTestClass(TestNameDetector.getTestClass())
-              .setTestName(TestNameDetector.getTestName());
+        .setTestClass(TestNameDetector.getTestClass())
+        .setTestName(TestNameDetector.getTestName());
     }
     View rootView = activity.getWindow().getDecorView();
     return snap(rootView);
@@ -107,9 +107,9 @@ public class ScreenshotImpl {
    */
   public RecordBuilderImpl snap(final View measuredView) {
     RecordBuilderImpl recordBuilder = new RecordBuilderImpl(this)
-            .setView(measuredView)
-            .setTestClass(TestNameDetector.getTestClass())
-            .setTestName(TestNameDetector.getTestName());
+      .setView(measuredView)
+      .setTestClass(TestNameDetector.getTestClass())
+      .setTestName(TestNameDetector.getTestName());
 
     return recordBuilder;
   }
@@ -137,7 +137,7 @@ public class ScreenshotImpl {
 
     View measuredView = recordBuilder.getView();
     if (measuredView.getMeasuredHeight() == 0 ||
-            measuredView.getMeasuredWidth() == 0) {
+      measuredView.getMeasuredWidth() == 0) {
       throw new RuntimeException("Can't take a screenshot, since this view is not measured");
     }
 
@@ -164,7 +164,7 @@ public class ScreenshotImpl {
 
   @TargetApi(Build.VERSION_CODES.KITKAT)
   private void drawTile(View measuredView, int i, int j, RecordBuilderImpl recordBuilder)
-          throws IOException {
+    throws IOException {
     int width = measuredView.getWidth();
     int height = measuredView.getHeight();
     int left = i * mTileSize;
@@ -193,9 +193,9 @@ public class ScreenshotImpl {
       return;
     }
     mBitmap = Bitmap.createBitmap(
-            mTileSize,
-            mTileSize,
-            Bitmap.Config.ARGB_8888);
+      mTileSize,
+      mTileSize,
+      Bitmap.Config.ARGB_8888);
     mCanvas = new Canvas(mBitmap);
   }
 
@@ -224,8 +224,8 @@ public class ScreenshotImpl {
    * are passed to the instrumentation
    */
   private static ScreenshotImpl create(
-          Context context,
-          HostFileSender hostFileSender) {
+    Context context,
+    HostFileSender hostFileSender) {
     Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
     album.cleanup();
     return new ScreenshotImpl(album, new ViewHierarchy());
@@ -261,9 +261,9 @@ public class ScreenshotImpl {
 
     View view = recordBuilder.getView();
     Bitmap bmp = Bitmap.createBitmap(
-            view.getWidth(),
-            view.getHeight(),
-            Bitmap.Config.ARGB_8888);
+      view.getWidth(),
+      view.getHeight(),
+      Bitmap.Config.ARGB_8888);
 
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(recordBuilder.getView());
     try {
@@ -333,12 +333,12 @@ public class ScreenshotImpl {
       Bundle arguments = Registry.getRegistry().arguments;
 
       HostFileSender hostFileSender = new HostFileSender(
-              instrumentation,
-              arguments);
+        instrumentation,
+        arguments);
 
       sInstance = create(
-              instrumentation.getContext(),
-              hostFileSender);
+        instrumentation.getContext(),
+        hostFileSender);
 
       return sInstance;
     }
