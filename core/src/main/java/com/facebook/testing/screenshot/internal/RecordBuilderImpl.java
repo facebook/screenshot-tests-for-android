@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,16 +9,16 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.graphics.Bitmap;
+import android.view.View;
+
+import com.facebook.testing.screenshot.RecordBuilder;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
-
-import android.graphics.Bitmap;
-import android.view.View;
-
-import com.facebook.testing.screenshot.RecordBuilder;
 
 /**
  * A builder for all the metadata associated with a screenshot.
@@ -66,11 +66,11 @@ public class RecordBuilderImpl implements RecordBuilder {
 
     if (!charsetEncoder.canEncode(name)) {
       throw new IllegalArgumentException(
-        "Screenshot names must have only latin characters: " + name);
+          "Screenshot names must have only latin characters: " + name);
     }
     if (name.contains(File.separator)) {
       throw new IllegalArgumentException(
-        "Screenshot names cannot contain '" + File.separator + "': " + name);
+          "Screenshot names cannot contain '" + File.separator + "': " + name);
     }
 
     mName = name;
