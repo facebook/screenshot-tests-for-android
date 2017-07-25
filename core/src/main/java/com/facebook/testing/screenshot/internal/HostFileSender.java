@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,15 +9,14 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.os.Bundle;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Abstraction for sending a file to the host system while the test is
@@ -34,7 +33,6 @@ import android.os.Bundle;
  * discard all files sent to it immediately.
  */
 public class HostFileSender {
-  final int QUEUE_SIZE = 5;
   private final List<File> mQueue = new ArrayList<>();
 
   private Instrumentation mInstrumentation;
@@ -102,6 +100,7 @@ public class HostFileSender {
 
   synchronized private void waitForQueue() {
     updateQueue();
+    int QUEUE_SIZE = 5;
     while (getQueueSize() >= QUEUE_SIZE) {
       try {
         Thread.sleep(20);

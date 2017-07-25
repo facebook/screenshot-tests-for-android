@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -12,7 +12,6 @@ package com.facebook.testing.screenshot.internal;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Environment;
 
 import java.io.File;
 
@@ -36,7 +35,7 @@ class ScreenshotDirectories {
     if (res != PackageManager.PERMISSION_GRANTED) {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
         throw new RuntimeException("This does not currently work on API 23+, see "
-            + "https://github.com/facebook/screenshot-tests-for-android/issues/16 for details.");
+                + "https://github.com/facebook/screenshot-tests-for-android/issues/16 for details.");
       } else {
         throw new RuntimeException("We need WRITE_EXTERNAL_STORAGE permission for screenshot tests");
       }
@@ -51,9 +50,9 @@ class ScreenshotDirectories {
     }
 
     String parent = String.format(
-      "%s/screenshots/%s/",
-      externalStorage,
-      mContext.getPackageName());
+            "%s/screenshots/%s/",
+            externalStorage,
+            mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
 
@@ -65,13 +64,6 @@ class ScreenshotDirectories {
     if (!dir.exists()) {
       throw new RuntimeException("Failed to create the directory for screenshots. Is your sdcard directory read-only?");
     }
-
-    setWorldWriteable(dir);
-    return dir;
-  }
-
-  private File getDataDir(String type) {
-    File dir = mContext.getDir("screenshots-" + type, Context.MODE_WORLD_READABLE);
 
     setWorldWriteable(dir);
     return dir;

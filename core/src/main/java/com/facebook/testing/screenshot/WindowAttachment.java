@@ -1,21 +1,13 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 package com.facebook.testing.screenshot;
-
-import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import java.lang.reflect.Proxy;
-import java.util.WeakHashMap;
 
 import android.content.Context;
 import android.os.Binder;
@@ -29,6 +21,14 @@ import android.view.WindowManager;
 
 import com.android.dx.stock.ProxyBuilder;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+import java.util.WeakHashMap;
+
 public abstract class WindowAttachment {
 
   /**
@@ -40,13 +40,13 @@ public abstract class WindowAttachment {
   /**
    * Dispatch onAttachedToWindow to all the views in the view
    * hierarchy.
-   *
+   * <p>
    * Detach the view by calling {@code detach()} on the returned {@code Detacher}.
-   *
+   * <p>
    * Note that if the view is already attached (either via
    * WindowAttachment or to a real window), then both the attach and
    * the corresponding detach will be no-ops.
-   *
+   * <p>
    * Note that this is hacky, after these calls the views will still
    * say that isAttachedToWindow() is false and getWindowToken() ==
    * null.
@@ -72,7 +72,8 @@ public abstract class WindowAttachment {
 
   private static class NoopDetacher implements Detacher {
     @Override
-    public void detach() {}
+    public void detach() {
+    }
   }
 
   private static class RealDetacher implements Detacher {
@@ -81,6 +82,7 @@ public abstract class WindowAttachment {
     public RealDetacher(View view) {
       mView = view;
     }
+
     @Override
     public void detach() {
       dispatchDetach(mView);
@@ -111,7 +113,7 @@ public abstract class WindowAttachment {
 
     if (view instanceof ViewGroup) {
       ViewGroup vg = (ViewGroup) view;
-      for (int i = 0 ; i < vg.getChildCount(); i++) {
+      for (int i = 0; i < vg.getChildCount(); i++) {
         invokeUnchecked(vg.getChildAt(i), methodName);
       }
     }
@@ -134,7 +136,7 @@ public abstract class WindowAttachment {
       Class cCallbacks = Class.forName("android.view.View$AttachInfo$Callbacks");
 
       Context context = view.getContext();
-      WindowManager wm = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
+      WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
       Display display = wm.getDefaultDisplay();
 
       Object viewRootImpl = null;
@@ -146,57 +148,55 @@ public abstract class WindowAttachment {
 
       if (Build.VERSION.SDK_INT >= 17) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class, Display.class)
-          .newInstance(context, display);
-        params = new Class[] {
-          cIWindowSession,
-          cIWindow,
-          Display.class,
-          cViewRootImpl,
-          Handler.class,
-          cCallbacks
+                .newInstance(context, display);
+        params = new Class[]{
+                cIWindowSession,
+                cIWindow,
+                Display.class,
+                cViewRootImpl,
+                Handler.class,
+                cCallbacks
         };
 
-        values = new Object[] {
-          stub(cIWindowSession),
-          window,
-          display,
-          viewRootImpl,
-          new Handler(),
-          stub(cCallbacks)
+        values = new Object[]{
+                stub(cIWindowSession),
+                window,
+                display,
+                viewRootImpl,
+                new Handler(),
+                stub(cCallbacks)
         };
-      }
-      else if (Build.VERSION.SDK_INT >= 16) {
+      } else if (Build.VERSION.SDK_INT >= 16) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class)
-          .newInstance(context);
-        params = new Class[] {
-          cIWindowSession,
-          cIWindow,
-          cViewRootImpl,
-          Handler.class,
-          cCallbacks
+                .newInstance(context);
+        params = new Class[]{
+                cIWindowSession,
+                cIWindow,
+                cViewRootImpl,
+                Handler.class,
+                cCallbacks
         };
 
-        values = new Object[] {
-          stub(cIWindowSession),
-          window,
-          viewRootImpl,
-          new Handler(),
-          stub(cCallbacks)
+        values = new Object[]{
+                stub(cIWindowSession),
+                window,
+                viewRootImpl,
+                new Handler(),
+                stub(cCallbacks)
         };
-      }
-      else if (Build.VERSION.SDK_INT <= 15) {
-        params = new Class[] {
-          cIWindowSession,
-          cIWindow,
-          Handler.class,
-          cCallbacks
+      } else if (Build.VERSION.SDK_INT <= 15) {
+        params = new Class[]{
+                cIWindowSession,
+                cIWindow,
+                Handler.class,
+                cCallbacks
         };
 
-        values = new Object[] {
-          stub(cIWindowSession),
-          window,
-          new Handler(),
-          stub(cCallbacks)
+        values = new Object[]{
+                stub(cIWindowSession),
+                window,
+                new Handler(),
+                stub(cCallbacks)
         };
       }
 
@@ -210,7 +210,7 @@ public abstract class WindowAttachment {
       }
 
       Method dispatch = View.class
-        .getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
+              .getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
       dispatch.setAccessible(true);
       dispatch.invoke(view, attachInfo, 0);
     } catch (Exception e) {
@@ -219,9 +219,9 @@ public abstract class WindowAttachment {
   }
 
   private static Object invokeConstructor(
-      Class clazz,
-      Class[] params,
-      Object[] values) throws Exception {
+          Class clazz,
+          Class[] params,
+          Object[] values) throws Exception {
     Constructor cons = clazz.getDeclaredConstructor(params);
     cons.setAccessible(true);
     return cons.newInstance(values);
@@ -232,41 +232,41 @@ public abstract class WindowAttachment {
 
     // Since IWindow is an interface, I don't need dexmaker for this
     InvocationHandler handler = new InvocationHandler() {
-        @Override
-        public Object invoke(Object proxy, Method method, Object[] args) {
-          if (method.getName().equals("asBinder")) {
-            return new Binder();
-          }
-          return null;
+      @Override
+      public Object invoke(Object proxy, Method method, Object[] args) {
+        if (method.getName().equals("asBinder")) {
+          return new Binder();
         }
-      };
+        return null;
+      }
+    };
 
     Object ret = Proxy.newProxyInstance(
-      cIWindow.getClassLoader(),
-      new Class[] { cIWindow },
-      handler);
+            cIWindow.getClassLoader(),
+            new Class[]{cIWindow},
+            handler);
 
-    return  ret;
+    return ret;
   }
 
   private static Object stub(Class klass) {
     try {
       InvocationHandler handler = new InvocationHandler() {
-          @Override
-          public Object invoke(Object project, Method method, Object[] args) {
-            return null;
-          }
-        };
+        @Override
+        public Object invoke(Object project, Method method, Object[] args) {
+          return null;
+        }
+      };
 
       if (klass.isInterface()) {
         return Proxy.newProxyInstance(
-          klass.getClassLoader(),
-          new Class[] { klass },
-          handler);
+                klass.getClassLoader(),
+                new Class[]{klass},
+                handler);
       } else {
         return ProxyBuilder.forClass(klass)
-          .handler(handler)
-          .build();
+                .handler(handler)
+                .build();
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
