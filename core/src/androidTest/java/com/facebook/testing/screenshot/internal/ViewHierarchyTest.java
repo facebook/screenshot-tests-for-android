@@ -1,24 +1,13 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 package com.facebook.testing.screenshot.internal;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 import android.graphics.Rect;
 import android.support.test.InstrumentationRegistry;
@@ -40,8 +29,22 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import static org.junit.Assert.*;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link ViewHierarchy}
@@ -49,57 +52,18 @@ import static org.hamcrest.CoreMatchers.containsString;
 public class ViewHierarchyTest {
   private View mView;
   private ViewHierarchy mViewHierarchy;
-
-  /**
-   * Information about one View and all its children in the view
-   * hierarchy.
-   */
-  public static class ParsedViewDetail {
-    /**
-     * The class name of the View, for instance
-     * "android.widget.TextView"
-     */
-    private String mName;
-
-    /**
-     * The list of child views.
-     */
-    private final List<ParsedViewDetail> mChildren = new ArrayList<ParsedViewDetail>();
-
-    /**
-     * The absolute coordinates of this view with respect to some top
-     * level view that was originally passed to {@link #deflate()}
-     */
-    private Rect mAbsoluteRect;
-
-    public void setName(String name) {
-      mName = name;
+  private ViewDumpPlugin mMyViewDumpPlugin = new ViewDumpPlugin() {
+    public void dump(View view, Map<String, String> output) {
+      output.put("foo", "bar");
     }
-
-    public String getName() {
-      return mName;
+  };
+  private ViewDumpPlugin mDumpTextPlugin = new ViewDumpPlugin() {
+    public void dump(View view, Map<String, String> output) {
+      if (view instanceof TextView) {
+        output.put("text", ((TextView) view).getText().toString());
+      }
     }
-
-    public void addChild(ParsedViewDetail node) {
-      mChildren.add(node);
-    }
-
-    public List<ParsedViewDetail> getChildren() {
-      return mChildren;
-    }
-
-    public ParsedViewDetail getChild(int idx) {
-      return mChildren.get(idx);
-    }
-
-    public void setAbsoluteRect(Rect absoluteRect) {
-      mAbsoluteRect = absoluteRect;
-    }
-
-    public Rect getAbsoluteRect() {
-      return mAbsoluteRect;
-    }
-  }
+  };
 
   private ParsedViewDetail convertToNode(Element view) {
     ParsedViewDetail ret = new ParsedViewDetail();
@@ -170,7 +134,7 @@ public class ViewHierarchyTest {
   public void setUp() throws Exception {
     mViewHierarchy = new ViewHierarchy();
     mView = LayoutInflater.from(InstrumentationRegistry.getTargetContext())
-      .inflate(R.layout.testing_for_view_hierarchy, null, false);
+        .inflate(R.layout.testing_for_view_hierarchy, null, false);
   }
 
   @After
@@ -189,38 +153,38 @@ public class ViewHierarchyTest {
   @Test
   public void testBasicCoordinateCheck() throws Throwable {
     ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
+        .setExactHeightPx(1000)
+        .setExactWidthPx(20000)
+        .layout();
     ParsedViewDetail node = deflate(mView);
     assertEquals(0, node.getAbsoluteRect().top);
     assertEquals(0, node.getAbsoluteRect().left);
 
     assertTrue(node.getChild(0).getAbsoluteRect().bottom != 0);
     assertEquals(node.getChild(0).getAbsoluteRect().bottom,
-                 node.getChild(1).getAbsoluteRect().top);
+        node.getChild(1).getAbsoluteRect().top);
   }
 
   @Test
   public void testNestedAbsoluteCoordinates() throws Throwable {
     ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
+        .setExactHeightPx(1000)
+        .setExactWidthPx(20000)
+        .layout();
     ParsedViewDetail node = deflate(mView);
 
     int textViewHeight = ((ViewGroup) mView).getChildAt(0).getHeight();
 
     assertEquals(3 * textViewHeight,
-                 node.getChild(2).getChild(1).getAbsoluteRect().top);
+        node.getChild(2).getChild(1).getAbsoluteRect().top);
   }
 
   @Test
   public void testDumpHierarchyOnNestedNode() throws Throwable {
     ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
+        .setExactHeightPx(1000)
+        .setExactWidthPx(20000)
+        .layout();
     ParsedViewDetail node = deflate(((ViewGroup) mView).getChildAt(2));
 
     assertEquals(0, node.getAbsoluteRect().top);
@@ -228,15 +192,15 @@ public class ViewHierarchyTest {
     int textViewHeight = ((ViewGroup) mView).getChildAt(0).getHeight();
 
     assertEquals(textViewHeight,
-                 node.getChild(1).getAbsoluteRect().top);
+        node.getChild(1).getAbsoluteRect().top);
   }
 
   @Test
   public void testPluginDumps() throws Throwable {
     ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
+        .setExactHeightPx(1000)
+        .setExactWidthPx(20000)
+        .layout();
     PluginRegistry.addPlugin(mMyViewDumpPlugin);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     mViewHierarchy.deflate(mView, os);
@@ -254,9 +218,9 @@ public class ViewHierarchyTest {
   @Test
   public void testVerifyOutputIsIndented() throws Throwable {
     ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
+        .setExactHeightPx(1000)
+        .setExactWidthPx(20000)
+        .layout();
 
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     mViewHierarchy.deflate(mView, os);
@@ -270,9 +234,9 @@ public class ViewHierarchyTest {
   @Test
   public void testPluginDumpsRecursively() throws Throwable {
     ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
+        .setExactHeightPx(1000)
+        .setExactWidthPx(20000)
+        .layout();
     PluginRegistry.addPlugin(mDumpTextPlugin);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     mViewHierarchy.deflate(mView, os);
@@ -320,20 +284,6 @@ public class ViewHierarchyTest {
     }
   }
 
-  private ViewDumpPlugin mMyViewDumpPlugin = new ViewDumpPlugin() {
-      public void dump(View view, Map<String, String> output) {
-        output.put("foo", "bar");
-      }
-    };
-
-  private ViewDumpPlugin mDumpTextPlugin = new ViewDumpPlugin() {
-      public void dump(View view, Map<String, String> output) {
-        if (view instanceof TextView) {
-          output.put("text", ((TextView) view).getText().toString());
-        }
-      }
-    };
-
   private String getExtraValue(Element parent, String tagName) {
     NodeList nodeList = parent.getChildNodes();
     for (int i = 0; i < nodeList.getLength(); i++) {
@@ -341,12 +291,61 @@ public class ViewHierarchyTest {
       if (!(eln instanceof Element)) {
         continue;
       }
-      Element el = (Element)eln;
+      Element el = (Element) eln;
       if (el.getAttribute("key").equals(tagName)) {
         return el.getTextContent();
       }
     }
 
     return null;
+  }
+
+  /**
+   * Information about one View and all its children in the view
+   * hierarchy.
+   */
+  public static class ParsedViewDetail {
+    /**
+     * The list of child views.
+     */
+    private final List<ParsedViewDetail> mChildren = new ArrayList<ParsedViewDetail>();
+    /**
+     * The class name of the View, for instance
+     * "android.widget.TextView"
+     */
+    private String mName;
+    /**
+     * The absolute coordinates of this view with respect to some top
+     * level view that was originally passed to {@link #deflate()}
+     */
+    private Rect mAbsoluteRect;
+
+    public String getName() {
+      return mName;
+    }
+
+    public void setName(String name) {
+      mName = name;
+    }
+
+    public void addChild(ParsedViewDetail node) {
+      mChildren.add(node);
+    }
+
+    public List<ParsedViewDetail> getChildren() {
+      return mChildren;
+    }
+
+    public ParsedViewDetail getChild(int idx) {
+      return mChildren.get(idx);
+    }
+
+    public Rect getAbsoluteRect() {
+      return mAbsoluteRect;
+    }
+
+    public void setAbsoluteRect(Rect absoluteRect) {
+      mAbsoluteRect = absoluteRect;
+    }
   }
 }

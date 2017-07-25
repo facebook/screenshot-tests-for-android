@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -29,7 +29,7 @@ public interface RecordBuilder {
 
   /**
    * Add extra metadata about this screenshots.
-   *
+   * <p>
    * There will be no semantic information associated with this
    * metadata, but we'll try to provide this as debugging information
    * whenever you're viewing screenshots.
