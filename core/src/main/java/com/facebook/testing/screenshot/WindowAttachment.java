@@ -121,12 +121,24 @@ public abstract class WindowAttachment {
    * Simulates the view as being attached.
    */
   public static void setAttachInfo(View view) {
+    int viewRootWidth = 0;
+    int viewRootHeight = 0;
+    setAttachInfo(view, viewRootWidth, viewRootHeight);
+  }
+
+  /**
+   * Simulates the view as being attached.
+   */
+  public static void setAttachInfo(View view, int viewRooWidth, int viewRootHeight) {
     try {
       Class cAttachInfo = Class.forName("android.view.View$AttachInfo");
       Class cViewRootImpl = null;
 
-      if (Build.VERSION.SDK_INT >= 11) {
+      if (Build.VERSION.SDK_INT >= 14) {
         cViewRootImpl = Class.forName("android.view.ViewRootImpl");
+      } else {
+        // honeyComb and gingerbread
+        cViewRootImpl = Class.forName("android.view.ViewRoot");
       }
 
       Class cIWindowSession = Class.forName("android.view.IWindowSession");
@@ -185,6 +197,8 @@ public abstract class WindowAttachment {
         };
       }
       else if (Build.VERSION.SDK_INT <= 15) {
+        viewRootImpl = cViewRootImpl.getConstructor(Context.class)
+                .newInstance(context);
         params = new Class[] {
           cIWindowSession,
           cIWindow,
@@ -202,11 +216,15 @@ public abstract class WindowAttachment {
 
       Object attachInfo = invokeConstructor(cAttachInfo, params, values);
 
-      setField(attachInfo, "mHasWindowFocus", true);
-      setField(attachInfo, "mWindowVisibility", View.VISIBLE);
-      setField(attachInfo, "mInTouchMode", false);
+      setField(attachInfo, "mHasWindowFocus", true, cAttachInfo);
+      setField(attachInfo, "mWindowVisibility", View.VISIBLE, cAttachInfo);
+      setField(attachInfo, "mInTouchMode", false, cAttachInfo);
+      setField(view, "mParent", viewRootImpl, View.class);
+      setField(viewRootImpl, "mWidth", viewRooWidth, cViewRootImpl);
+      setField(viewRootImpl, "mHeight", viewRootHeight, cViewRootImpl);
+      setField(viewRootImpl, "mView", view, cViewRootImpl);
       if (Build.VERSION.SDK_INT >= 11) {
-        setField(attachInfo, "mHardwareAccelerated", false);
+        setField(attachInfo, "mHardwareAccelerated", false, cAttachInfo);
       }
 
       Method dispatch = View.class
@@ -273,8 +291,8 @@ public abstract class WindowAttachment {
     }
   }
 
-  private static void setField(Object o, String fieldName, Object value) throws Exception {
-    Class clazz = o.getClass();
+  private static void setField(Object o, String fieldName, Object value, Class<?> cls) throws Exception {
+    Class clazz = cls;
     Field field = clazz.getDeclaredField(fieldName);
     field.setAccessible(true);
     field.set(o, value);
