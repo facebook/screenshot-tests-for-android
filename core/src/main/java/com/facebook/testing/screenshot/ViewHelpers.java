@@ -23,14 +23,14 @@ import static android.view.View.MeasureSpec.makeMeasureSpec;
 /**
  * A collection of static utilities for measuring and pre-drawing a
  * view, usually a pre-requirement for taking a Screenshot.
- *
+ * <p>
  * This will mostly be used something like this:
- *
+ * <p>
  * <code>
- *   ViewHelpers.setupView(view)
- *     .setExactHeightPx(1000)
- *     .setExactWidthPx(100)
- *     .layout();
+ * ViewHelpers.setupView(view)
+ * .setExactHeightPx(1000)
+ * .setExactWidthPx(100)
+ * .layout();
  * </code>
  */
 public class ViewHelpers {
@@ -74,8 +74,8 @@ public class ViewHelpers {
   private void layoutInternal() {
     do {
       mView.measure(
-              mWidthMeasureSpec,
-              mHeightMeasureSpec);
+        mWidthMeasureSpec,
+        mHeightMeasureSpec);
       layoutView();
     } while (mView.isLayoutRequested());
   }
@@ -154,7 +154,7 @@ public class ViewHelpers {
   /**
    * Some views (e.g. SimpleVariableTextLayoutView) in FB4A rely on
    * the predraw. Actually I don't know why, ideally it shouldn't.
-   *
+   * <p>
    * However if you find that text is not showing in your layout, try
    * dispatching the pre draw using this method. Note this method is
    * only supported for views that are not attached to a Window, and
@@ -180,7 +180,7 @@ public class ViewHelpers {
       WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(mView);
       try {
         Bitmap bmp = Bitmap.createBitmap(
-                mView.getWidth(), mView.getHeight(), Bitmap.Config.ARGB_8888);
+          mView.getWidth(), mView.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bmp);
         mView.draw(canvas);
         return bmp;
@@ -197,6 +197,6 @@ public class ViewHelpers {
   private int dpToPx(int dp) {
     Resources resources = mView.getContext().getResources();
     return (int) TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
+      TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics());
   }
 }

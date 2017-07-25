@@ -148,55 +148,55 @@ public abstract class WindowAttachment {
 
       if (Build.VERSION.SDK_INT >= 17) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class, Display.class)
-                .newInstance(context, display);
+          .newInstance(context, display);
         params = new Class[]{
-                cIWindowSession,
-                cIWindow,
-                Display.class,
-                cViewRootImpl,
-                Handler.class,
-                cCallbacks
+          cIWindowSession,
+          cIWindow,
+          Display.class,
+          cViewRootImpl,
+          Handler.class,
+          cCallbacks
         };
 
         values = new Object[]{
-                stub(cIWindowSession),
-                window,
-                display,
-                viewRootImpl,
-                new Handler(),
-                stub(cCallbacks)
+          stub(cIWindowSession),
+          window,
+          display,
+          viewRootImpl,
+          new Handler(),
+          stub(cCallbacks)
         };
       } else if (Build.VERSION.SDK_INT >= 16) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class)
-                .newInstance(context);
+          .newInstance(context);
         params = new Class[]{
-                cIWindowSession,
-                cIWindow,
-                cViewRootImpl,
-                Handler.class,
-                cCallbacks
+          cIWindowSession,
+          cIWindow,
+          cViewRootImpl,
+          Handler.class,
+          cCallbacks
         };
 
         values = new Object[]{
-                stub(cIWindowSession),
-                window,
-                viewRootImpl,
-                new Handler(),
-                stub(cCallbacks)
+          stub(cIWindowSession),
+          window,
+          viewRootImpl,
+          new Handler(),
+          stub(cCallbacks)
         };
       } else if (Build.VERSION.SDK_INT <= 15) {
         params = new Class[]{
-                cIWindowSession,
-                cIWindow,
-                Handler.class,
-                cCallbacks
+          cIWindowSession,
+          cIWindow,
+          Handler.class,
+          cCallbacks
         };
 
         values = new Object[]{
-                stub(cIWindowSession),
-                window,
-                new Handler(),
-                stub(cCallbacks)
+          stub(cIWindowSession),
+          window,
+          new Handler(),
+          stub(cCallbacks)
         };
       }
 
@@ -210,7 +210,7 @@ public abstract class WindowAttachment {
       }
 
       Method dispatch = View.class
-              .getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
+        .getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
       dispatch.setAccessible(true);
       dispatch.invoke(view, attachInfo, 0);
     } catch (Exception e) {
@@ -219,9 +219,9 @@ public abstract class WindowAttachment {
   }
 
   private static Object invokeConstructor(
-          Class clazz,
-          Class[] params,
-          Object[] values) throws Exception {
+    Class clazz,
+    Class[] params,
+    Object[] values) throws Exception {
     Constructor cons = clazz.getDeclaredConstructor(params);
     cons.setAccessible(true);
     return cons.newInstance(values);
@@ -242,9 +242,9 @@ public abstract class WindowAttachment {
     };
 
     Object ret = Proxy.newProxyInstance(
-            cIWindow.getClassLoader(),
-            new Class[]{cIWindow},
-            handler);
+      cIWindow.getClassLoader(),
+      new Class[]{cIWindow},
+      handler);
 
     return ret;
   }
@@ -260,13 +260,13 @@ public abstract class WindowAttachment {
 
       if (klass.isInterface()) {
         return Proxy.newProxyInstance(
-                klass.getClassLoader(),
-                new Class[]{klass},
-                handler);
+          klass.getClassLoader(),
+          new Class[]{klass},
+          handler);
       } else {
         return ProxyBuilder.forClass(klass)
-                .handler(handler)
-                .build();
+          .handler(handler)
+          .build();
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
