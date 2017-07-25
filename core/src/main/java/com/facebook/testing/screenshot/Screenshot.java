@@ -20,7 +20,7 @@ import com.facebook.testing.screenshot.internal.ScreenshotImpl;
  * investigating how the rendering looks like after setting up some
  * complex set of conditions in the test. (Which might be hard to
  * manually recreate)
- *
+ * <p>
  * Eventually we can use this to catch rendering changes, with very
  * little work added to the instrumentation test.
  */
@@ -28,7 +28,7 @@ public class Screenshot {
   /**
    * Take a snapshot of an already measured and layout-ed view. See
    * adb-logcat for how to pull the screenshot.
-   *
+   * <p>
    * This method is thread safe.
    */
   public static RecordBuilder snap(View measuredView) {
@@ -38,7 +38,7 @@ public class Screenshot {
   /**
    * Take a snapshot of the activity and store it with the the
    * testName. See the adb-logcat for how to pull the screenshot.
-   *
+   * <p>
    * This method is thread safe.
    */
   public static RecordBuilder snapActivity(Activity activity) {

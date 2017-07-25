@@ -29,7 +29,7 @@ public interface RecordBuilder {
 
   /**
    * Add extra metadata about this screenshots.
-   *
+   * <p>
    * There will be no semantic information associated with this
    * metadata, but we'll try to provide this as debugging information
    * whenever you're viewing screenshots.

@@ -1,23 +1,13 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
  */
 
 package com.facebook.testing.screenshot.internal;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.IllegalArgumentException;
-import java.lang.StringBuilder;
-import java.util.Locale;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -38,7 +28,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.util.Locale;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 /**
  * Tests for {@link ScreenshotImpl}
@@ -52,29 +54,62 @@ public class ScreenshotImplTest {
   private ViewHierarchy mViewHierarchy;
   private ScreenshotDirectories mScreenshotDirectories;
 
+  /**
+   * Check if the two bitmaps have the same dimensions and pixel data.
+   */
+  private static void assertBitmapsEqual(Bitmap expected, Bitmap actual) {
+    if (expected.getHeight() == 0 || expected.getWidth() == 0) {
+      throw new AssertionError("bitmap was empty");
+    }
+
+    if (expected.getHeight() != actual.getHeight() ||
+        expected.getWidth() != actual.getWidth()) {
+      throw new AssertionError("bitmap dimensions don't match");
+    }
+
+    for (int i = 0; i < expected.getWidth(); i++) {
+      for (int j = 0; j < expected.getHeight(); j++) {
+
+        int expectedPixel = expected.getPixel(i, j);
+        int actualPixel = actual.getPixel(i, j);
+
+        if (expectedPixel != actualPixel) {
+          throw new AssertionError(
+              String.format(
+                  Locale.US,
+                  "Pixels don't match at (%d, %d), Expected %s, got %s",
+                  i,
+                  j,
+                  Long.toHexString(expected.getPixel(i, j)),
+                  Long.toHexString(actual.getPixel(i, j))));
+        }
+      }
+    }
+  }
+
   @Before
   public void setUp() throws Exception {
     mScreenshotDirectories = new ScreenshotDirectories(getInstrumentation().getTargetContext());
     mAlbumImpl = AlbumImpl.createLocal(getInstrumentation().getTargetContext(), "verify-in-test");
     mSecondAlbumImpl = AlbumImpl.createLocal(
-      getInstrumentation().getTargetContext(),
-      "recorded-in-test");
+        getInstrumentation().getTargetContext(),
+        "recorded-in-test");
     mTextView = new TextView(getInstrumentation().getTargetContext());
     mTextView.setText("foobar");
 
     // Unfortunately TextView needs a LayoutParams for onDraw
     mTextView.setLayoutParams(new FrameLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT));
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT));
 
     measureAndLayout();
 
     mViewHierarchy = new ViewHierarchy() {
-        @Override
-        public void deflate(View view, OutputStream os) throws IOException {
-          os.write("foobar".getBytes("utf-8"));
-        }
-      };
+      @Override
+      public void deflate(View view, OutputStream os) throws IOException {
+        os.write("foobar".getBytes("utf-8"));
+      }
+    };
     // For most of the tests, we send a null album to verify against
     mScreenshot = new ScreenshotImpl(mAlbumImpl, mViewHierarchy);
   }
@@ -88,8 +123,8 @@ public class ScreenshotImplTest {
   @Test
   public void testBasicFunctionalityHappyPath() throws Throwable {
     mScreenshot.snap(mTextView)
-      .setName("fooBar")
-      .record();
+        .setName("fooBar")
+        .record();
   }
 
   @Test
@@ -105,13 +140,13 @@ public class ScreenshotImplTest {
   @Test
   public void testRecordBuilderImplHasAHierarchyDumpFile() throws Throwable {
     RecordBuilderImpl rb = mScreenshot.snap(mTextView)
-      .setName("blahblah");
+        .setName("blahblah");
     rb.record();
     mScreenshot.flush();
 
     String fileName = new File(
-      mScreenshotDirectories.get("verify-in-test"),
-      "blahblah_dump.xml").getAbsolutePath();
+        mScreenshotDirectories.get("verify-in-test"),
+        "blahblah_dump.xml").getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 
     int len = "foobar".length();
@@ -128,7 +163,7 @@ public class ScreenshotImplTest {
   private String fileToString(File file) {
     try {
       InputStreamReader reader = new InputStreamReader(
-        new FileInputStream(file));
+          new FileInputStream(file));
 
       StringBuilder sb = new StringBuilder();
 
@@ -146,7 +181,7 @@ public class ScreenshotImplTest {
   @Test
   public void testBitmapIsSameAsDrawingCache() throws Throwable {
     Bitmap bmp = mScreenshot.snap(mTextView)
-      .getBitmap();
+        .getBitmap();
 
     mTextView.setDrawingCacheEnabled(true);
     Bitmap expected = mTextView.getDrawingCache();
@@ -158,7 +193,7 @@ public class ScreenshotImplTest {
     mTextView = new MyViewForAttachment(getInstrumentation().getTargetContext());
     measureAndLayout();
     mScreenshot.snap(mTextView)
-      .record(); // assertion is taken care of in the view
+        .record(); // assertion is taken care of in the view
   }
 
   public void doTestTiling(boolean enableReconfigure) throws Throwable {
@@ -173,15 +208,15 @@ public class ScreenshotImplTest {
     measureAndLayout(VIEW_WIDTH, VIEW_HEIGHT);
 
     Bitmap full = mScreenshot.snap(mTextView)
-      .getBitmap();
+        .getBitmap();
 
     mScreenshot.setTileSize(10);
     mScreenshot.snap(mTextView)
-      .setName("foo")
-      .record();
+        .setName("foo")
+        .record();
 
     Bitmap reconstructedFromTiles =
-      Bitmap.createBitmap(VIEW_WIDTH, VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
+        Bitmap.createBitmap(VIEW_WIDTH, VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
     Canvas canvas = new Canvas(reconstructedFromTiles);
 
     assertEquals(Color.TRANSPARENT, reconstructedFromTiles.getPixel(0, 0));
@@ -229,7 +264,7 @@ public class ScreenshotImplTest {
     doTestTiling(false);
   }
 
-  @SdkSuppress(minSdkVersion=19)
+  @SdkSuppress(minSdkVersion = 19)
   @Test
   public void testTilingWithReconfigure() throws Throwable {
     doTestTiling(true);
@@ -247,25 +282,25 @@ public class ScreenshotImplTest {
     }
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testNonLatinNamesResultInException() {
     mScreenshot.snap(mTextView)
-      .setName("\u06f1")
-      .record();
+        .setName("\u06f1")
+        .record();
   }
 
-  @Test(expected=IllegalArgumentException.class)
+  @Test(expected = IllegalArgumentException.class)
   public void testNamesContainingPathSeparatorsResultInException() {
     mScreenshot.snap(mTextView)
-      .setName("simple/test")
-      .record();
+        .setName("simple/test")
+        .record();
   }
 
   @Test
   public void testMultipleOfTileSize() throws Throwable {
     measureAndLayout(512, 512);
     mScreenshot.snap(mTextView)
-      .record();
+        .record();
   }
 
   private void measureAndLayout() {
@@ -275,21 +310,26 @@ public class ScreenshotImplTest {
   private void measureAndLayout(final int width, final int height) {
     try {
       InstrumentationRegistry.getInstrumentation().runOnMainSync(new Runnable() {
-          @Override
-          public void run() {
-            mTextView.measure(
+        @Override
+        public void run() {
+          mTextView.measure(
               View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY),
               View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.EXACTLY));
-            mTextView.layout(0, 0, mTextView.getMeasuredWidth(), mTextView.getMeasuredHeight());
-          }
-        });
+          mTextView.layout(0, 0, mTextView.getMeasuredWidth(), mTextView.getMeasuredHeight());
+        }
+      });
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
   }
 
+  private Instrumentation getInstrumentation() {
+    return InstrumentationRegistry.getInstrumentation();
+  }
+
   public class MyViewForAttachment extends TextView {
     private boolean mAttached = false;
+
     public MyViewForAttachment(Context context) {
       super(context);
     }
@@ -310,43 +350,6 @@ public class ScreenshotImplTest {
     public void onDraw(Canvas canvas) {
       super.onDraw(canvas);
       assertTrue(mAttached);
-    }
-  }
-
-  private Instrumentation getInstrumentation() {
-    return InstrumentationRegistry.getInstrumentation();
-  }
-
-  /**
-   * Check if the two bitmaps have the same dimensions and pixel data.
-   */
-  private static void assertBitmapsEqual(Bitmap expected, Bitmap actual) {
-    if (expected.getHeight() == 0 || expected.getWidth() == 0) {
-      throw new AssertionError("bitmap was empty");
-    }
-
-    if (expected.getHeight() != actual.getHeight() ||
-        expected.getWidth() != actual.getWidth()) {
-      throw new AssertionError("bitmap dimensions don't match");
-    }
-
-    for (int i = 0 ; i < expected.getWidth(); i++) {
-      for (int j = 0; j < expected.getHeight(); j++) {
-
-        int expectedPixel = expected.getPixel(i, j);
-        int actualPixel = actual.getPixel(i, j);
-
-        if (expectedPixel != actualPixel) {
-          throw new AssertionError(
-            String.format(
-              Locale.US,
-              "Pixels don't match at (%d, %d), Expected %s, got %s",
-              i,
-              j,
-              Long.toHexString(expected.getPixel(i, j)),
-              Long.toHexString(actual.getPixel(i, j))));
-        }
-      }
     }
   }
 }

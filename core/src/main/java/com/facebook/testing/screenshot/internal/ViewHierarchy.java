@@ -41,7 +41,7 @@ import javax.xml.transform.stream.StreamResult;
 public class ViewHierarchy {
   /**
    * Creates an XML dump for the view into given OutputStream
-   *
+   * <p>
    * This is meant for debugging purposes only, and we don't
    * guarantee that it's format will remain the same.
    */

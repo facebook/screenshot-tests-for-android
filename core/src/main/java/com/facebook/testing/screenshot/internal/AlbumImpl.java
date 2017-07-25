@@ -298,7 +298,7 @@ public class AlbumImpl implements Album {
   /**
    * For a given screenshot, and a tile position, generates a name
    * where we store the screenshot in the album.
-   *
+   * <p>
    * For backward compatibility with existing screenshot scripts, for
    * the tile (0, 0) we use the name directly.
    */

@@ -43,13 +43,13 @@ public abstract class WindowAttachment {
   /**
    * Dispatch onAttachedToWindow to all the views in the view
    * hierarchy.
-   *
+   * <p>
    * Detach the view by calling {@code detach()} on the returned {@code Detacher}.
-   *
+   * <p>
    * Note that if the view is already attached (either via
    * WindowAttachment or to a real window), then both the attach and
    * the corresponding detach will be no-ops.
-   *
+   * <p>
    * Note that this is hacky, after these calls the views will still
    * say that isAttachedToWindow() is false and getWindowToken() ==
    * null.

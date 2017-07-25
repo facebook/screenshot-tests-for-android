@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Abstraction for sending a file to the host system while the test is
  * running.
- *
+ * <p>
  * When running screenshot tests, the space on the emulator disk can
  * fill up quickly, therefore this tool starts streaming the
  * screenshots while the test is running. However it is the
@@ -46,7 +46,7 @@ public class HostFileSender {
 
   /**
    * Sends the given file to the host system.
-   *
+   * <p>
    * Once passed in the file is "owned" by HostFileSender and should
    * not be modified beyond this point.
    */

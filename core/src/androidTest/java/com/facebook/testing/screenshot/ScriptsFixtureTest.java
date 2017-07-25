@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -34,8 +34,8 @@ public class ScriptsFixtureTest extends InstrumentationTestCase {
 
     // Unfortunately TextView needs a LayoutParams for onDraw
     mTextView.setLayoutParams(new FrameLayout.LayoutParams(
-                                ViewGroup.LayoutParams.MATCH_PARENT,
-                                ViewGroup.LayoutParams.MATCH_PARENT));
+        ViewGroup.LayoutParams.MATCH_PARENT,
+        ViewGroup.LayoutParams.MATCH_PARENT));
 
     measureAndLayout();
   }
@@ -58,14 +58,14 @@ public class ScriptsFixtureTest extends InstrumentationTestCase {
   private void measureAndLayout() {
     try {
       runTestOnUiThread(new Runnable() {
-          @Override
-          public void run() {
-            mTextView.measure(
+        @Override
+        public void run() {
+          mTextView.measure(
               View.MeasureSpec.makeMeasureSpec(WIDTH, View.MeasureSpec.EXACTLY),
               View.MeasureSpec.makeMeasureSpec(HEIGHT, View.MeasureSpec.EXACTLY));
-            mTextView.layout(0, 0, mTextView.getMeasuredWidth(), mTextView.getMeasuredHeight());
-          }
-        });
+          mTextView.layout(0, 0, mTextView.getMeasuredWidth(), mTextView.getMeasuredHeight());
+        }
+      });
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }
