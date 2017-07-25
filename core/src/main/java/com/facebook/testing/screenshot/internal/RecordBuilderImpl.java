@@ -22,7 +22,7 @@ import java.util.Map;
 
 /**
  * A builder for all the metadata associated with a screenshot.
- * <p>
+ *
  * Use Screenshot#snap() or Screenshot#snapActivity() to get an
  * instance of this, and commit the record with #record().
  */
@@ -111,7 +111,7 @@ public class RecordBuilderImpl implements RecordBuilder {
   /**
    * Stops the recording and returns the generated bitmap, possibly
    * compressed.
-   * <p>
+   *
    * You cannot call this after record(), nor can you call record()
    * after this call.
    */

@@ -15,7 +15,7 @@ import java.util.Map;
 
 /**
  * A plugin to get more metadata about a View.
- * <p>
+ *
  * When screenshots are generated we use all registered plugins to
  * generate metadata for each of the views in the hierarchy.
  */

@@ -39,7 +39,7 @@ public interface Album {
   /**
    * Opens a stream to dump the view hierarchy into. This should be
    * called before addRecord() is called for the given name.
-   * <p>
+   *
    * It is the callers responsibility to call {@code close()} on the
    * returned stream.
    */

@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- * <p>
+ *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,16 +9,15 @@
 
 package com.facebook.testing.screenshot.plugin;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import android.support.test.InstrumentationRegistry;
 import android.widget.TextView;
 
 import org.junit.Before;
 import org.junit.Test;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * Dumps useful details from a TextView
@@ -53,11 +52,11 @@ public class TextViewDumperTest {
   public void testABadTextViewDoesntKillUs() throws Throwable {
     // Android engineers like to break the world
     tv = new TextView(InstrumentationRegistry.getTargetContext()) {
-      @Override
-      public CharSequence getText() {
-        throw new RuntimeException("Foobar");
-      }
-    };
+        @Override
+        public CharSequence getText() {
+          throw new RuntimeException("Foobar");
+        }
+      };
 
     tv.setText("bleh");
     mTextViewDumper.dump(tv, mOutput);

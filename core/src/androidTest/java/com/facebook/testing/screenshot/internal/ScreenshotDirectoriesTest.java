@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- * <p>
+ *
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,15 +9,14 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-
-import org.junit.After;
-import org.junit.Test;
-
 import java.io.File;
 
-import static org.junit.Assert.assertTrue;
+import android.content.Context;
+import org.junit.Test;
+import org.junit.After;
+import android.support.test.InstrumentationRegistry;
+
+import static org.junit.Assert.*;
 
 public class ScreenshotDirectoriesTest {
   File mDir;

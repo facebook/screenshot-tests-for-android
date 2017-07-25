@@ -32,11 +32,11 @@ import java.util.concurrent.Callable;
 
 /**
  * Implementation for Screenshot class.
- * <p>
+ *
  * The Screenshot class has static methods, because that's how the API
  * should look like, this class has all its implementation for
  * testability.
- * <p>
+ *
  * This is public only for implementation convenient for using
  * UiThreadHelper.
  */
@@ -110,7 +110,7 @@ public class ScreenshotImpl {
 
   /**
    * Check if getInstance() has ever been called.
-   * <p>
+   *
    * This is for a minor optimization to avoid creating a
    * ScreenshotImpl at onDestroy() if it was never called during the
    * run.
@@ -269,7 +269,7 @@ public class ScreenshotImpl {
    * dimensions <code>(right-left)*(bottom-top)</code>, with the
    * rendering of the view starting from position (<code>left</code>,
    * <code>top</code>).
-   * <p>
+   *
    * For well behaved views, calling this repeatedly shouldn't change
    * the rendering, so it should it okay to render each tile one by
    * one and combine it later.

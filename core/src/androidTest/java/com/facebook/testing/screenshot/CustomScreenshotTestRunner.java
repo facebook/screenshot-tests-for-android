@@ -3,6 +3,7 @@
 package com.facebook.testing.screenshot;
 
 import android.os.Bundle;
+import android.test.InstrumentationTestRunner;
 import android.support.test.runner.AndroidJUnitRunner;
 
 public class CustomScreenshotTestRunner extends AndroidJUnitRunner {
