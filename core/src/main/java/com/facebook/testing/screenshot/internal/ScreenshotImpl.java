@@ -71,9 +71,7 @@ public class ScreenshotImpl {
    */
   private static ScreenshotImpl create(
       Context context,
-      Bundle args,
       HostFileSender hostFileSender) {
-    String mode = args.getString("screenshot_mode");
     Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
     album.cleanup();
     return new ScreenshotImpl(album, new ViewHierarchy());
@@ -101,7 +99,6 @@ public class ScreenshotImpl {
 
       sInstance = create(
           instrumentation.getContext(),
-          arguments,
           hostFileSender);
 
       return sInstance;

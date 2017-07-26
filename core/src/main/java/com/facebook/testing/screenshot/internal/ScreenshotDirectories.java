@@ -9,6 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -21,7 +22,7 @@ import java.io.File;
 class ScreenshotDirectories {
   private Context mContext;
 
-  public ScreenshotDirectories(Context context) {
+  ScreenshotDirectories(Context context) {
     mContext = context;
   }
 
@@ -69,13 +70,7 @@ class ScreenshotDirectories {
     return dir;
   }
 
-  private File getDataDir(String type) {
-    File dir = mContext.getDir("screenshots-" + type, Context.MODE_WORLD_READABLE);
-
-    setWorldWriteable(dir);
-    return dir;
-  }
-
+  @SuppressLint("SetWorldWritable")
   private void setWorldWriteable(File dir) {
     // Context.MODE_WORLD_WRITEABLE has been deprecated, so let's
     // manually set this

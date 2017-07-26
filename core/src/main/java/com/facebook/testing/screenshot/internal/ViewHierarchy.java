@@ -9,6 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.annotation.TargetApi;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -75,6 +76,7 @@ public class ViewHierarchy {
     return doc;
   }
 
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
   private Element deflateRelative(View view, Point topLeft, Document doc) {
     Element el = doc.createElement("view");
 
