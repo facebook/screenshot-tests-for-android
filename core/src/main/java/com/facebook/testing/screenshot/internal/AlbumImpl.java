@@ -9,6 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,8 +33,7 @@ public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
 
   private final File mDir;
-  private final Set<String> mAllNames = new HashSet<String>();
-  private int mTempFileNameCounter = 0;
+  private final Set<String> mAllNames = new HashSet<>();
   private XmlSerializer mXmlSerializer;
   private FileOutputStream mOutputStream;
   private HostFileSender mHostFileSender;
@@ -90,6 +90,7 @@ public class AlbumImpl implements Album {
     }
   }
 
+  @SuppressLint("SetWorldReadable")
   private void endXml() {
     try {
       mXmlSerializer.endTag(null, "screenshots");
@@ -136,6 +137,7 @@ public class AlbumImpl implements Album {
     return file;
   }
 
+  @SuppressLint("SetWorldReadable")
   @Override
   public String writeBitmap(String name, int tilei, int tilej, Bitmap bitmap) throws IOException {
     String tileName = generateTileName(name, tilei, tilej);
@@ -192,6 +194,7 @@ public class AlbumImpl implements Album {
    * Add the given record to the album. This is called by
    * RecordBuilderImpl#record() and so is an internal detail.
    */
+  @SuppressLint("SetWorldReadable")
   @Override
   public void addRecord(RecordBuilderImpl recordBuilder) throws IOException {
     initXml();

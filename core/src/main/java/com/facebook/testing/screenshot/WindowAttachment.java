@@ -56,7 +56,7 @@ public abstract class WindowAttachment {
    */
   public static Detacher dispatchAttach(View view) {
     if (view.getWindowToken() != null || sAttachments.containsKey(view)) {
-      // Screnshot tests can often be run against a View that's
+      // Screenshot tests can often be run against a View that's
       // attached to a real activity, in which case we have nothing to
       // do
       Log.i("WindowAttachment", "Skipping window attach hack since it's really attached");

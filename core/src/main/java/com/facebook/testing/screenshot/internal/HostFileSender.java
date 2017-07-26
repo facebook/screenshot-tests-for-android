@@ -33,7 +33,6 @@ import java.util.List;
  * discard all files sent to it immediately.
  */
 public class HostFileSender {
-  final int QUEUE_SIZE = 5;
   private final List<File> mQueue = new ArrayList<>();
 
   private Instrumentation mInstrumentation;
@@ -101,7 +100,8 @@ public class HostFileSender {
 
   synchronized private void waitForQueue() {
     updateQueue();
-    while (getQueueSize() >= QUEUE_SIZE) {
+    int queueSize = 5;
+    while (getQueueSize() >= queueSize) {
       try {
         Thread.sleep(20);
       } catch (InterruptedException e) {

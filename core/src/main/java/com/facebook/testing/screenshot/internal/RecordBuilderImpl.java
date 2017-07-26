@@ -28,7 +28,7 @@ import java.util.Map;
  */
 public class RecordBuilderImpl implements RecordBuilder {
   private final ScreenshotImpl mScreenshotImpl;
-  private final Map<String, String> mExtras = new HashMap<String, String>();
+  private final Map<String, String> mExtras = new HashMap<>();
   private String mDescription;
   private String mName;
   private String mTestClass;
