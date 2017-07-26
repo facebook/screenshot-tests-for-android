@@ -22,7 +22,7 @@ import java.io.File;
 class ScreenshotDirectories {
   private Context mContext;
 
-  ScreenshotDirectories(Context context) {
+  public ScreenshotDirectories(Context context) {
     mContext = context;
   }
 
