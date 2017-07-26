@@ -24,6 +24,10 @@ public interface RecordBuilder {
 
   /**
    * Set a long description of the what the screenshot is about.
+   *
+   * This will be shown as part of the report, and in general it can
+   * help document a screenshot if you're using it as part of an
+   * external tooling.
    */
   RecordBuilder setDescription(String description);
 

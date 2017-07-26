@@ -31,6 +31,10 @@ import java.util.List;
  * host script does not support this and does not pass
  * "HostFileSender_supported" argument, then the HostFileSender will
  * discard all files sent to it immediately.
+ *
+ * (We don't use the streaming mode internally at Facebook anymore,
+ * but it was useful for a while. I don't recommend you use this mode,
+ * instead just create an emulator with enough sdcard space.)
  */
 public class HostFileSender {
   private final List<File> mQueue = new ArrayList<>();
@@ -115,6 +119,12 @@ public class HostFileSender {
   /**
    * Returns true if we should discard files immediately instead of
    * waiting for the host system to pull them.
+   *
+   * This is only useful if you're running the tests on a device that
+   * does not have enough space on the sdcard to store all the
+   * screenshots. In those cases, you still might want to run all the
+   * instrumentation tests without the screenshot tests causing the
+   * job to fail.
    */
   private boolean isDiscardMode() {
     return "true".equals(mArguments.getString("discard_screenshot_files"));
