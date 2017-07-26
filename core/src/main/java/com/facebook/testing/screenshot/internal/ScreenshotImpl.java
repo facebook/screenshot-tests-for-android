@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -47,23 +47,73 @@ public class ScreenshotImpl {
    * tiling.
    */
   private static final int TILING_THRESHOLD = 2;
-
+  private static ScreenshotImpl sInstance;
   /**
    * The album of all the screenshots taken in this run.
    */
   private final Album mAlbum;
-
   private int mTileSize = 512;
-
   private Bitmap mBitmap = null;
   private Canvas mCanvas = null;
   private ViewHierarchy mViewHierarchy;
   private boolean mEnableBitmapReconfigure = (Build.VERSION.SDK_INT >= 19);
 
-  public void setTileSize(int tileSize) {
-    mTileSize = tileSize;
-    mBitmap = null;
-    mCanvas = null;
+  /* package */ ScreenshotImpl(
+      Album album,
+      ViewHierarchy viewHierarchy) {
+    mAlbum = album;
+    mViewHierarchy = viewHierarchy;
+  }
+
+  /**
+   * Factory method that creates this instance based on what arguments
+   * are passed to the instrumentation
+   */
+  private static ScreenshotImpl create(
+      Context context,
+      HostFileSender hostFileSender) {
+    Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
+    album.cleanup();
+    return new ScreenshotImpl(album, new ViewHierarchy());
+  }
+
+  /**
+   * Get a singleton instance of the ScreenshotImpl
+   */
+  public static ScreenshotImpl getInstance() {
+    if (sInstance != null) {
+      return sInstance;
+    }
+
+    synchronized (ScreenshotImpl.class) {
+      if (sInstance != null) {
+        return sInstance;
+      }
+
+      Instrumentation instrumentation = Registry.getRegistry().instrumentation;
+      Bundle arguments = Registry.getRegistry().arguments;
+
+      HostFileSender hostFileSender = new HostFileSender(
+          instrumentation,
+          arguments);
+
+      sInstance = create(
+          instrumentation.getContext(),
+          hostFileSender);
+
+      return sInstance;
+    }
+  }
+
+  /**
+   * Check if getInstance() has ever been called.
+   *
+   * This is for a minor optimization to avoid creating a
+   * ScreenshotImpl at onDestroy() if it was never called during the
+   * run.
+   */
+  public static boolean hasBeenCreated() {
+    return sInstance != null;
   }
 
   // VisibleForTesting
@@ -75,11 +125,10 @@ public class ScreenshotImpl {
     return mTileSize;
   }
 
-  /* package */ ScreenshotImpl(
-      Album album,
-      ViewHierarchy viewHierarchy) {
-    mAlbum = album;
-    mViewHierarchy = viewHierarchy;
+  public void setTileSize(int tileSize) {
+    mTileSize = tileSize;
+    mBitmap = null;
+    mCanvas = null;
   }
 
   /**
@@ -89,13 +138,13 @@ public class ScreenshotImpl {
   public RecordBuilderImpl snapActivity(final Activity activity) {
     if (!isUiThread()) {
       return runCallableOnUiThread(new Callable<RecordBuilderImpl>() {
-          @Override
-          public RecordBuilderImpl call() {
-            return snapActivity(activity);
-          }
-        })
-        .setTestClass(TestNameDetector.getTestClass())
-        .setTestName(TestNameDetector.getTestName());
+        @Override
+        public RecordBuilderImpl call() {
+          return snapActivity(activity);
+        }
+      })
+          .setTestClass(TestNameDetector.getTestClass())
+          .setTestName(TestNameDetector.getTestName());
     }
     View rootView = activity.getWindow().getDecorView();
     return snap(rootView);
@@ -107,9 +156,9 @@ public class ScreenshotImpl {
    */
   public RecordBuilderImpl snap(final View measuredView) {
     RecordBuilderImpl recordBuilder = new RecordBuilderImpl(this)
-      .setView(measuredView)
-      .setTestClass(TestNameDetector.getTestClass())
-      .setTestName(TestNameDetector.getTestName());
+        .setView(measuredView)
+        .setTestClass(TestNameDetector.getTestClass())
+        .setTestName(TestNameDetector.getTestName());
 
     return recordBuilder;
   }
@@ -126,12 +175,12 @@ public class ScreenshotImpl {
 
     if (!isUiThread()) {
       runCallableOnUiThread(new Callable<Void>() {
-          @Override
-          public Void call() {
-            storeBitmap(recordBuilder);
-            return null;
-          }
-        });
+        @Override
+        public Void call() {
+          storeBitmap(recordBuilder);
+          return null;
+        }
+      });
       return;
     }
 
@@ -142,8 +191,8 @@ public class ScreenshotImpl {
     }
 
     int tileSize = Math.max(
-      measuredView.getWidth(),
-      measuredView.getHeight());
+        measuredView.getWidth(),
+        measuredView.getHeight());
 
     if (measuredView.getMeasuredHeight() * measuredView.getMeasuredWidth()
         > TILING_THRESHOLD * mTileSize * mTileSize) {
@@ -202,9 +251,9 @@ public class ScreenshotImpl {
       return;
     }
     mBitmap = Bitmap.createBitmap(
-      mTileSize,
-      mTileSize,
-      Bitmap.Config.ARGB_8888);
+        mTileSize,
+        mTileSize,
+        Bitmap.Config.ARGB_8888);
     mCanvas = new Canvas(mBitmap);
   }
 
@@ -226,20 +275,6 @@ public class ScreenshotImpl {
     canvas.translate(-left, -top);
     view.draw(canvas);
     canvas.translate(left, top);
-  }
-
-  /**
-   * Factory method that creates this instance based on what arguments
-   * are passed to the instrumentation
-   */
-  private static ScreenshotImpl create(
-      Context context,
-      Bundle args,
-      HostFileSender hostFileSender) {
-    String mode = args.getString("screenshot_mode");
-    Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
-    album.cleanup();
-    return new ScreenshotImpl(album, new ViewHierarchy());
   }
 
   /**
@@ -272,9 +307,9 @@ public class ScreenshotImpl {
 
     View view = recordBuilder.getView();
     Bitmap bmp = Bitmap.createBitmap(
-      view.getWidth(),
-      view.getHeight(),
-      Bitmap.Config.ARGB_8888);
+        view.getWidth(),
+        view.getHeight(),
+        Bitmap.Config.ARGB_8888);
 
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(recordBuilder.getView());
     try {
@@ -286,7 +321,6 @@ public class ScreenshotImpl {
     return bmp;
   }
 
-
   private boolean isUiThread() {
     return Looper.getMainLooper().getThread() == Thread.currentThread();
   }
@@ -297,20 +331,20 @@ public class ScreenshotImpl {
     final Object lock = new Object();
     Handler handler = new Handler(Looper.getMainLooper());
 
-    synchronized(lock) {
+    synchronized (lock) {
       handler.post(new Runnable() {
-          @Override
-          public void run() {
-            try {
-              ret[0] = callable.call();
-            } catch (Exception ee) {
-              e[0] = ee;
-            }
-            synchronized(lock) {
-              lock.notifyAll();
-            }
+        @Override
+        public void run() {
+          try {
+            ret[0] = callable.call();
+          } catch (Exception ee) {
+            e[0] = ee;
           }
-        });
+          synchronized (lock) {
+            lock.notifyAll();
+          }
+        }
+      });
 
       try {
         lock.wait();
@@ -323,47 +357,5 @@ public class ScreenshotImpl {
       throw new RuntimeException(e[0]);
     }
     return ret[0];
-  }
-
-  private static ScreenshotImpl sInstance;
-
-  /**
-   * Get a singleton instance of the ScreenshotImpl
-   */
-  public static ScreenshotImpl getInstance() {
-    if (sInstance != null) {
-      return sInstance;
-    }
-
-    synchronized(ScreenshotImpl.class) {
-      if (sInstance != null) {
-        return sInstance;
-      }
-
-      Instrumentation instrumentation = Registry.getRegistry().instrumentation;
-      Bundle arguments = Registry.getRegistry().arguments;
-
-      HostFileSender hostFileSender = new HostFileSender(
-        instrumentation,
-        arguments);
-
-      sInstance = create(
-        instrumentation.getContext(),
-        arguments,
-        hostFileSender);
-
-      return sInstance;
-    }
-  }
-
-  /**
-   * Check if getInstance() has ever been called.
-   *
-   * This is for a minor optimization to avoid creating a
-   * ScreenshotImpl at onDestroy() if it was never called during the
-   * run.
-   */
-  public static boolean hasBeenCreated() {
-    return sInstance != null;
   }
 }

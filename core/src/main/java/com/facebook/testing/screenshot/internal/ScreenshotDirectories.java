@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,6 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.annotation.SuppressLint;
 import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -25,10 +26,12 @@ import java.util.Locale;
  * Provides a directory for an Album to store its screenshots in.
  */
 class ScreenshotDirectories {
+  // Constants used to alleviate potential API level conflicts
+  private static final String WRITE_PERMISSION = "android.permission.WRITE_EXTERNAL_STORAGE";
+  private static final String READ_PERMISSION = "android.permission.READ_EXTERNAL_STORAGE";
   private static final String[] REQUIRED_PERMISSIONS = new String[] {
-      // Constants used to alleviate potential API level conflicts
-      "android.permission.WRITE_EXTERNAL_STORAGE",
-      "android.permission.READ_EXTERNAL_STORAGE"
+      WRITE_PERMISSION,
+      READ_PERMISSION
   };
 
   private Context mContext;
@@ -44,7 +47,8 @@ class ScreenshotDirectories {
 
   private void checkPermissions() {
     for (String permission : REQUIRED_PERMISSIONS) {
-      if (mContext.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
+      if ((permission.equals(READ_PERMISSION) && Build.VERSION.SDK_INT < 16) ||
+          mContext.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
         continue;
       }
       if (Build.VERSION.SDK_INT < 23) {
@@ -90,9 +94,9 @@ class ScreenshotDirectories {
     }
 
     String parent = String.format(
-      "%s/screenshots/%s/",
-      externalStorage,
-      mContext.getPackageName());
+        "%s/screenshots/%s/",
+        externalStorage,
+        mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
 
@@ -109,13 +113,7 @@ class ScreenshotDirectories {
     return dir;
   }
 
-  private File getDataDir(String type) {
-    File dir = mContext.getDir("screenshots-" + type, Context.MODE_WORLD_READABLE);
-
-    setWorldWriteable(dir);
-    return dir;
-  }
-
+  @SuppressLint("SetWorldWritable")
   private void setWorldWriteable(File dir) {
     // Context.MODE_WORLD_WRITEABLE has been deprecated, so let's
     // manually set this

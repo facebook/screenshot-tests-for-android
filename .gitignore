@@ -5,7 +5,7 @@
 /build
 repo
 examples/**/build
-.idea
+.idea/*
+!.idea/codeStyleSettings.xml
 *.iml
 local.properties
-

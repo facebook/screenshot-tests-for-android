@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,16 +9,16 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import android.graphics.Bitmap;
+import android.view.View;
+
+import com.facebook.testing.screenshot.RecordBuilder;
+
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
-
-import android.graphics.Bitmap;
-import android.view.View;
-
-import com.facebook.testing.screenshot.RecordBuilder;
 
 /**
  * A builder for all the metadata associated with a screenshot.
@@ -28,20 +28,22 @@ import com.facebook.testing.screenshot.RecordBuilder;
  */
 public class RecordBuilderImpl implements RecordBuilder {
   private final ScreenshotImpl mScreenshotImpl;
-
+  private final Map<String, String> mExtras = new HashMap<>();
   private String mDescription;
   private String mName;
   private String mTestClass;
   private String mTestName;
   private String mError;
   private String mGroup;
-
   private Tiling mTiling = new Tiling(1, 1);
   private View mView;
-  private final Map<String, String> mExtras = new HashMap<String, String>();
 
   /* package */ RecordBuilderImpl(ScreenshotImpl screenshotImpl) {
     mScreenshotImpl = screenshotImpl;
+  }
+
+  public String getDescription() {
+    return mDescription;
   }
 
   /**
@@ -53,8 +55,11 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  public String getDescription() {
-    return mDescription;
+  public String getName() {
+    if (mName == null) {
+      return getTestClass() + "_" + getTestName();
+    }
+    return mName;
   }
 
   /**
@@ -66,22 +71,19 @@ public class RecordBuilderImpl implements RecordBuilder {
 
     if (!charsetEncoder.canEncode(name)) {
       throw new IllegalArgumentException(
-        "Screenshot names must have only latin characters: " + name);
+          "Screenshot names must have only latin characters: " + name);
     }
     if (name.contains(File.separator)) {
       throw new IllegalArgumentException(
-        "Screenshot names cannot contain '" + File.separator + "': " + name);
+          "Screenshot names cannot contain '" + File.separator + "': " + name);
     }
 
     mName = name;
     return this;
   }
 
-  public String getName() {
-    if (mName == null) {
-      return getTestClass() + "_" + getTestName();
-    }
-    return mName;
+  public String getTestName() {
+    return mTestName;
   }
 
   /**
@@ -93,8 +95,8 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  public String getTestName() {
-    return mTestName;
+  public String getTestClass() {
+    return mTestClass;
   }
 
   /**
@@ -104,10 +106,6 @@ public class RecordBuilderImpl implements RecordBuilder {
   public RecordBuilderImpl setTestClass(String testClass) {
     mTestClass = testClass;
     return this;
-  }
-
-  public String getTestClass() {
-    return mTestClass;
   }
 
   /**
@@ -129,17 +127,17 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mName != null;
   }
 
-  /* package */ RecordBuilderImpl setError(String error) {
-    mError = error;
-    return this;
-  }
-
   /**
    * Get's any error that was encountered while creating the
    * screenshot.
    */
   public String getError() {
     return mError;
+  }
+
+  /* package */ RecordBuilderImpl setError(String error) {
+    mError = error;
+    return this;
   }
 
   /**
@@ -149,12 +147,6 @@ public class RecordBuilderImpl implements RecordBuilder {
   public void record() {
     mScreenshotImpl.record(this);
     checkState();
-  }
-
-  @Override
-  public RecordBuilderImpl setGroup(String groupName) {
-    mGroup = groupName;
-    return this;
   }
 
   /**
@@ -173,22 +165,22 @@ public class RecordBuilderImpl implements RecordBuilder {
     }
   }
 
+  public View getView() {
+    return mView;
+  }
+
   /* package */ RecordBuilderImpl setView(View view) {
     mView = view;
     return this;
   }
 
-  public View getView() {
-    return mView;
+  public Tiling getTiling() {
+    return mTiling;
   }
 
   /* package */ RecordBuilderImpl setTiling(Tiling tiling) {
     mTiling = tiling;
     return this;
-  }
-
-  public Tiling getTiling() {
-    return mTiling;
   }
 
   @Override
@@ -203,5 +195,11 @@ public class RecordBuilderImpl implements RecordBuilder {
 
   public String getGroup() {
     return mGroup;
+  }
+
+  @Override
+  public RecordBuilderImpl setGroup(String groupName) {
+    mGroup = groupName;
+    return this;
   }
 }

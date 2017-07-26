@@ -1,7 +1,7 @@
 /**
  * Copyright (c) 2014-present, Facebook, Inc.
  * All rights reserved.
- *
+ * <p>
  * This source code is licensed under the BSD-style license found in the
  * LICENSE file in the root directory of this source tree. An additional grant
  * of patent rights can be found in the PATENTS file in the same directory.
@@ -9,20 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-
+import android.annotation.TargetApi;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.Build;
@@ -34,6 +21,20 @@ import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 /**
  * Dumps information about the view hierarchy.
@@ -65,8 +66,8 @@ public class ViewHierarchy {
 
     try {
       doc = DocumentBuilderFactory.newInstance()
-        .newDocumentBuilder()
-        .newDocument();
+          .newDocumentBuilder()
+          .newDocument();
     } catch (ParserConfigurationException e) {
       throw new RuntimeException(e);
     }
@@ -75,16 +76,17 @@ public class ViewHierarchy {
     return doc;
   }
 
+  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
   private Element deflateRelative(View view, Point topLeft, Document doc) {
     Element el = doc.createElement("view");
 
     addTextNode(el, "name", view.getClass().getName());
 
     Rect rect = new Rect(
-      topLeft.x + view.getLeft(),
-      topLeft.y + view.getTop(),
-      topLeft.x + view.getRight(),
-      topLeft.y + view.getBottom());
+        topLeft.x + view.getLeft(),
+        topLeft.y + view.getTop(),
+        topLeft.x + view.getRight(),
+        topLeft.y + view.getBottom());
 
     addTextNode(el, "left", String.valueOf(rect.left));
     addTextNode(el, "top", String.valueOf(rect.top));
