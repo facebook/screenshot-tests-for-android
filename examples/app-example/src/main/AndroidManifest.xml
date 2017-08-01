@@ -9,7 +9,6 @@
 <manifest
     xmlns:android="http://schemas.android.com/apk/res/android"
     package='com.facebook.testing.screenshot.examples'>
-   <uses-sdk android:minSdkVersion='9' android:targetSdkVersion="22" />
    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
    <application>
      <!-- not having an empty application block seems to cause the
