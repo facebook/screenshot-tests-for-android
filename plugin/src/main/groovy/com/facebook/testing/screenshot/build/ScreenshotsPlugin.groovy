@@ -13,6 +13,8 @@ class ScreenshotsPluginExtension {
     def referenceDir = ""
     def targetPackage = ""
 
+    def GROUP = "Screenshot"
+
     // Deprecated. We automatically detect adb now. Using this will
     // throw an error.
     @Deprecated
@@ -39,6 +41,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     project.task('pullScreenshots') {
+      group = project.screenshots.GROUP
+      description = "Pull screenshots from the device"
       doLast {
         project.exec {
           def output = getTestApkOutput(project)
@@ -63,6 +67,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     project.task('pullScreenshotsFromDirectory') {
+      group = project.screenshots.GROUP
+      description = "Pull screenshots from the device to specific folder"
       doLast {
         project.exec {
 
@@ -93,6 +99,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     project.task("clearScreenshots") {
+      group = project.screenshots.GROUP
+      description = "Remove screenshots on the device"
       doLast {
         project.exec {
           executable = adb
@@ -104,7 +112,10 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     project.afterEvaluate {
       adb = project.android.getAdbExe().toString()
-      project.task("screenshotTests")
+      project.task("screenshotTests") {
+        group = project.screenshots.GROUP
+        description = "Run all the instrumentation tests, and then generate a report of all of the screenshots"
+      }
       project.screenshotTests.dependsOn project.clearScreenshots
       project.screenshotTests.dependsOn project.screenshots.connectedAndroidTestTarget
       project.screenshotTests.dependsOn project.pullScreenshots
@@ -119,12 +130,16 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
 
     project.task("recordMode") {
+      group = project.screenshots.GROUP
+      description = "Run all the screenshot tests and record all the screenshots in your screenshots folder"
       doLast {
         recordMode = true
       }
     }
 
     project.task("verifyMode") {
+      group = project.screenshots.GROUP
+      description = "Runs all the screenshot tests and compares it against the previously recorded screenshots"
       doLast {
         verifyMode = true
       }
