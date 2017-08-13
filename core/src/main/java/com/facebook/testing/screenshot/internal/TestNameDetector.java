@@ -43,7 +43,7 @@ public class TestNameDetector {
         return UNKNOWN;
       }
     }
-    return "unknown";
+    return UNKNOWN;
   }
 
   /**
