@@ -13,7 +13,7 @@ class ScreenshotsPluginExtension {
     def referenceDir = ""
     def targetPackage = ""
 
-    def GROUP = "Screenshot"
+    def GROUP = "Screenshot tests"
 
     // Deprecated. We automatically detect adb now. Using this will
     // throw an error.
@@ -68,7 +68,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     project.task('pullScreenshotsFromDirectory') {
       group = project.screenshots.GROUP
-      description = "Pull screenshots from the device to specific folder"
+      description = "Pull screenshots from the device to a specific folder"
       doLast {
         project.exec {
 
@@ -114,7 +114,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       adb = project.android.getAdbExe().toString()
       project.task("screenshotTests") {
         group = project.screenshots.GROUP
-        description = "Run all the instrumentation tests, and then generate a report of all of the screenshots"
+        description = "Run all screenshot tests and generate a report"
       }
       project.screenshotTests.dependsOn project.clearScreenshots
       project.screenshotTests.dependsOn project.screenshots.connectedAndroidTestTarget
@@ -131,7 +131,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     project.task("recordMode") {
       group = project.screenshots.GROUP
-      description = "Run all the screenshot tests and record all the screenshots in your screenshots folder"
+      description = "Run all screenshot tests and record all screenshots in your screenshots folder"
       doLast {
         recordMode = true
       }
@@ -139,7 +139,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
     project.task("verifyMode") {
       group = project.screenshots.GROUP
-      description = "Runs all the screenshot tests and compares it against the previously recorded screenshots"
+      description = "Run all screenshot tests and compare them against previously recorded screenshots"
       doLast {
         verifyMode = true
       }
