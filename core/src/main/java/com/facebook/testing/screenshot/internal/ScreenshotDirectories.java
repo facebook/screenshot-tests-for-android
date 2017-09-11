@@ -14,6 +14,7 @@ import android.app.UiAutomation;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
 
 import java.io.File;
@@ -21,6 +22,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
+
+import static com.facebook.testing.screenshot.ScreenshotRunner.SDCARD_DIRECTORY;
 
 /**
  * Provides a directory for an Album to store its screenshots in.
@@ -35,9 +38,13 @@ class ScreenshotDirectories {
   };
 
   private Context mContext;
+  private Bundle mArguments;
+
+  private static final String DEFAULT_SDCARD_DIRECTORY = "screenshots";
 
   public ScreenshotDirectories(Context context) {
     mContext = context;
+    mArguments = Registry.getRegistry().arguments;
   }
 
   public File get(String type) {
@@ -93,9 +100,12 @@ class ScreenshotDirectories {
       throw new RuntimeException("No $EXTERNAL_STORAGE has been set on the device, please report this bug!");
     }
 
+    String sdcardDirectory = mArguments.containsKey(SDCARD_DIRECTORY) ? mArguments.getString(SDCARD_DIRECTORY) : DEFAULT_SDCARD_DIRECTORY;
+
     String parent = String.format(
-        "%s/screenshots/%s/",
+        "%s/%s/%s/",
         externalStorage,
+        sdcardDirectory,
         mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
