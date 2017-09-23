@@ -35,7 +35,8 @@ public class MainActivityTest {
         floatingActionButton.perform(click());
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        Screenshot.snapActivity(mActivityTestRule.getActivity()).record();
+        Screenshot.snapActivity(mActivityTestRule.getActivity())
+            .setDeviceIdentifier(new CustomDeviceIdentifier()).record();
 
     }
 

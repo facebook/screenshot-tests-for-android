@@ -144,7 +144,8 @@ public class ScreenshotImpl {
         }
       })
           .setTestClass(TestNameDetector.getTestClass())
-          .setTestName(TestNameDetector.getTestName());
+          .setTestName(TestNameDetector.getTestName())
+          .setDeviceIdentifier(new DefaultDeviceIdentifier(activity));
     }
     View rootView = activity.getWindow().getDecorView();
     return snap(rootView);
@@ -155,10 +156,11 @@ public class ScreenshotImpl {
    * and layouted) using testName as the name.
    */
   public RecordBuilderImpl snap(final View measuredView) {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(this)
+    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(this, new ScreenshotNameCalculator())
         .setView(measuredView)
         .setTestClass(TestNameDetector.getTestClass())
-        .setTestName(TestNameDetector.getTestName());
+        .setTestName(TestNameDetector.getTestName())
+        .setDeviceIdentifier(new DefaultDeviceIdentifier(measuredView.getContext()));
 
     return recordBuilder;
   }

@@ -12,6 +12,7 @@ package com.facebook.testing.screenshot.internal;
 import android.graphics.Bitmap;
 import android.view.View;
 
+import com.facebook.testing.screenshot.DeviceIdentifier;
 import com.facebook.testing.screenshot.RecordBuilder;
 
 import java.io.File;
@@ -28,9 +29,11 @@ import java.util.Map;
  */
 public class RecordBuilderImpl implements RecordBuilder {
   private final ScreenshotImpl mScreenshotImpl;
+  private final ScreenshotNameCalculator mNameCalculator;
   private final Map<String, String> mExtras = new HashMap<>();
   private String mDescription;
   private String mName;
+  private DeviceIdentifier mDeviceIdentifier;
   private String mTestClass;
   private String mTestName;
   private String mError;
@@ -38,8 +41,9 @@ public class RecordBuilderImpl implements RecordBuilder {
   private Tiling mTiling = new Tiling(1, 1);
   private View mView;
 
-  /* package */ RecordBuilderImpl(ScreenshotImpl screenshotImpl) {
+  /* package */ RecordBuilderImpl(ScreenshotImpl screenshotImpl, ScreenshotNameCalculator nameCalculator) {
     mScreenshotImpl = screenshotImpl;
+    mNameCalculator = nameCalculator;
   }
 
   public String getDescription() {
@@ -56,10 +60,7 @@ public class RecordBuilderImpl implements RecordBuilder {
   }
 
   public String getName() {
-    if (mName == null) {
-      return getTestClass() + "_" + getTestName();
-    }
-    return mName;
+    return mNameCalculator.calculate(mName, getDeviceIdentifier(), getTestClass(), getTestName());
   }
 
   /**
@@ -201,5 +202,14 @@ public class RecordBuilderImpl implements RecordBuilder {
   public RecordBuilderImpl setGroup(String groupName) {
     mGroup = groupName;
     return this;
+  }
+
+  public RecordBuilderImpl setDeviceIdentifier(DeviceIdentifier deviceIdentifier) {
+    this.mDeviceIdentifier = deviceIdentifier;
+    return this;
+  }
+
+  public DeviceIdentifier getDeviceIdentifier() {
+    return mDeviceIdentifier;
   }
 }

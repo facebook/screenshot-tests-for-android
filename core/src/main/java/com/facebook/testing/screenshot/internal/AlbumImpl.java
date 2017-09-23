@@ -213,6 +213,9 @@ public class AlbumImpl implements Album {
     Tiling tiling = recordBuilder.getTiling();
     addTextNode("description", recordBuilder.getDescription());
     addTextNode("name", recordBuilder.getName());
+    if (recordBuilder.getDeviceIdentifier() != null) {
+      addTextNode("device_identifier", recordBuilder.getDeviceIdentifier().get());
+    }
     addTextNode("test_class", recordBuilder.getTestClass());
     addTextNode("test_name", recordBuilder.getTestName());
     addTextNode("tile_width", String.valueOf(tiling.getWidth()));

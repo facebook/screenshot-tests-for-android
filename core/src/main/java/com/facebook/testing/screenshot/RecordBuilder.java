@@ -23,6 +23,11 @@ public interface RecordBuilder {
   RecordBuilder setName(String name);
 
   /**
+   * Set device identifier for the screenshot. If you skip
+   */
+  RecordBuilder setDeviceIdentifier(DeviceIdentifier deviceIdentifier);
+
+  /**
    * Set a long description of the what the screenshot is about.
    *
    * This will be shown as part of the report, and in general it can

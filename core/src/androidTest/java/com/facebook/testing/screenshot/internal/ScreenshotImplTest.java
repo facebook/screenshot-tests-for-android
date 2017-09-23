@@ -34,6 +34,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.facebook.testing.screenshot.DeviceIdentifier;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -51,6 +53,7 @@ public class ScreenshotImplTest {
   private ScreenshotImpl mScreenshot;
   private ViewHierarchy mViewHierarchy;
   private ScreenshotDirectories mScreenshotDirectories;
+  private ScreenshotNameCalculator mScreenshotNameCalculator;
 
   @Before
   public void setUp() throws Exception {
@@ -61,6 +64,8 @@ public class ScreenshotImplTest {
       "recorded-in-test");
     mTextView = new TextView(getInstrumentation().getTargetContext());
     mTextView.setText("foobar");
+
+    mScreenshotNameCalculator = new ScreenshotNameCalculator();
 
     // Unfortunately TextView needs a LayoutParams for onDraw
     mTextView.setLayoutParams(new FrameLayout.LayoutParams(
@@ -104,14 +109,19 @@ public class ScreenshotImplTest {
 
   @Test
   public void testRecordBuilderImplHasAHierarchyDumpFile() throws Throwable {
-    RecordBuilderImpl rb = mScreenshot.snap(mTextView)
-      .setName("blahblah");
+    final String name = "blahblah";
+    RecordBuilderImpl rb = mScreenshot.snap(mTextView).setName(name);
+
+    final DeviceIdentifier deviceIdentifier =
+        new DefaultDeviceIdentifier(InstrumentationRegistry.getContext());
+    final String screenshotName = mScreenshotNameCalculator.calculate(name, deviceIdentifier,
+        null, null);
     rb.record();
     mScreenshot.flush();
 
     String fileName = new File(
       mScreenshotDirectories.get("verify-in-test"),
-      "blahblah_dump.xml").getAbsolutePath();
+      screenshotName + "_dump.xml").getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 
     int len = "foobar".length();
@@ -122,7 +132,7 @@ public class ScreenshotImplTest {
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
 
-    MoreAsserts.assertContainsRegex("blahblah.*.xml", metadataContents);
+    MoreAsserts.assertContainsRegex(screenshotName + ".*.xml", metadataContents);
   }
 
   private String fileToString(File file) {
@@ -175,10 +185,17 @@ public class ScreenshotImplTest {
     Bitmap full = mScreenshot.snap(mTextView)
       .getBitmap();
 
+    final String nameToSave = "foo";
+
     mScreenshot.setTileSize(10);
     mScreenshot.snap(mTextView)
-      .setName("foo")
+      .setName(nameToSave)
       .record();
+
+    final DeviceIdentifier deviceIdentifier =
+        new DefaultDeviceIdentifier(InstrumentationRegistry.getContext());
+    final String screenshotName = mScreenshotNameCalculator.calculate(nameToSave, deviceIdentifier,
+        null, null);
 
     Bitmap reconstructedFromTiles =
       Bitmap.createBitmap(VIEW_WIDTH, VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
@@ -188,9 +205,9 @@ public class ScreenshotImplTest {
 
     for (int i = 0; i < TILE_COLS; i++) {
       for (int j = 0; j < TILE_ROWS; j++) {
-        String name = String.format("foo_%d_%d", i, j);
+        String name = String.format(screenshotName + "_%d_%d", i, j);
         if (i == 0 && j == 0) {
-          name = "foo";
+          name = screenshotName;
         }
 
         Bitmap bmp = mAlbumImpl.getScreenshot(name);

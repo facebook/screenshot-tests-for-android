@@ -18,16 +18,19 @@ import static org.mockito.Mockito.*;
  * Tests {@link RecordBuilderImpl}
  */
 public class RecordBuilderImplTest extends AndroidTestCase {
+
   private ScreenshotImpl mScreenshotImpl;
+  private ScreenshotNameCalculator calculator;
 
   @Override
   public void setUp() throws Exception {
     super.setUp();
     mScreenshotImpl = mock(ScreenshotImpl.class);
+    calculator = mock(ScreenshotNameCalculator.class);
   }
 
   public void testIncompleteTiles() throws Throwable {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl)
+    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl, calculator)
       .setTiling(new Tiling(3, 4));
 
     try {
@@ -39,7 +42,7 @@ public class RecordBuilderImplTest extends AndroidTestCase {
   }
 
   public void testCompleteTiles() throws Throwable {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl)
+    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl, calculator)
       .setTiling(new Tiling(3, 4));
 
     for (int i = 0; i < 3; i++) {
@@ -52,7 +55,7 @@ public class RecordBuilderImplTest extends AndroidTestCase {
   }
 
   public void testWithErrorStillDoesntFail() throws Throwable {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl);
+    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl, calculator);
 
     recordBuilder.setError("foo");
     recordBuilder.record();
