@@ -214,7 +214,7 @@ public class AlbumImpl implements Album {
     addTextNode("description", recordBuilder.getDescription());
     addTextNode("name", recordBuilder.getName());
     if (recordBuilder.getDeviceIdentifier() != null) {
-      addTextNode("device_identifier", recordBuilder.getDeviceIdentifier().get());
+      addTextNode("device_identifier", recordBuilder.getDeviceIdentifier().generateId());
     }
     addTextNode("test_class", recordBuilder.getTestClass());
     addTextNode("test_name", recordBuilder.getTestName());

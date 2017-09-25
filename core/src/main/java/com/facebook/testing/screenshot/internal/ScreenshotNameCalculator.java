@@ -8,9 +8,9 @@ public class ScreenshotNameCalculator {
                           final String testClass, final String testName) {
     final boolean validDeviceIdentifier = isValidDeviceIdentifier(deviceIdentifier);
     if (name != null && validDeviceIdentifier) {
-      return deviceIdentifier.get() + "_" + name;
+      return String.format("%s_%s", deviceIdentifier.generateId(), name);
     } else if(name == null && validDeviceIdentifier) {
-      return deviceIdentifier.get() + "_" + testClass + "_" + testName;
+      return String.format("%s_%s_%s", deviceIdentifier.generateId(), testClass, testName);
     } else {
       return name;
     }
@@ -18,7 +18,8 @@ public class ScreenshotNameCalculator {
 
   private boolean isValidDeviceIdentifier(DeviceIdentifier deviceIdentifier) {
     if (deviceIdentifier == null) return false;
-    final String identifier = deviceIdentifier.get();
+    final String identifier = deviceIdentifier.generateId();
     return identifier != null && !identifier.isEmpty();
   }
+
 }

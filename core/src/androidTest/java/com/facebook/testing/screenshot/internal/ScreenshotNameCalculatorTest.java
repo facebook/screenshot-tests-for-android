@@ -26,7 +26,7 @@ public class ScreenshotNameCalculatorTest {
     calculator = new ScreenshotNameCalculator();
     deviceIdentifier = mock(DefaultDeviceIdentifier.class);
 
-    doReturn(DEVICE_IDENTIFIER).when(deviceIdentifier).get();
+    doReturn(DEVICE_IDENTIFIER).when(deviceIdentifier).generateId();
   }
 
   @Test public void testNameAndNotDeviceIdentifier() {

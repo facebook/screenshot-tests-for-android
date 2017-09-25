@@ -121,7 +121,7 @@ public class ScreenshotImplTest {
 
     String fileName = new File(
       mScreenshotDirectories.get("verify-in-test"),
-      screenshotName + "_dump.xml").getAbsolutePath();
+      String.format("%s_dump.xml", screenshotName)).getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 
     int len = "foobar".length();
@@ -205,7 +205,7 @@ public class ScreenshotImplTest {
 
     for (int i = 0; i < TILE_COLS; i++) {
       for (int j = 0; j < TILE_ROWS; j++) {
-        String name = String.format(screenshotName + "_%d_%d", i, j);
+        String name = String.format("%s_%d_%d", screenshotName, i, j);
         if (i == 0 && j == 0) {
           name = screenshotName;
         }

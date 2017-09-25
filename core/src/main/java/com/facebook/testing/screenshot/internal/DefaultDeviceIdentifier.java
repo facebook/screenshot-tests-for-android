@@ -11,38 +11,37 @@ import com.facebook.testing.screenshot.DeviceIdentifier;
 
 public class DefaultDeviceIdentifier implements DeviceIdentifier {
 
+  private static final String PLAY_SERVICES = "GP";
+  private static final String NO_PLAY_SERVICES = "NO_GP";
+
   private final Context context;
 
   DefaultDeviceIdentifier(Context context) {
     this.context = context;
   }
 
-  public String get() {
+  @Override
+  public String generateId() {
     final int sdkVersion = Build.VERSION.SDK_INT;
-    final boolean hasGooglePlayServices = isGooglePlayInstalled(context);
-    WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-    DisplayMetrics metrics = new DisplayMetrics();
-    wm.getDefaultDisplay().getMetrics(metrics);
-    final int widthPixels = metrics.widthPixels;
-    final int heightPixels = metrics.heightPixels;
-    final String googlePlayServices = hasGooglePlayServices ? "GP" : "NO_GP";
-    return "API_" + sdkVersion + "_" + googlePlayServices + "_" + heightPixels + "_" + widthPixels;
+    final String googlePlayServicesString = obtainPlayServicesString();
+    final String metricsString = obtainMetricsString();
+    final String sdkVersionString = String.valueOf(sdkVersion);
+    return String.format("API_%s_%s_%s", sdkVersionString, googlePlayServicesString, metricsString);
   }
 
-  private boolean isGooglePlayInstalled(Context context) {
-    PackageManager pm = context.getPackageManager();
-    boolean app_installed = false;
-    try
-    {
-      PackageInfo info = pm.getPackageInfo("com.android.vending", PackageManager.GET_ACTIVITIES);
-      String label = (String) info.applicationInfo.loadLabel(pm);
-      app_installed = (label != null && !label.equals("Market"));
-    }
-    catch (PackageManager.NameNotFoundException e)
-    {
-      app_installed = false;
-    }
-    return app_installed;
+  private String obtainPlayServicesString() {
+    final boolean hasGooglePlayServices = Utils.isGooglePlayInstalled(context);
+    return hasGooglePlayServices ? PLAY_SERVICES : NO_PLAY_SERVICES;
   }
+
+  private String obtainMetricsString() {
+    final DisplayMetrics metrics = Utils.getDisplayMetrics(context);
+    if (metrics == null) return "";
+    final int widthPixels = metrics.widthPixels;
+    final int heightPixels = metrics.heightPixels;
+    return String.format("%s_%s", String.valueOf(heightPixels), String.valueOf(widthPixels));
+  }
+
+
 
 }
