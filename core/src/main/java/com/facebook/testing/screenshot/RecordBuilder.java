@@ -23,6 +23,17 @@ public interface RecordBuilder {
   RecordBuilder setName(String name);
 
   /**
+   * Set device identifier for the screenshot. If you skip the device
+   * identifier a device identifier will be generated based on the
+   * device android API version, presence of Google Play Services
+   * and screen size. An example could be:
+   * API_25_GP_1920_1080_com.example.screenshots.MainActivityTest_mainActivityTestSettingsOpen
+   * If you not want to specify a device identifier, just set it to null
+   * or an implementation of DeviceIdentifier which returns always an empty string.
+   */
+  RecordBuilder setDeviceIdentifier(DeviceIdentifier deviceIdentifier);
+
+  /**
    * Set a long description of the what the screenshot is about.
    *
    * This will be shown as part of the report, and in general it can

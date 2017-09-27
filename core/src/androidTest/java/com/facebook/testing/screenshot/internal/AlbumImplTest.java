@@ -41,6 +41,7 @@ public class AlbumImplTest {
   private String mBarFile;
   private HostFileSender mHostFileSender;
   private ScreenshotDirectories mScreenshotDirectories;
+  private ScreenshotNameCalculator mNameCalculator;
 
   @Before
   public void setUp() throws Exception {
@@ -51,6 +52,7 @@ public class AlbumImplTest {
       BITMAP_DIMENSION,
       Bitmap.Config.ARGB_8888);
     mSomeBitmap.setPixel(1, 1, 0xff0000ff);
+    mNameCalculator = new ScreenshotNameCalculator();
 
     mFooFile = mAlbumImpl.writeBitmap("foo", 0, 0, mSomeBitmap);
     mBarFile = mAlbumImpl.writeBitmap("bar", 0, 0, mSomeBitmap);
@@ -76,7 +78,7 @@ public class AlbumImplTest {
   @Test
   public void testCleanupAndGet() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setName("foo")
       .setTiling(Tiling.singleTile(mFooFile)));
 
@@ -88,7 +90,7 @@ public class AlbumImplTest {
   @Test
   public void testMultipleCleanups() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setName("foo")
       .setTiling(Tiling.singleTile(mFooFile)));
     mAlbumImpl.cleanup();
@@ -104,7 +106,7 @@ public class AlbumImplTest {
   @Test
   public void testCleanupWorksAcrossInstances() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setName("foo")
       .setTiling(Tiling.singleTile(mFooFile)));
 
@@ -120,11 +122,11 @@ public class AlbumImplTest {
   @Test
   public void testMetadataSaving() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setTiling(Tiling.singleTile(mFooFile))
       .setName("foo"));
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setTiling(Tiling.singleTile(mBarFile))
       .setName("bar"));
 
@@ -143,7 +145,7 @@ public class AlbumImplTest {
   public void testSavesViewHierachy() throws Throwable {
     mAlbumImpl.openViewHierarchyFile("foo").close();
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
         .setName("foo")
         .setTiling(Tiling.singleTile(mFooFile)));
 
@@ -161,7 +163,7 @@ public class AlbumImplTest {
 
   @Test
   public void testSavesExtra() throws Throwable {
-    RecordBuilderImpl rb = new RecordBuilderImpl(null);
+    RecordBuilderImpl rb = new RecordBuilderImpl(null, mNameCalculator);
     rb.setName("foo")
       .setTiling(Tiling.singleTile(mFooFile))
       .addExtra("foo", "blah");
@@ -182,7 +184,7 @@ public class AlbumImplTest {
 
   @Test
   public void testSavesMultipleExtras() throws Throwable {
-    RecordBuilderImpl rb = new RecordBuilderImpl(null);
+    RecordBuilderImpl rb = new RecordBuilderImpl(null, mNameCalculator);
     rb.setName("foo")
       .setTiling(Tiling.singleTile(mFooFile))
       .addExtra("foo", "blah")
@@ -223,7 +225,7 @@ public class AlbumImplTest {
   @Test
   public void testErrorSaving() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setError("foobar"));
     mAlbumImpl.flush();
     Document document = parseMetadata();
@@ -238,7 +240,7 @@ public class AlbumImplTest {
   @Test
   public void testSavesGroup() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setName("xyz")
       .setTiling(Tiling.singleTile(mFooFile))
       .setGroup("foo_bar"));
@@ -265,13 +267,13 @@ public class AlbumImplTest {
   @Test
   public void testMultipleRecordsFromSameTestWithName() throws Throwable {
     mAlbumImpl.addRecord(
-      new RecordBuilderImpl(null)
+      new RecordBuilderImpl(null, mNameCalculator)
       .setName("foo")
       .setTiling(Tiling.singleTile(mFooFile)));
 
     try {
       mAlbumImpl.addRecord(
-        new RecordBuilderImpl(null)
+        new RecordBuilderImpl(null, mNameCalculator)
         .setName("foo")
         .setTiling(Tiling.singleTile(mFooFile)));
     } catch (AssertionError e) {
@@ -286,7 +288,7 @@ public class AlbumImplTest {
     final int WIDTH = 3;
     final int HEIGHT = 4;
 
-    RecordBuilderImpl builder = new RecordBuilderImpl(null)
+    RecordBuilderImpl builder = new RecordBuilderImpl(null, mNameCalculator)
       .setName("foo")
       .setTiling(new Tiling(WIDTH, HEIGHT));
 

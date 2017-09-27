@@ -20,6 +20,29 @@ at one go.
 
 Take a look at the documentation at http://facebook.github.io/screenshot-tests-for-android/#getting-started
 
+### Running screenshot tests in multiple devices
+
+Screenshots name are defined taken in account the device which they are obtained. This way, we could run this tests in multiple devices and the library will verify the screenshots against device which were taken. The device identifier is obtained based in some device params such as :
+
+- Android API level
+- Google Play Services
+- Screen height and width
+
+For example, a device with API level 25, Google Play Services and a screen of 1920x1600 the name results as API_25_GP_1920_1600.
+
+You can override this behaviour by setting a custom DeviceIdentifier when you are taken the screenshot.
+```java
+public class CustomDeviceIdentifier implements DeviceIdentifier {
+  public String generateId() {
+    return "CustomIdentifier";
+  }
+}
+```
+
+```java
+Screenshot.snapActivity(activity).setDeviceIdentifier(new CustomDeviceIdentifier()).record();
+```
+
 ## Requirements
 
 screenshot-tests-for-android is known to work with Mac OS X or Linux.
@@ -67,7 +90,7 @@ You can install all the artifacts to your local maven repository using
 
 ## Running With a Remote Service
 
-For usage with a remote testing service (e.g. Google Cloud Test Lab) where ADB is not available directly the plugin supports a "disconnected" 
+For usage with a remote testing service (e.g. Google Cloud Test Lab) where ADB is not available directly the plugin supports a "disconnected"
 workflow.  Collect all screenshots artifacts into a single directory and run the plugin in "local mode" using the pullScreenshotsFromDirectory task
 
 ### Example

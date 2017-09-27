@@ -74,8 +74,13 @@ class Recorder:
 
     def _clean(self):
         if os.path.exists(self._output):
-            shutil.rmtree(self._output)
-        os.mkdir(self._output)
+            root = self._get_metadata_root()
+            for screenshot in root.iter("screenshot"):
+                name = screenshot.find('name').text
+                if os.path.exists(join(self._output, name + ".png")):
+                    os.unlink(join(self._output, name + ".png"))
+        else:
+            os.mkdir(self._output)
 
     def _is_image_same(self, file1, file2):
         with Image.open(file1) as im1, Image.open(file2) as im2:
