@@ -7,7 +7,7 @@ buildscript {
 
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.facebook.testing.screenshot:plugin:0.4.4-beta'
+        classpath 'com.facebook.testing.screenshot:plugin:0.4.4'
     }
 }
 
