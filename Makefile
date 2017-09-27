@@ -27,6 +27,9 @@ set-release:
 		sed -i 's/$(OLD_VERSION)/$(NEW_VERSION)/' $$file ; \
 	done
 
+old-release:
+	echo $(OLD_VERSION)
+
 cleanup:
 	rm -rf ~/.m2/repository/com/facebook/testing/screenshot/
 	./gradlew clean
