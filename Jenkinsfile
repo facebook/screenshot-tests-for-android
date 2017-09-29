@@ -8,7 +8,7 @@ node {
 
     properties([
         pipelineTriggers([
-            [$class: "GitHubPushTrigger"],
+//             [$class: "GitHubPushTrigger"],
         ])
     ])
 }
