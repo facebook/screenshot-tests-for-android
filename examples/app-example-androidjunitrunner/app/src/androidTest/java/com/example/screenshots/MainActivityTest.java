@@ -21,21 +21,24 @@ import static org.hamcrest.Matchers.allOf;
 public class MainActivityTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void mainActivityTest() {
-        Screenshot.snapActivity(mActivityTestRule.getActivity()).record();
+        final MainActivity activity = mActivityTestRule.launchActivity(null);
+
+        Screenshot.snapActivity(activity).record();
     }
 
     @Test
     public void mainActivityTestSettingsOpen() {
+        final MainActivity activity = mActivityTestRule.launchActivity(null);
         ViewInteraction floatingActionButton = onView(
                 allOf(withId(R.id.fab), isDisplayed()));
         floatingActionButton.perform(click());
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
-        Screenshot.snapActivity(mActivityTestRule.getActivity()).record();
+        Screenshot.snapActivity(activity).record();
 
     }
 
