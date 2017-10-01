@@ -27,11 +27,17 @@ set-release:
 		sed -i 's/$(OLD_VERSION)/$(NEW_VERSION)/' $$file ; \
 	done
 
+old-release:
+	echo $(OLD_VERSION)
+
 cleanup:
-	rm -rf ~/.m2/repository/com/facebook/testing/screenshot/ 
+	rm -rf ~/.m2/repository/com/facebook/testing/screenshot/
 	./gradlew clean
 
-integration-tests: | env-check cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
+release-tests: integration-tests
+	./gradlew :releaseTests
+
+integration-tests: |  env-check cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
 	@true
 
 app-example-tests:
