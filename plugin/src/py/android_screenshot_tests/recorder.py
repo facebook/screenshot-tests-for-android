@@ -75,7 +75,7 @@ class Recorder:
     def _clean(self):
         if os.path.exists(self._output):
             shutil.rmtree(self._output)
-        os.mkdir(self._output)
+        os.makedirs(self._output)
 
     def _is_image_same(self, file1, file2):
         with Image.open(file1) as im1, Image.open(file2) as im2:
@@ -98,8 +98,7 @@ class Recorder:
             name = screenshot.find('name').text + ".png"
             actual = join(self._output, name)
             expected = join(self._realoutput, name)
-            if not self._is_image_same(expected,
-                                       actual):
+            if not self._is_image_same(expected, actual):
                 raise VerifyError("Image %s is not same as %s" % (actual, expected))
 
         shutil.rmtree(self._output)

@@ -24,6 +24,7 @@ from .simple_puller import SimplePuller
 import zipfile
 from . import aapt
 from . import common
+from .device_name_calculator import DeviceNameCalculator
 
 from os.path import join
 from os.path import abspath
@@ -238,6 +239,7 @@ def _validate_metadata(dir):
 
 def pull_screenshots(process,
                      adb_puller,
+                     device_name_calculator=None,
                      perform_pull=True,
                      temp_dir=None,
                      filter_name_regex=None,
@@ -261,11 +263,14 @@ def pull_screenshots(process,
     _validate_metadata(temp_dir)
 
     path_to_html = generate_html(temp_dir)
+    device_name = device_name_calculator.name() if device_name_calculator else None
+    record_dir = join(record, device_name) if record and device_name else record
+    verify_dir = join(verify, device_name) if verify and device_name else verify
 
     if record or verify:
         # don't import this early, since we need PIL to import this
         from .recorder import Recorder
-        recorder = Recorder(temp_dir, record or verify)
+        recorder = Recorder(temp_dir, record_dir or verify_dir)
         if verify:
             recorder.verify()
         else:
@@ -327,7 +332,8 @@ def main(argv):
                             opt_generate_png=opts.get('--generate-png'),
                             record=opts.get('--record'),
                             verify=opts.get('--verify'),
-                            adb_puller=SimplePuller(puller_args))
+                            adb_puller=SimplePuller(puller_args),
+                            device_name_calculator=DeviceNameCalculator())
 
 if __name__ == '__main__':
     sys.exit(main(sys.argv))
