@@ -91,6 +91,7 @@ def generate_html(dir):
             if error is not None:
                 html.write('<div class="screenshot_error">%s</div>' % error.text)
             else:
+                html.write('<button class="toggle_dark">Toggle dark background</button>')
                 write_image(dir, html, screenshot)
 
             html.write('</div>')
@@ -130,6 +131,7 @@ def copy_assets(destination):
     _copy_asset("default.css", destination)
     _copy_asset("default.js", destination)
     _copy_asset("background.png", destination)
+    _copy_asset("background_dark.png", destination)
 
 def _copy_asset(filename, destination):
     thisdir = os.path.dirname(__file__)

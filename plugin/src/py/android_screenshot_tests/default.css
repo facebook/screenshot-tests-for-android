@@ -10,6 +10,10 @@ img {
     background-image: url("background.png");
 }
 
+.img-wrapper.dark {
+    background-image: url("background_dark.png");
+}
+
 div.screenshot {
     padding: 10px;
 }
