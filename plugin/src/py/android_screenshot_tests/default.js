@@ -34,4 +34,8 @@ $(function () {
                 },
             });
         });
+
+    $(".toggle_dark").click(function() {
+        var image_wrapper = $(this).siblings(".img-wrapper").toggleClass("dark");
+    })
 });
