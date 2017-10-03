@@ -52,6 +52,7 @@ def generate_html(dir):
         html.write('<!DOCTYPE html>')
         html.write('<html>')
         html.write('<head>')
+        html.write('<title>Screenshot Test Results</title>')
         html.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>')
         html.write('<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>')
         html.write('<script src="default.js"></script>')
@@ -59,19 +60,20 @@ def generate_html(dir):
         html.write('<link rel="stylesheet" href="default.css"></head>')
         html.write('<body>')
 
-        html.write('<!-- begin results -->')
-
         for screenshot in sort_screenshots(root.iter('screenshot')):
             alternate = not alternate
+            canonical_name = screenshot.find('name').text
+            last_seperator = canonical_name.rindex('.') + 1
+            package = canonical_name[:last_seperator]
+            name = canonical_name[last_seperator:]
             html.write('<div class="screenshot %s">' % ('alternate' if alternate else ''))
-            html.write('<div class="screenshot_name">%s</div>' % (screenshot.find('name').text))
+            html.write('<div class="screenshot_name">')
+            html.write('<span class="demphasize">%s</span>%s' % (package, name))
+            html.write('</div>')
 
             group = screenshot.find('group')
-
             if group:
                 html.write('<div class="screenshot_group">%s</div>' % group.text)
-
-            html.write('<button class="view_dump" data-name="%s">Dump view hierarchy</button>' % (screenshot.find('name').text))
 
             extras = screenshot.find('extras')
             if extras is not None:
@@ -91,13 +93,26 @@ def generate_html(dir):
             if error is not None:
                 html.write('<div class="screenshot_error">%s</div>' % error.text)
             else:
-                html.write('<button class="toggle_dark">Toggle dark background</button>')
                 write_image(dir, html, screenshot)
+                write_commands(dir, html, screenshot)
 
             html.write('</div>')
+            html.write('<div class="clearfix"></div>')
+            html.write('<hr/>')
 
         html.write('</body></html>')
         return index_html
+
+def write_commands(dir, html, screenshot):
+    html.write('<div class="command-wrapper">')
+    html.write('<button class="toggle_dark">Toggle dark background</button>')
+    html.write('<hr/>')
+    html.write('<h3>View Hierarchy</h3>')
+    html.write('<pre class="hierarchy">')
+    with open(join(dir, screenshot.find('name').text + "_dump.xml"), "r") as xml:
+        html.write(xml.read().replace("<", "&lt;").replace(">", "&gt;"))
+    html.write('</pre>')
+    html.write('</div>')
 
 def write_image(dir, html, screenshot):
     html.write('<table class="img-wrapper">')
