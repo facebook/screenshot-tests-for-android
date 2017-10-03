@@ -9,19 +9,9 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import android.graphics.Rect;
 import android.support.test.InstrumentationRegistry;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,23 +22,27 @@ import com.facebook.testing.screenshot.plugin.PluginRegistry;
 import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
 import com.facebook.testing.screenshot.test.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
-import static org.junit.Assert.*;
-import static org.hamcrest.CoreMatchers.containsString;
+
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Tests {@link ViewHierarchy}
  */
 public class ViewHierarchyTest {
   private View mView;
-  private ViewHierarchy mViewHierarchy;
 
   /**
    * Information about one View and all its children in the view
@@ -64,11 +58,11 @@ public class ViewHierarchyTest {
     /**
      * The list of child views.
      */
-    private final List<ParsedViewDetail> mChildren = new ArrayList<ParsedViewDetail>();
+    private final List<ParsedViewDetail> mChildren = new ArrayList<>();
 
     /**
      * The absolute coordinates of this view with respect to some top
-     * level view that was originally passed to {@link #deflate()}
+     * level view that was originally dumped
      */
     private Rect mAbsoluteRect;
 
@@ -101,42 +95,23 @@ public class ViewHierarchyTest {
     }
   }
 
-  private ParsedViewDetail convertToNode(Element view) {
+  private ParsedViewDetail convertToNode(JSONObject node) throws JSONException {
     ParsedViewDetail ret = new ParsedViewDetail();
+    ret.setName(node.getString(ViewHierarchy.KEY_CLASS));
+    ret.setAbsoluteRect(
+        new Rect(
+          node.getInt(ViewHierarchy.KEY_X),
+          node.getInt(ViewHierarchy.KEY_Y),
+          node.getInt(ViewHierarchy.KEY_X) + node.getInt(ViewHierarchy.KEY_WIDTH),
+          node.getInt(ViewHierarchy.KEY_Y) + node.getInt(ViewHierarchy.KEY_HEIGHT)));
 
-    Rect rect = new Rect();
-    for (int i = 0; i < view.getChildNodes().getLength(); i++) {
-      Node cn = view.getChildNodes().item(i);
-
-      if (!(cn instanceof Element)) {
-        continue;
-      }
-
-      Element c = (Element) cn;
-      String name = c.getNodeName();
-
-      if (name.equals("name")) {
-        ret.setName(c.getTextContent());
-      } else if (name.equals("left")) {
-        rect.left = Integer.parseInt(c.getTextContent());
-      } else if (name.equals("top")) {
-        rect.top = Integer.parseInt(c.getTextContent());
-      } else if (name.equals("right")) {
-        rect.right = Integer.parseInt(c.getTextContent());
-      } else if (name.equals("bottom")) {
-        rect.bottom = Integer.parseInt(c.getTextContent());
-      } else if (name.equals("children")) {
-        NodeList childViews = c.getChildNodes();
-        for (int j = 0; j < childViews.getLength(); j++) {
-          Node child = childViews.item(j);
-          if (child instanceof Element) {
-            ret.addChild(convertToNode((Element) child));
-          }
-        }
-      }
+    JSONArray children = node.optJSONArray(ViewHierarchy.KEY_CHILDREN);
+    if (children == null) {
+      return ret;
     }
-
-    ret.setAbsoluteRect(rect);
+    for (int i = 0; i < children.length(); ++i) {
+      ret.addChild(convertToNode(children.getJSONObject(i)));
+    }
 
     return ret;
   }
@@ -147,28 +122,12 @@ public class ViewHierarchyTest {
    * Just to be clear though, this is only for debugging and it won't
    * look anything like a real Android layout file.
    */
-  private ParsedViewDetail deflate(View view) {
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    try {
-      mViewHierarchy.deflate(view, os);
-      DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-      DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-
-      Document doc = documentBuilder.parse(new ByteArrayInputStream(os.toByteArray()));
-      Element root = (Element) doc.getFirstChild();
-      return convertToNode(root);
-    } catch (SAXException e) {
-      throw new RuntimeException(e);
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException(e);
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
+  private ParsedViewDetail deflate(View view) throws JSONException {
+    return convertToNode(ViewHierarchy.dump(view));
   }
 
   @Before
   public void setUp() throws Exception {
-    mViewHierarchy = new ViewHierarchy();
     mView = LayoutInflater.from(InstrumentationRegistry.getTargetContext())
       .inflate(R.layout.testing_for_view_hierarchy, null, false);
   }
@@ -238,33 +197,9 @@ public class ViewHierarchyTest {
       .setExactWidthPx(20000)
       .layout();
     PluginRegistry.addPlugin(mMyViewDumpPlugin);
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    mViewHierarchy.deflate(mView, os);
+    JSONObject root = ViewHierarchy.dump(mView);
 
-
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-
-    Document doc = documentBuilder.parse(new ByteArrayInputStream(os.toByteArray()));
-    Element root = (Element) doc.getFirstChild();
-
-    assertEquals("bar", getExtraValue(root, "foo"));
-  }
-
-  @Test
-  public void testVerifyOutputIsIndented() throws Throwable {
-    ViewHelpers.setupView(mView)
-      .setExactHeightPx(1000)
-      .setExactWidthPx(20000)
-      .layout();
-
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    mViewHierarchy.deflate(mView, os);
-
-
-    String contents = new String(os.toByteArray());
-    assertThat(contents, containsString(">\n"));
-    assertThat(contents, containsString("\n    <"));
+    assertEquals("bar", root.getString("foo"));
   }
 
   @Test
@@ -274,17 +209,26 @@ public class ViewHierarchyTest {
       .setExactWidthPx(20000)
       .layout();
     PluginRegistry.addPlugin(mDumpTextPlugin);
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    mViewHierarchy.deflate(mView, os);
-
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-    DocumentBuilder documentBuilder = factory.newDocumentBuilder();
-
-    Document doc = documentBuilder.parse(new ByteArrayInputStream(os.toByteArray()));
-    Element root = (Element) doc.getFirstChild();
+    JSONObject node = ViewHierarchy.dump(mView);
 
     List<String> allText = new ArrayList<>();
-    getAllText(root, allText);
+    Queue<JSONObject> toCheck = new ArrayDeque<>();
+    toCheck.offer(node);
+    while (!toCheck.isEmpty()) {
+      JSONObject object = toCheck.poll();
+      String maybeText = object.optString("text");
+      if (!TextUtils.isEmpty(maybeText)) {
+        allText.add(maybeText);
+      }
+      JSONArray children = object.optJSONArray(ViewHierarchy.KEY_CHILDREN);
+      if (children == null) {
+        continue;
+      }
+      for (int i = 0; i < children.length(); ++i) {
+        toCheck.offer(children.getJSONObject(i));
+      }
+    }
+
     List<String> expected = new ArrayList<>();
     expected.add("foobar");
     expected.add("foobar2");
@@ -292,32 +236,6 @@ public class ViewHierarchyTest {
     expected.add("foobar4");
 
     assertEquals(expected, allText);
-  }
-
-  private void getAllText(Element el, List<String> output) {
-    String text = getExtraValue(el, "text");
-    if (text != null) {
-      output.add(text);
-    }
-
-    NodeList children = el.getChildNodes();
-    for (int i = 0; i < children.getLength(); i++) {
-      Node child = children.item(i);
-      if (!(child instanceof Element)) {
-        continue;
-      }
-      Element e = (Element) child;
-      if (e.getNodeName().equals("children")) {
-        NodeList actualChildren = e.getChildNodes();
-        for (int j = 0; j < actualChildren.getLength(); j++) {
-          Node childN = actualChildren.item(j);
-          if (childN instanceof Element) {
-            Element childEl = (Element) childN;
-            getAllText(childEl, output);
-          }
-        }
-      }
-    }
   }
 
   private ViewDumpPlugin mMyViewDumpPlugin = new ViewDumpPlugin() {
@@ -333,20 +251,4 @@ public class ViewHierarchyTest {
         }
       }
     };
-
-  private String getExtraValue(Element parent, String tagName) {
-    NodeList nodeList = parent.getChildNodes();
-    for (int i = 0; i < nodeList.getLength(); i++) {
-      Node eln = nodeList.item(i);
-      if (!(eln instanceof Element)) {
-        continue;
-      }
-      Element el = (Element)eln;
-      if (el.getAttribute("key").equals(tagName)) {
-        return el.getTextContent();
-      }
-    }
-
-    return null;
-  }
 }

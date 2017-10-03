@@ -20,5 +20,5 @@ import java.util.Map;
  * generate metadata for each of the views in the hierarchy.
  */
 public interface ViewDumpPlugin {
-  public void dump(View view, Map<String, String> output);
+  void dump(View view, Map<String, String> output);
 }

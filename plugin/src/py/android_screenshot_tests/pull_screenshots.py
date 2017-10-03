@@ -19,6 +19,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 import getopt
 import shutil
+import codecs
 from . import metadata
 from .simple_puller import SimplePuller
 import zipfile
@@ -106,11 +107,16 @@ def generate_html(dir):
 def write_commands(dir, html, screenshot):
     html.write('<div class="command-wrapper">')
     html.write('<button class="toggle_dark">Toggle dark background</button>')
+
+    json_dump_path = join(dir, screenshot.find('name').text + "_dump.json")
+    if not os.path.exists(json_dump_path):
+        return
+
     html.write('<hr/>')
     html.write('<h3>View Hierarchy</h3>')
     html.write('<pre class="hierarchy">')
-    with open(join(dir, screenshot.find('name').text + "_dump.xml"), "r") as xml:
-        html.write(xml.read().replace("<", "&lt;").replace(">", "&gt;"))
+    with codecs.open(json_dump_path, mode="r", encoding='utf-8') as json:
+        html.write(json.read().encode('utf-8'))
     html.write('</pre>')
     html.write('</div>')
 

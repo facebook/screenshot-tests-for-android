@@ -178,7 +178,7 @@ public class AlbumImpl implements Album {
   }
 
   private File getViewHierarchyFile(String name) {
-    String fileName = name + "_dump.xml";
+    String fileName = name + "_dump.json";
     return new File(mDir, fileName);
   }
 
