@@ -1,5 +1,6 @@
 body {
-    background: #D3D3D3;
+    background: #fafafa;
+    font-family: 'Arial';
 }
 
 img {
@@ -8,10 +9,25 @@ img {
 
 .img-wrapper {
     background-image: url("background.png");
+    float:left;
+    margin-top: 16px;
+    margin-right: 16px;
 }
 
 .img-wrapper.dark {
     background-image: url("background_dark.png");
+}
+
+.command-wrapper {
+    margin-top: 16px;
+}
+
+.hierarchy {
+    background: #DDD;
+    padding: 16px;
+    max-height: 500px;
+    overflow: auto;
+    border-radius: 3px;
 }
 
 div.screenshot {
@@ -19,7 +35,7 @@ div.screenshot {
 }
 
 div.alternate {
-    background: #E0E0E0;
+
 }
 
 div.screenshot_error {
@@ -39,4 +55,48 @@ table, th, tr, td, img{
 table {
     border-spacing: 0;
     border-collapse: collapse;
+}
+
+.screenshot_name {
+    font-size: 24px;
+}
+
+.screenshot_name .demphasize {
+    color: #999;
+}
+
+.screenshot_description {
+    color: #999;
+    font-style: italic;
+}
+
+button {
+    border: 1px solid #000;
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 16px;
+    font-size: 18px;
+}
+
+button:hover {
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.clearfix {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #000;
+    margin: 16px 0;
+}
+
+h3 {
+    font-weight: normal;
 }
