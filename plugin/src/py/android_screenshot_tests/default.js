@@ -20,6 +20,6 @@ $(function () {
         });
 
     $(".toggle_dark").click(function() {
-        var image_wrapper = $(this).siblings(".img-wrapper").toggleClass("dark");
+        var image_wrapper = $(this).closest(".screenshot").find(".img-wrapper").toggleClass("dark")
     })
 });
