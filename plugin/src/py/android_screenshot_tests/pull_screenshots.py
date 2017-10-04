@@ -20,6 +20,7 @@ import xml.etree.ElementTree as ET
 import getopt
 import shutil
 import codecs
+import json
 from . import metadata
 from .simple_puller import SimplePuller
 import zipfile
@@ -28,6 +29,7 @@ from . import common
 
 from os.path import join
 from os.path import abspath
+from Queue import Queue
 
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
 
@@ -61,7 +63,9 @@ def generate_html(dir):
         html.write('<link rel="stylesheet" href="default.css"></head>')
         html.write('<body>')
 
+        screenshot_num = 0
         for screenshot in sort_screenshots(root.iter('screenshot')):
+            screenshot_num += 1
             alternate = not alternate
             canonical_name = screenshot.find('name').text
             last_seperator = canonical_name.rindex('.') + 1
@@ -94,8 +98,13 @@ def generate_html(dir):
             if error is not None:
                 html.write('<div class="screenshot_error">%s</div>' % error.text)
             else:
-                write_image(dir, html, screenshot)
-                write_commands(dir, html, screenshot)
+                html.write('<div class="flex-wrapper">')
+                write_image(dir, html, screenshot, screenshot_num)
+                html.write('<div class="command-wrapper">')
+                write_commands(html)
+                write_view_hierarchy(dir, html, screenshot, screenshot_num)
+                html.write('</div>')
+                html.write('</div>')
 
             html.write('</div>')
             html.write('<div class="clearfix"></div>')
@@ -104,24 +113,75 @@ def generate_html(dir):
         html.write('</body></html>')
         return index_html
 
-def write_commands(dir, html, screenshot):
-    html.write('<div class="command-wrapper">')
-    html.write('<button class="toggle_dark">Toggle dark background</button>')
+def write_commands(html):
+    html.write('<button class="toggle_dark">Toggle Dark Background</button>')
+    html.write('<button class="toggle_hierarchy">Toggle View Hierarchy Overlay</button>')
 
-    json_dump_path = join(dir, screenshot.find('name').text + "_dump.json")
-    if not os.path.exists(json_dump_path):
-        return
-
-    html.write('<hr/>')
+def write_view_hierarchy(dir, html, screenshot, parent_id):
     html.write('<h3>View Hierarchy</h3>')
-    html.write('<pre class="hierarchy">')
-    with codecs.open(json_dump_path, mode="r", encoding='utf-8') as json:
-        html.write(json.read().encode('utf-8'))
-    html.write('</pre>')
+    html.write('<div class="view-hierarchy">')
+    hierarchy = get_view_hierarchy(dir, screenshot)
+    write_view_hierarchy_tree_node(hierarchy, html, parent_id)
     html.write('</div>')
 
-def write_image(dir, html, screenshot):
-    html.write('<table class="img-wrapper">')
+def write_view_hierarchy_tree_node(node, html, parent_id):
+    html.write('<details target="#%s-%s">' % (parent_id, get_view_hierarchy_overlay_node_id(node)))
+    html.write('<summary>%s</summary>' % node['class'])
+    html.write('<ul>')
+    for item in sorted(node):
+        if item == 'children' or item == 'class':
+            continue
+        html.write('<li><strong>%s:</strong> %s</li>' % (item, node[item]))
+
+    html.write('</ul>')
+    if 'children' in node:
+        for child in node['children']:
+            write_view_hierarchy_tree_node(child, html, parent_id)
+
+    html.write('</details>')
+
+
+def write_view_hierarchy_overlay_nodes(dir, html, screenshot, parent_id):
+    hierarchy = get_view_hierarchy(dir, screenshot)
+    to_output = Queue()
+    to_output.put(hierarchy)
+    while not to_output.empty():
+        node = to_output.get()
+        x = node['x']
+        y  = node['y']
+        width = node['width'] - 4
+        height = node['height'] - 4
+        id = get_view_hierarchy_overlay_node_id(node)
+        node_html = """
+        <div 
+          class="hierarchy-node" 
+          style="left:%dpx;top:%dpx;width:%dpx;height:%dpx;"
+          id="%s-%s"></div>
+        """
+        html.write(node_html % (x, y, width, height, parent_id, id))
+
+        if 'children' in node:
+            for child in node['children']:
+                to_output.put(child)
+
+def get_view_hierarchy_overlay_node_id(node):
+    cls = node['class']
+    x = node['x']
+    y = node['y']
+    width = node['width']
+    height = node['height']
+    return "node-%s-%d-%d-%d-%d" % (cls.replace(".", "-"), x, y, width, height)
+
+def get_view_hierarchy(dir, screenshot):
+    json_path = join(dir, screenshot.find('name').text + "_dump.json")
+    if not os.path.exists(json_path):
+        return None
+    with codecs.open(json_path, mode="r", encoding='utf-8') as dump:
+        return json.loads(dump.read())
+
+def write_image(dir, html, screenshot, parent_id):
+    html.write('<div class="img-wrapper">')
+    html.write('<table>')
     for y in range(int(screenshot.find('tile_height').text)):
         html.write('<tr>')
         for x in range(int(screenshot.find('tile_width').text)):
@@ -134,6 +194,9 @@ def write_image(dir, html, screenshot):
             html.write('</td>')
         html.write('</tr>')
     html.write('</table>')
+    html.write('<div class="hierarchy-overlay">')
+    write_view_hierarchy_overlay_nodes(dir, html, screenshot, parent_id)
+    html.write('</div></div>')
 
 
 def test_for_wkhtmltoimage():

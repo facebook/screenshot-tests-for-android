@@ -7,25 +7,52 @@ img {
     display:block;
 }
 
+.flex-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
 .img-wrapper {
     background-image: url("background.png");
-    float:left;
     margin-top: 16px;
     margin-right: 16px;
+    position: relative;
 }
 
 .img-wrapper.dark {
     background-image: url("background_dark.png");
 }
 
-.command-wrapper {
-    margin-top: 16px;
+.hierarchy-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: block;
 }
 
-.hierarchy {
-    background: #DDD;
+.hierarchy-node {
+    position: absolute;
+    display: block;
+    border: 2px solid #000;
+}
+
+.hierarchy-node.highlight {
+    background-color: rgba(20, 20, 128, 0.5);
+    border-color: #00f;
+}
+
+.command-wrapper {
+    margin-top: 16px;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.view-hierarchy {
+    background: #ddd;
     padding: 16px;
-    max-height: 500px;
+    max-height: 750px;
     overflow: auto;
     border-radius: 3px;
 }
@@ -76,6 +103,7 @@ button {
     background-color: #fff;
     padding: 16px;
     font-size: 18px;
+    margin-right: 8px;
 }
 
 button:hover {
@@ -99,4 +127,18 @@ hr {
 
 h3 {
     font-weight: normal;
+}
+
+details {
+    margin-left: 24px;
+}
+
+summary {
+    font-size: 16px;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    margin-bottom: 8px;
 }
