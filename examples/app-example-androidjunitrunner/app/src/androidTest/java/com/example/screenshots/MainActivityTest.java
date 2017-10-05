@@ -15,6 +15,7 @@ import static android.support.test.espresso.Espresso.openActionBarOverflowOrOpti
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static com.example.screenshots.ScreenshotViewAction.screenshot;
 import static org.hamcrest.Matchers.allOf;
 
 
@@ -36,8 +37,10 @@ public class MainActivityTest {
 
         openActionBarOverflowOrOptionsMenu(getInstrumentation().getTargetContext());
         Screenshot.snapActivity(mActivityTestRule.getActivity()).record();
-
     }
 
-
+    @Test
+    public void mainActivityTestFabWithEspresso() {
+        onView(withId(R.id.fab)).perform(screenshot("fab"));
+    }
 }
