@@ -41,6 +41,6 @@ public class MainActivityTest {
 
     @Test
     public void mainActivityTestFabWithEspresso() {
-        onView(withId(R.id.fab)).perform(screenshot());
+        onView(withId(R.id.fab)).perform(screenshot("fab"));
     }
 }

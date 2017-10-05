@@ -9,8 +9,14 @@ import org.hamcrest.Matcher;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 
 public final class ScreenshotViewAction implements ViewAction {
-    public static ViewAction screenshot() {
-        return new ScreenshotViewAction();
+    public static ViewAction screenshot(String name) {
+        return new ScreenshotViewAction(name);
+    }
+
+    private final String name;
+
+    ScreenshotViewAction(final String name) {
+        this.name = name;
     }
 
     @Override
@@ -20,12 +26,11 @@ public final class ScreenshotViewAction implements ViewAction {
 
     @Override
     public String getDescription() {
-        return "Taking a screenshot.";
+        return name;
     }
 
     @Override
     public void perform(final UiController uiController, final View view) {
-        Screenshot.snap(view)
-                .record();
+        Screenshot.snap(view).setName(name).record();
     }
 }
