@@ -20,6 +20,21 @@ $(function () {
         });
 
     $(".toggle_dark").click(function() {
-        var image_wrapper = $(this).closest(".screenshot").find(".img-wrapper").toggleClass("dark")
+        $(this).closest(".screenshot").find(".img-wrapper").toggleClass("dark");
     })
+
+    $(".toggle_hierarchy").click(function() {
+        $(this).closest(".screenshot").find(".hierarchy-overlay").toggle();
+    })
+
+    $(".view-hierarchy")
+        .mousemove(
+            function(e) {
+                $(".hierarchy-node").removeClass('highlight');
+                $($(e.target).closest("details").attr('target')).addClass('highlight');
+            })
+        .mouseout(
+            function() {
+                $(".hierarchy-node").removeClass('highlight');
+            });
 });
