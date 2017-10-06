@@ -49,7 +49,6 @@ public class ScreenshotImplTest {
   private AlbumImpl mSecondAlbumImpl;
   private TextView mTextView;
   private ScreenshotImpl mScreenshot;
-  private ViewHierarchy mViewHierarchy;
   private ScreenshotDirectories mScreenshotDirectories;
 
   @Before
@@ -68,15 +67,8 @@ public class ScreenshotImplTest {
                                 ViewGroup.LayoutParams.MATCH_PARENT));
 
     measureAndLayout();
-
-    mViewHierarchy = new ViewHierarchy() {
-        @Override
-        public void deflate(View view, OutputStream os) throws IOException {
-          os.write("foobar".getBytes("utf-8"));
-        }
-      };
     // For most of the tests, we send a null album to verify against
-    mScreenshot = new ScreenshotImpl(mAlbumImpl, mViewHierarchy);
+    mScreenshot = new ScreenshotImpl(mAlbumImpl);
   }
 
   @After
@@ -114,10 +106,22 @@ public class ScreenshotImplTest {
       "blahblah_dump.xml").getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 
-    int len = "foobar".length();
-    byte[] bytes = new byte[len];
-    is.read(bytes, 0, len);
-    assertEquals("foobar", new String(bytes, "utf-8"));
+    StringBuilder builder = new StringBuilder();
+    byte[] buffer = new byte[8 * 1024];
+    int read;
+    while ((read = is.read(buffer)) != -1) {
+      builder.append(new String(buffer, 0, read));
+    }
+
+    String expected = "{" +
+        "  \"class\": \"android.widget.TextView\"," +
+        "  \"x\": 0," +
+        "  \"y\": 0," +
+        "  \"width\": 200," +
+        "  \"height\": 100," +
+        "  \"text\": \"foobar\"" +
+        "}";
+    assertEquals(expected, builder.toString().replace("\n", ""));
 
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
