@@ -51,7 +51,7 @@ def generate_html(dir):
     root = ET.parse(join(dir, 'metadata.xml')).getroot()
     alternate = False
     index_html = abspath(join(dir, "index.html"))
-    with open(index_html, "w") as html:
+    with codecs.open(index_html, mode="w", encoding="utf-8") as html:
         html.write('<!DOCTYPE html>')
         html.write('<html>')
         html.write('<head>')
@@ -68,9 +68,13 @@ def generate_html(dir):
             screenshot_num += 1
             alternate = not alternate
             canonical_name = screenshot.find('name').text
-            last_seperator = canonical_name.rindex('.') + 1
-            package = canonical_name[:last_seperator]
-            name = canonical_name[last_seperator:]
+            package = ""
+            name = canonical_name
+            if '.' in canonical_name:
+                last_seperator = canonical_name.rindex('.') + 1
+                package = canonical_name[:last_seperator]
+                name = canonical_name[last_seperator:]
+
             html.write('<div class="screenshot %s">' % ('alternate' if alternate else ''))
             html.write('<div class="screenshot_name">')
             html.write('<span class="demphasize">%s</span>%s' % (package, name))
@@ -275,7 +279,7 @@ def pull_metadata(package, dir, adb_puller):
         adb_puller.pull(metadata_file, join(dir, 'metadata.xml'))
     elif adb_puller.remote_file_exists(old_metadata_file):
         adb_puller.pull(old_metadata_file, join(dir, 'metadata.xml'))
-        metadata_file = old_metdata_file
+        metadata_file = old_metadata_file
     else:
         create_empty_metadata_file(dir)
 
@@ -319,7 +323,7 @@ def _summary(dir):
 def _validate_metadata(dir):
     try:
         ET.parse(join(dir, 'metadata.xml'))
-    except ET.ParseError as e:
+    except ET.ParseError:
         raise RuntimeError("Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation")
 
 def pull_screenshots(process,
@@ -378,7 +382,7 @@ def main(argv):
             argv[1:],
             "eds:",
             ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=", "no-pull"])
-    except getopt.GetoptError as err:
+    except getopt.GetoptError:
         usage()
         return 2
 
