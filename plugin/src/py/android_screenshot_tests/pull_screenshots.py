@@ -24,7 +24,6 @@ import json
 from . import metadata
 from .simple_puller import SimplePuller
 import zipfile
-from . import aapt
 from . import common
 
 from os.path import join
@@ -322,7 +321,7 @@ def _validate_metadata(dir):
     except ET.ParseError as e:
         raise RuntimeError("Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation")
 
-def pull_screenshots(process,
+def pull_screenshots(package,
                      adb_puller,
                      perform_pull=True,
                      temp_dir=None,
@@ -342,7 +341,10 @@ def pull_screenshots(process,
     copy_assets(temp_dir)
 
     if perform_pull is True:
-        pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
+        pull_filtered(package=package,
+                      adb_puller=adb_puller,
+                      dir=temp_dir,
+                      filter_name_regex=filter_name_regex)
 
     _validate_metadata(temp_dir)
 
@@ -377,7 +379,7 @@ def main(argv):
         opt_list, rest_args = getopt.gnu_getopt(
             argv[1:],
             "eds:",
-            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=", "no-pull"])
+            ["generate-png=", "filter-name-regex=", "package", "record=", "verify=", "temp-dir=", "no-pull"])
     except getopt.GetoptError as err:
         usage()
         return 2
@@ -386,13 +388,12 @@ def main(argv):
         usage()
         return 2
 
-    process = rest_args[0]  # something like com.facebook.places.tests
+    package = rest_args[0]  # something like com.facebook.places.tests
+
+    if not package:
+        raise RuntimeError("testPackage property must be specified in your gradle settings")
 
     opts = dict(opt_list)
-
-    if "--apk" in opts:
-        # treat process as an apk instead
-        process = aapt.get_package(process)
 
     should_perform_pull = ("--no-pull" not in opts)
 
@@ -406,7 +407,7 @@ def main(argv):
     if "-s" in opts:
         puller_args += ["-s", opts["-s"]]
 
-    return pull_screenshots(process,
+    return pull_screenshots(package=package,
                             perform_pull=should_perform_pull,
                             temp_dir=opts.get('--temp-dir'),
                             filter_name_regex=opts.get('--filter-name-regex'),
