@@ -9,26 +9,21 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import javax.xml.parsers.DocumentBuilderFactory;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
-import java.io.File;
-import java.util.Arrays;
-import java.util.Locale;
-
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.test.InstrumentationRegistry;
 import android.test.MoreAsserts;
-
+import java.io.File;
+import java.util.Arrays;
+import javax.xml.parsers.DocumentBuilderFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
 
 /**
  * Tests for {@link AlbumImpl}
@@ -156,7 +151,7 @@ public class AlbumImplTest {
         .getElementsByTagName("view_hierarchy").item(0))
         .getTextContent();
 
-    assertEquals("foo_dump.xml", actual);
+    assertEquals("foo_dump.json", actual);
   }
 
   @Test

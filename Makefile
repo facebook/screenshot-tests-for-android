@@ -49,7 +49,7 @@ app-example-tests:
 app-example-androidjunitrunner-tests:
 	cd examples/app-example-androidjunitrunner && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
 
-	grep "Found 2 screenshots" $(TMPFILE)
+	grep "Found 3 screenshots" $(TMPFILE)
 
 
 install-local:
