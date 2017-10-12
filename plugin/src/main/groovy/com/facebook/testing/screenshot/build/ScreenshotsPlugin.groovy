@@ -9,6 +9,9 @@ class ScreenshotsPluginExtension {
     def recordDir = "screenshots"
     def addCompileDeps = true
 
+    def pythonExecutable = "python"
+    def testPackage = ""
+
     // Only used for the pullScreenshotsFromDirectory task
     def referenceDir = ""
     def targetPackage = ""
@@ -30,8 +33,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     def recordMode = false
     def verifyMode = false
 
-    def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource();
-    def jarFile = new File(codeSource.getLocation().toURI().getPath());
+    def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource()
+    def jarFile = new File(codeSource.getLocation().toURI().getPath())
 
     // We'll figure out the adb in afterEvaluate
     def adb = null
@@ -45,12 +48,10 @@ class ScreenshotsPlugin implements Plugin<Project> {
       description = "Pull screenshots from the device"
       doLast {
         project.exec {
-          def output = getTestApkOutput(project)
-
-          executable = 'python'
+          executable = project.screenshots.pythonExecutable
           environment('PYTHONPATH', jarFile)
 
-          args = ['-m', 'android_screenshot_tests.pull_screenshots', "--apk", output.toString()]
+          args = ['-m', 'android_screenshot_tests.pull_screenshots', "--package", project.screenshots.testPackage]
 
           def referenceDir = project.screenshots.referenceDir
           if(referenceDir) {
@@ -72,7 +73,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       doLast {
         project.exec {
 
-          executable = 'python'
+          executable = project.screenshots.pythonExecutable
           environment('PYTHONPATH', jarFile)
 
           def referenceDir = project.screenshots.referenceDir
@@ -144,13 +145,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
         verifyMode = true
       }
     }
-  }
-
-  String getTestApkOutput(Project project) {
-
-    return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().filter {
-      it.getAbsolutePath().endsWith ".apk"
-    }.getSingleFile().getAbsolutePath()
   }
 
   void printPullFromDirectoryUsage(def logger, def referenceDir, def targetPackage) {

@@ -84,6 +84,9 @@ The location of the screenshot artifacts can be configured in the project's buil
 
       // Your app's application id
       targetPackage = "your.application.package"
+
+      // Your app's test application id
+      testPackage = "your.application.test.package"
   }
 ```
 
