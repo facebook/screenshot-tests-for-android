@@ -59,7 +59,10 @@ commands to run all the tests:
   $ gradle :core:connectedAndroidTest
 ```
 
-Both need a running emulator. Python tests rely on the `mock` library. It can be installed through `pip install mock`.
+Both need a running emulator. 
+
+Python tests rely on the `mock` and `Pillow` libraries. Both can be installed via `pip install mock`
+and `pip install Pillow`.
 
 You can install all the artifacts to your local maven repository using
 
