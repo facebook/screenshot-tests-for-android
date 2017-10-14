@@ -50,7 +50,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
           executable = 'python'
           environment('PYTHONPATH', jarFile)
 
-          args = ['-m', 'android_screenshot_tests.pull_screenshots', "--package", output.toString()]
+          args = ['-m', 'android_screenshot_tests.pull_screenshots', "--package", project.screenshots.testPackage]
 
           def referenceDir = project.screenshots.referenceDir
           if(referenceDir) {
