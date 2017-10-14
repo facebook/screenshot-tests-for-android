@@ -1,0 +1,39 @@
+# Copyright (c) 2014-present, Facebook, Inc.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. An additional grant
+# of patent rights can be found in the PATENTS file in the same directory.
+
+java_library(
+    name = "dexmaker",
+    exported_deps = [
+        ":dexmaker-dx-prebuilt",
+        ":dexmaker-prebuilt",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+prebuilt_jar(
+    name = "dexmaker-prebuilt",
+    binary_jar = ":dexmaker.jar",
+    visibility = ["PUBLIC"],
+)
+
+remote_file(
+    name = "dexmaker.jar",
+    sha1 = "6d1ffc507a9b46bbc718d030a1c39b31c572d2b6",
+    url = "mvn:com.crittercism.dexmaker:dexmaker:jar:1.4",
+)
+
+prebuilt_jar(
+    name = "dexmaker-dx-prebuilt",
+    binary_jar = ":dexmaker-dx.jar",
+    visibility = ["PUBLIC"],
+)
+
+remote_file(
+    name = "dexmaker-dx.jar",
+    sha1 = "0b1146f23dc9f562f4da9a612e2f1980199c1221",
+    url = "mvn:com.crittercism.dexmaker:dexmaker-dx:jar:1.4",
+)

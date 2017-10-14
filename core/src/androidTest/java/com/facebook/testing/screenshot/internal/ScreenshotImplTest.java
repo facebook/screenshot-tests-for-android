@@ -9,15 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.IllegalArgumentException;
-import java.lang.StringBuilder;
-import java.util.Locale;
+import static org.junit.Assert.*;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -33,12 +25,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.IllegalArgumentException;
+import java.lang.StringBuilder;
+import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ScreenshotImpl}
@@ -101,9 +99,9 @@ public class ScreenshotImplTest {
     rb.record();
     mScreenshot.flush();
 
-    String fileName = new File(
-      mScreenshotDirectories.get("verify-in-test"),
-      "blahblah_dump.xml").getAbsolutePath();
+    String fileName =
+        new File(mScreenshotDirectories.get("verify-in-test"), "blahblah_dump.json")
+            .getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 
     StringBuilder builder = new StringBuilder();
@@ -126,7 +124,7 @@ public class ScreenshotImplTest {
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
 
-    MoreAsserts.assertContainsRegex("blahblah.*.xml", metadataContents);
+    MoreAsserts.assertContainsRegex("blahblah.*.json", metadataContents);
   }
 
   private String fileToString(File file) {

@@ -9,6 +9,7 @@
 
 package com.facebook.testing.screenshot;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Binder;
 import android.os.Build;
@@ -18,9 +19,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-
 import com.android.dx.stock.ProxyBuilder;
-
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -29,6 +28,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.WeakHashMap;
 
+@SuppressLint("PrivateApi")
 public abstract class WindowAttachment {
 
   /**
@@ -104,10 +104,12 @@ public abstract class WindowAttachment {
   public static void setAttachInfo(View view) {
     try {
       Class cAttachInfo = Class.forName("android.view.View$AttachInfo");
-      Class cViewRootImpl = null;
+      Class cViewRootImpl;
 
       if (Build.VERSION.SDK_INT >= 11) {
         cViewRootImpl = Class.forName("android.view.ViewRootImpl");
+      } else {
+        return;
       }
 
       Class cIWindowSession = Class.forName("android.view.IWindowSession");
@@ -118,68 +120,71 @@ public abstract class WindowAttachment {
       WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
       Display display = wm.getDefaultDisplay();
 
-      Object viewRootImpl = null;
-
       Object window = createIWindow();
 
-      Class[] params = null;
-      Object[] values = null;
+      final Object viewRootImpl;
+      final Class[] viewRootCtorParams;
+      final Object[] viewRootCtorValues;
 
-      if (Build.VERSION.SDK_INT >= 17) {
+      if (Build.VERSION.SDK_INT >= 26) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class, Display.class)
             .newInstance(context, display);
-        params = new Class[]{
-            cIWindowSession,
-            cIWindow,
-            Display.class,
-            cViewRootImpl,
-            Handler.class,
-            cCallbacks
-        };
 
-        values = new Object[]{
-            stub(cIWindowSession),
-            window,
-            display,
-            viewRootImpl,
-            new Handler(),
-            stub(cCallbacks)
-        };
+        viewRootCtorParams =
+            new Class[] {
+              cIWindowSession,
+              cIWindow,
+              Display.class,
+              cViewRootImpl,
+              Handler.class,
+              cCallbacks,
+              Context.class
+            };
+
+        viewRootCtorValues =
+            new Object[] {
+              stub(cIWindowSession),
+              window,
+              display,
+              viewRootImpl,
+              new Handler(),
+              stub(cCallbacks),
+              context
+            };
+      } else if (Build.VERSION.SDK_INT >= 17) {
+        viewRootImpl =
+            cViewRootImpl
+                .getConstructor(Context.class, Display.class)
+                .newInstance(context, display);
+
+        viewRootCtorParams =
+            new Class[] {
+              cIWindowSession, cIWindow, Display.class, cViewRootImpl, Handler.class, cCallbacks
+            };
+
+        viewRootCtorValues =
+            new Object[] {
+              stub(cIWindowSession), window, display, viewRootImpl, new Handler(), stub(cCallbacks)
+            };
       } else if (Build.VERSION.SDK_INT >= 16) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class)
             .newInstance(context);
-        params = new Class[]{
-            cIWindowSession,
-            cIWindow,
-            cViewRootImpl,
-            Handler.class,
-            cCallbacks
-        };
 
-        values = new Object[]{
-            stub(cIWindowSession),
-            window,
-            viewRootImpl,
-            new Handler(),
-            stub(cCallbacks)
-        };
-      } else if (Build.VERSION.SDK_INT <= 15) {
-        params = new Class[]{
-            cIWindowSession,
-            cIWindow,
-            Handler.class,
-            cCallbacks
-        };
+        viewRootCtorParams =
+            new Class[] {cIWindowSession, cIWindow, cViewRootImpl, Handler.class, cCallbacks};
 
-        values = new Object[]{
-            stub(cIWindowSession),
-            window,
-            new Handler(),
-            stub(cCallbacks)
-        };
+        viewRootCtorValues =
+            new Object[] {
+              stub(cIWindowSession), window, viewRootImpl, new Handler(), stub(cCallbacks)
+            };
+      } else {
+        viewRootCtorParams = new Class[] {cIWindowSession, cIWindow, Handler.class, cCallbacks};
+
+        viewRootCtorValues =
+            new Object[] {stub(cIWindowSession), window, new Handler(), stub(cCallbacks)};
       }
 
-      Object attachInfo = invokeConstructor(cAttachInfo, params, values);
+      Object attachInfo = invokeConstructor(cAttachInfo, viewRootCtorParams, viewRootCtorValues);
 
       setField(attachInfo, "mHasWindowFocus", true);
       setField(attachInfo, "mWindowVisibility", View.VISIBLE);
@@ -188,8 +193,8 @@ public abstract class WindowAttachment {
         setField(attachInfo, "mHardwareAccelerated", false);
       }
 
-      Method dispatch = View.class
-          .getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
+      Method dispatch =
+          View.class.getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
       dispatch.setAccessible(true);
       dispatch.invoke(view, attachInfo, 0);
     } catch (Exception e) {
@@ -220,12 +225,7 @@ public abstract class WindowAttachment {
       }
     };
 
-    Object ret = Proxy.newProxyInstance(
-        cIWindow.getClassLoader(),
-        new Class[]{cIWindow},
-        handler);
-
-    return ret;
+    return Proxy.newProxyInstance(cIWindow.getClassLoader(), new Class[] {cIWindow}, handler);
   }
 
   private static Object stub(Class klass) {
@@ -260,7 +260,7 @@ public abstract class WindowAttachment {
   }
 
   public interface Detacher {
-    public void detach();
+    void detach();
   }
 
   private static class NoopDetacher implements Detacher {

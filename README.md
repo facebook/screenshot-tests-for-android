@@ -1,8 +1,10 @@
-# screenshot-tests-for-android
+# Screenshot Tests for Android
+
+<img src="/.github/logo.png" width="150" align="right"/>
 
 screenshot-tests-for-android is a library that can generate fast
-deterministic screenshots while running instrumentation tests in
-android.
+deterministic screenshots while running instrumentation tests on
+Android.
 
 We mimic Android's measure(), layout() and draw() to generate screenshots
 on the test thread. By not having to do the rendering on a separate
@@ -12,7 +14,7 @@ regressions in continuous integration.
 
 We also provide utilities for using screenshot tests during the development
 process. With these scripts you can iterate on a view or layout and quickly
-see how the view renders in real android code, without having to
+see how the view renders in a real Android environment, without having to
 build the whole app. You can also render the view in multiple configurations
 at one go.
 
@@ -22,7 +24,7 @@ Take a look at the documentation at http://facebook.github.io/screenshot-tests-f
 
 ## Requirements
 
-screenshot-tests-for-android is known to work with Mac OS X or Linux.
+screenshot-tests-for-android is known to work with MacOS or Linux.
 
 The host tooling probably doesn't work on Windows, but can be made to
 work with a little effort. We'll happily accept pull requests!
@@ -57,7 +59,10 @@ commands to run all the tests:
   $ gradle :core:connectedAndroidTest
 ```
 
-Both need a running emulator. Python tests rely on the `mock` library. It can be installed through `pip install mock`.
+Both need a running emulator. 
+
+Python tests rely on the `mock` and `Pillow` libraries. Both can be installed via `pip install mock`
+and `pip install Pillow`.
 
 You can install all the artifacts to your local maven repository using
 
