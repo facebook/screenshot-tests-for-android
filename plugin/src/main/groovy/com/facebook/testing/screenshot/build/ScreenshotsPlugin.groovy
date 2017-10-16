@@ -10,7 +10,8 @@ class ScreenshotsPluginExtension {
     def addCompileDeps = true
 
     def testPackage = ""
-
+    def pythonExecutable = "python"
+  
     // Only used for the pullScreenshotsFromDirectory task
     def referenceDir = ""
     def targetPackage = ""
@@ -47,7 +48,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       description = "Pull screenshots from the device"
       doLast {
         project.exec {
-          executable = 'python'
+          executable = project.screenshots.pythonExecutable
           environment('PYTHONPATH', jarFile)
 
           args = ['-m', 'android_screenshot_tests.pull_screenshots', "--package", project.screenshots.testPackage]
@@ -72,7 +73,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
       doLast {
         project.exec {
 
-          executable = 'python'
+          executable = project.screenshots.pythonExecutable
           environment('PYTHONPATH', jarFile)
 
           def referenceDir = project.screenshots.referenceDir
