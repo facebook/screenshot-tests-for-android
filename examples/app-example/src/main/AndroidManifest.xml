@@ -7,11 +7,12 @@
  LICENSE-examples file in the root directory of this source tree.
 -->
 <manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package='com.facebook.testing.screenshot.examples'>
-   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   <application>
-     <!-- not having an empty application block seems to cause the
-          instrumentation tests to fail with a ClassNotFoundException . -->
-   </application>
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  package='com.facebook.testing.screenshot.examples'>
+
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+  <application>
+    <!-- not having an empty application block seems to cause the
+         instrumentation tests to fail with a ClassNotFoundException . -->
+  </application>
 </manifest>
