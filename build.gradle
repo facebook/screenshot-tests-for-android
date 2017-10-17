@@ -1,34 +1,40 @@
 buildscript {
-    repositories {
-      mavenCentral()
-    }
+  apply from: rootProject.file('versions.gradle')
+  repositories {
+    mavenCentral()
+  }
 }
 
 allprojects {
   version = property('VERSION_NAME')
+  repositories {
+    jcenter()
+    maven {
+      url "https://maven.google.com"
+    }
+  }
 }
 
 task uploadAllLocal(dependsOn: [
-     ":plugin:uploadArchives",
-     ":core:uploadArchives"]) {
+    ":plugin:uploadArchives",
+    ":core:uploadArchives"]) {
 }
 
 task installAll(dependsOn: [
-     ":core:install",
-     ":plugin:install",
+    ":core:install",
+    ":plugin:install",
 ])
 
 task uploadAllArchives(dependsOn:
-                    [":plugin:uploadArchives",
-                     ":core:uploadArchives"]) {
-    doLast {
-        println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
-    }
+    [":plugin:uploadArchives",
+     ":core:uploadArchives"]) {
+  doLast {
+    println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
+  }
 }
-
 
 // Run all the tests prior to release. Also run integration_test.sh
 task releaseTests(dependsOn:
-                  [":plugin:pyTests",
-                   ":plugin:test",
-                   ":core:connectedAndroidTest"])
+    [":plugin:pyTests",
+     ":plugin:test",
+     ":core:connectedAndroidTest"])
