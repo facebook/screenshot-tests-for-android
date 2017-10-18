@@ -1,36 +1,36 @@
 buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-    }
+  apply from: rootProject.file('../../versions.gradle')
 
-    dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
-        classpath 'com.facebook.testing.screenshot:plugin:0.4.4'
-    }
+  repositories {
+    mavenLocal()
+    jcenter()
+  }
+
+  dependencies {
+    classpath plugs.agp
+    classpath plugs.screenshot
+  }
 }
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.facebook.testing.screenshot'
 
-repositories {
+allprojects {
+  repositories {
     mavenLocal()
-    mavenCentral()
+    jcenter()
+    maven {
+      url "https://maven.google.com"
+    }
+  }
 }
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "26.0.1"
+  compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
 
-    defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
-    }
-
-    sourceSets {
-    }
-}
-
-dependencies {
+  defaultConfig {
+    minSdkVersion 9
+    targetSdkVersion versions.targetSdk
+  }
 }
