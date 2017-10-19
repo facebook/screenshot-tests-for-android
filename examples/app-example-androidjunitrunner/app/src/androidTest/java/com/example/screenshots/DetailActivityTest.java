@@ -17,51 +17,35 @@ public class DetailActivityTest {
 
   @Test
   public void errorTextShouldBeRed() {
-    Activity activity = startActivity(givenAnErrorText());
+    final Intent intent = given(DetailActivity.Type.ERROR,
+        "Error 500: internal server error");
+    Activity activity = startActivity(intent);
 
     Screenshot.snapActivity(activity).record();
   }
 
   @Test
   public void warningTextShouldBeYellow() {
-    Activity activity = startActivity(givenAWarningText());
+    final Intent intent = given(DetailActivity.Type.WARNING,
+        "Method onAttach(Context context) is deprecated");
+    Activity activity = startActivity(intent);
 
     Screenshot.snapActivity(activity).record();
   }
 
   @Test
   public void okTextShouldBeGreen() {
-    Activity activity = startActivity(givenAnOkText());
+    final Intent intent = given(DetailActivity.Type.OK,
+        "Screenshot testing is wonderful");
+    Activity activity = startActivity(intent);
 
     Screenshot.snapActivity(activity).record();
   }
 
-  private Intent givenAnErrorText() {
+  private Intent given(DetailActivity.Type type, String text) {
     Intent intent = new Intent();
-    intent.putExtra(DetailActivity.TYPE,
-        DetailActivity.Type.ERROR);
-    intent.putExtra(DetailActivity.TEXT,
-        "Error 500: internal server error");
-
-    return intent;
-  }
-
-  private Intent givenAWarningText() {
-    Intent intent = new Intent();
-    intent.putExtra(DetailActivity.TYPE,
-        DetailActivity.Type.WARNING);
-    intent.putExtra(DetailActivity.TEXT,
-        "Method onAttach(Context context) is deprecated");
-
-    return intent;
-  }
-
-  private Intent givenAnOkText() {
-    Intent intent = new Intent();
-    intent.putExtra(DetailActivity.TYPE,
-        DetailActivity.Type.OK);
-    intent.putExtra(DetailActivity.TEXT,
-        "Screenshot testing is wonderful");
+    intent.putExtra(DetailActivity.TYPE, type);
+    intent.putExtra(DetailActivity.TEXT, text);
 
     return intent;
   }

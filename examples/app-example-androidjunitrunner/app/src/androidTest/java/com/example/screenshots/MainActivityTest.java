@@ -21,7 +21,8 @@ import static org.hamcrest.Matchers.allOf;
 public class MainActivityTest {
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
+    public ActivityTestRule<MainActivity> mActivityTestRule =
+        new ActivityTestRule<>(MainActivity.class, true, false);
 
     @Test
     public void mainActivityTest() {
