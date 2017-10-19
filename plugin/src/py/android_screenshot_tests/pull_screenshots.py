@@ -34,7 +34,7 @@ from Queue import Queue
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
 
 def usage():
-    print >>sys.stderr, "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]"
+    print("usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]", file=sys.stderr)
     return
 
 def sort_screenshots(screenshots):
