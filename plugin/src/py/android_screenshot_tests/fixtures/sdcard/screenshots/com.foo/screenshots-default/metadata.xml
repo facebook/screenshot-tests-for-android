@@ -8,7 +8,7 @@
     <tile_width>1</tile_width>
     <tile_height>1</tile_height>
     <relative_file_name>com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png</relative_file_name>
-    <view_hierarchy>one_dump.xml</view_hierarchy>
+    <view_hierarchy>one_dump.json</view_hierarchy>
   </screenshot>
   <screenshot>
     <description />

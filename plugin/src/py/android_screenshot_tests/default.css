@@ -1,13 +1,60 @@
 body {
-    background: #D3D3D3;
+    background: #fafafa;
+    font-family: 'Arial';
 }
 
 img {
     display:block;
 }
 
+.flex-wrapper {
+    display: flex;
+    flex-direction: row;
+}
+
 .img-wrapper {
     background-image: url("background.png");
+    margin-top: 16px;
+    margin-right: 16px;
+    position: relative;
+}
+
+.img-wrapper.dark {
+    background-image: url("background_dark.png");
+}
+
+.hierarchy-overlay {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+}
+
+.hierarchy-node {
+    position: absolute;
+    display: block;
+    border: 2px solid #000;
+}
+
+.hierarchy-node.highlight {
+    background-color: rgba(20, 20, 128, 0.5);
+    border-color: #00f;
+}
+
+.command-wrapper {
+    margin-top: 16px;
+    flex-grow: 1;
+    overflow: auto;
+}
+
+.view-hierarchy {
+    background: #ddd;
+    padding: 16px;
+    max-height: 750px;
+    overflow: auto;
+    border-radius: 3px;
 }
 
 div.screenshot {
@@ -15,7 +62,7 @@ div.screenshot {
 }
 
 div.alternate {
-    background: #E0E0E0;
+
 }
 
 div.screenshot_error {
@@ -35,4 +82,63 @@ table, th, tr, td, img{
 table {
     border-spacing: 0;
     border-collapse: collapse;
+}
+
+.screenshot_name {
+    font-size: 24px;
+}
+
+.screenshot_name .demphasize {
+    color: #999;
+}
+
+.screenshot_description {
+    color: #999;
+    font-style: italic;
+}
+
+button {
+    border: 1px solid #000;
+    border-radius: 3px;
+    background-color: #fff;
+    padding: 16px;
+    font-size: 18px;
+    margin-right: 8px;
+}
+
+button:hover {
+    background-color: #000;
+    color: #fff;
+    cursor: pointer;
+}
+
+.clearfix {
+    display: block;
+    clear: both;
+    content: "";
+}
+
+hr {
+    border: 0;
+    height: 1px;
+    background-color: #000;
+    margin: 16px 0;
+}
+
+h3 {
+    font-weight: normal;
+}
+
+details {
+    margin-left: 24px;
+}
+
+summary {
+    font-size: 16px;
+}
+
+ul {
+    list-style: none;
+    margin: 0;
+    margin-bottom: 8px;
 }

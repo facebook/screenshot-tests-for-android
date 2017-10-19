@@ -9,15 +9,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.lang.IllegalArgumentException;
-import java.lang.StringBuilder;
-import java.util.Locale;
+import static org.junit.Assert.*;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -33,12 +25,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.IllegalArgumentException;
+import java.lang.StringBuilder;
+import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import static org.junit.Assert.*;
 
 /**
  * Tests for {@link ScreenshotImpl}
@@ -49,7 +47,6 @@ public class ScreenshotImplTest {
   private AlbumImpl mSecondAlbumImpl;
   private TextView mTextView;
   private ScreenshotImpl mScreenshot;
-  private ViewHierarchy mViewHierarchy;
   private ScreenshotDirectories mScreenshotDirectories;
 
   @Before
@@ -68,15 +65,8 @@ public class ScreenshotImplTest {
                                 ViewGroup.LayoutParams.MATCH_PARENT));
 
     measureAndLayout();
-
-    mViewHierarchy = new ViewHierarchy() {
-        @Override
-        public void deflate(View view, OutputStream os) throws IOException {
-          os.write("foobar".getBytes("utf-8"));
-        }
-      };
     // For most of the tests, we send a null album to verify against
-    mScreenshot = new ScreenshotImpl(mAlbumImpl, mViewHierarchy);
+    mScreenshot = new ScreenshotImpl(mAlbumImpl);
   }
 
   @After
@@ -109,20 +99,32 @@ public class ScreenshotImplTest {
     rb.record();
     mScreenshot.flush();
 
-    String fileName = new File(
-      mScreenshotDirectories.get("verify-in-test"),
-      "blahblah_dump.xml").getAbsolutePath();
+    String fileName =
+        new File(mScreenshotDirectories.get("verify-in-test"), "blahblah_dump.json")
+            .getAbsolutePath();
     InputStream is = new FileInputStream(fileName);
 
-    int len = "foobar".length();
-    byte[] bytes = new byte[len];
-    is.read(bytes, 0, len);
-    assertEquals("foobar", new String(bytes, "utf-8"));
+    StringBuilder builder = new StringBuilder();
+    byte[] buffer = new byte[8 * 1024];
+    int read;
+    while ((read = is.read(buffer)) != -1) {
+      builder.append(new String(buffer, 0, read));
+    }
+
+    String expected = "{" +
+        "  \"class\": \"android.widget.TextView\"," +
+        "  \"x\": 0," +
+        "  \"y\": 0," +
+        "  \"width\": 200," +
+        "  \"height\": 100," +
+        "  \"text\": \"foobar\"" +
+        "}";
+    assertEquals(expected, builder.toString().replace("\n", ""));
 
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
 
-    MoreAsserts.assertContainsRegex("blahblah.*.xml", metadataContents);
+    MoreAsserts.assertContainsRegex("blahblah.*.json", metadataContents);
   }
 
   private String fileToString(File file) {

@@ -4,7 +4,7 @@ import org.junit.*
 import static org.junit.Assert.*
 import org.gradle.api.*
 import org.gradle.testfixtures.*
-import static org.hamcrest.Matchers.*
+import static org.hamcrest.CoreMatchers.*
 
 class ScreenshotsPluginForTest extends ScreenshotsPlugin {
   static public runtimeDepAdded = false

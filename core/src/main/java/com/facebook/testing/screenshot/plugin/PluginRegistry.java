@@ -39,6 +39,6 @@ public class PluginRegistry {
    * Get the list of plugins, for internal use.
    */
   public static List<ViewDumpPlugin> getPlugins() {
-    return new ArrayList<ViewDumpPlugin>(sPlugins);
+    return new ArrayList<>(sPlugins);
   }
 }

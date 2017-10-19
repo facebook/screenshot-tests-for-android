@@ -78,6 +78,7 @@ if (property('POM_PACKAGING') == 'aar') {
     task androidJavadoc(type: Javadoc) {
         source = android.sourceSets.main.java.srcDirs
         classpath += files(android.bootClasspath)
+        exclude "**/BUCK"
 
         project.android.libraryVariants.all { variant ->
           if (variant.name == "release") {

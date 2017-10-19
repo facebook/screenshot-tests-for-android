@@ -1,20 +1,4 @@
 $(function () {
-    $(".view_dump").click(function () {
-        var name = $(this).attr('data-name');
-        $.ajax(
-            {
-                url: name + "_dump.xml",
-                dataType: "text",
-                success: function(result) {
-                    window.alert(result);
-                },
-                error: function(result) {
-                    window.alert("could not load the view hierarchy for " + name);
-                }
-            });
-
-    });
-
     $(".extra").click(function () {
             var str = $(this).attr('data');
             $('<pre></pre>').dialog({
@@ -34,4 +18,23 @@ $(function () {
                 },
             });
         });
+
+    $(".toggle_dark").click(function() {
+        $(this).closest(".screenshot").find(".img-wrapper").toggleClass("dark");
+    })
+
+    $(".toggle_hierarchy").click(function() {
+        $(this).closest(".screenshot").find(".hierarchy-overlay").toggle();
+    })
+
+    $(".view-hierarchy")
+        .mousemove(
+            function(e) {
+                $(".hierarchy-node").removeClass('highlight');
+                $($(e.target).closest("details").attr('target')).addClass('highlight');
+            })
+        .mouseout(
+            function() {
+                $(".hierarchy-node").removeClass('highlight');
+            });
 });

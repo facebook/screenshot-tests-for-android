@@ -9,127 +9,91 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import android.annotation.TargetApi;
 import android.graphics.Point;
-import android.graphics.Rect;
-import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.facebook.testing.screenshot.plugin.PluginRegistry;
 import com.facebook.testing.screenshot.plugin.ViewDumpPlugin;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
-
 /**
- * Dumps information about the view hierarchy.
+ * Dumps information about the view hierarchy into a JSON object
  */
 public class ViewHierarchy {
-  /**
-   * Creates an XML dump for the view into given OutputStream
-   *
-   * This is meant for debugging purposes only, and we don't
-   * guarantee that it's format will remain the same.
-   */
-  public void deflate(View view, OutputStream out) throws IOException {
-    Document doc = deflateToDocument(view);
-    try {
-      DOMSource source = new DOMSource(doc);
-      TransformerFactory transformerFactory = TransformerFactory.newInstance();
-      Transformer transformer = transformerFactory.newTransformer();
-      StreamResult result = new StreamResult(out);
-      transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-      transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-      transformer.transform(source, result);
-    } catch (TransformerException e) {
-      throw new RuntimeException(e);
-    }
+  public static final String KEY_CLASS = "class";
+  public static final String KEY_X = "x";
+  public static final String KEY_Y = "y";
+  public static final String KEY_WIDTH = "width";
+  public static final String KEY_HEIGHT = "height";
+  public static final String KEY_CHILDREN = "children";
+
+  private ViewHierarchy() {
+    throw new AssertionError("No instances");
   }
 
-  private Document deflateToDocument(View view) {
-    Document doc;
-
-    try {
-      doc = DocumentBuilderFactory.newInstance()
-          .newDocumentBuilder()
-          .newDocument();
-    } catch (ParserConfigurationException e) {
-      throw new RuntimeException(e);
+  public static JSONObject dump(View view) throws JSONException {
+    final JSONObject root;
+    Point offset = new Point(-getLeft(view), -getTop(view));
+    if (view instanceof ViewGroup) {
+      root = dumpGroup((ViewGroup) view, offset);
+    } else {
+      root = dumpView(view, offset);
     }
-
-    doc.appendChild(deflateRelative(view, new Point(-view.getLeft(), -view.getTop()), doc));
-    return doc;
+    return root;
   }
 
-  @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-  private Element deflateRelative(View view, Point topLeft, Document doc) {
-    Element el = doc.createElement("view");
+  private static JSONObject dumpGroup(ViewGroup viewGroup, Point offset) throws JSONException {
+    JSONObject node = dumpView(viewGroup, offset);
+    final int offsetX = getLeft(viewGroup);
+    final int offsetY = getTop(viewGroup);
+    offset.offset(offsetX, offsetY);
 
-    addTextNode(el, "name", view.getClass().getName());
-
-    Rect rect = new Rect(
-        topLeft.x + view.getLeft(),
-        topLeft.y + view.getTop(),
-        topLeft.x + view.getRight(),
-        topLeft.y + view.getBottom());
-
-    addTextNode(el, "left", String.valueOf(rect.left));
-    addTextNode(el, "top", String.valueOf(rect.top));
-    addTextNode(el, "right", String.valueOf(rect.right));
-    addTextNode(el, "bottom", String.valueOf(rect.bottom));
-    if (Build.VERSION.SDK_INT >= 11) {
-      addTextNode(el, "isLayoutRequested", String.valueOf(view.isLayoutRequested()));
+    JSONArray children = new JSONArray();
+    for (int i = 0, size = viewGroup.getChildCount(); i < size; ++i) {
+      View child = viewGroup.getChildAt(i);
+      if (child instanceof ViewGroup) {
+        children.put(dumpGroup((ViewGroup) child, offset));
+      } else {
+        children.put(dumpView(child, offset));
+      }
     }
-    addTextNode(el, "isDirty", String.valueOf(view.isDirty()));
+    node.put(KEY_CHILDREN, children);
+
+    offset.offset(-offsetX, -offsetY);
+    return node;
+  }
+
+  private static JSONObject dumpView(View view, Point offset) throws JSONException {
+    JSONObject node = new JSONObject();
+    node.put(KEY_CLASS, view.getClass().getCanonicalName());
+    node.put(KEY_X, offset.x + getLeft(view));
+    node.put(KEY_Y, offset.y + getTop(view));
+    node.put(KEY_WIDTH, view.getWidth());
+    node.put(KEY_HEIGHT, view.getHeight());
 
     Map<String, String> extraValues = new HashMap<>();
     for (ViewDumpPlugin plugin : PluginRegistry.getPlugins()) {
       plugin.dump(view, extraValues);
     }
-
-    for (Map.Entry<String, String> extraValue : extraValues.entrySet()) {
-      addExtraValue(el, extraValue.getKey(), extraValue.getValue());
+    for (Map.Entry<String, String> extra : extraValues.entrySet()) {
+      node.put(extra.getKey(), extra.getValue());
     }
-
-    Element children = doc.createElement("children");
-    el.appendChild(children);
-
-    if (view instanceof ViewGroup) {
-      Point myTopLeft = new Point(rect.left, rect.top);
-      ViewGroup vg = (ViewGroup) view;
-      for (int i = 0; i < vg.getChildCount(); i++) {
-        Element child = deflateRelative(vg.getChildAt(i), myTopLeft, doc);
-        children.appendChild(child);
-      }
-    }
-    return el;
+    return node;
   }
 
-  private void addExtraValue(Element parent, String name, String value) {
-    Element elem = parent.getOwnerDocument().createElement("extra-value");
-    elem.setAttribute("key", name);
-    elem.setTextContent(value);
-    parent.appendChild(elem);
+  private static int getLeft(View view) {
+    return view.getLeft() + (int) view.getTranslationX();
   }
 
-  private void addTextNode(Element parent, String name, String value) {
-    Element elem = parent.getOwnerDocument().createElement(name);
-    elem.setTextContent(value);
-    parent.appendChild(elem);
+  private static int getTop(View view) {
+    return view.getTop() + (int) view.getTranslationY();
   }
 }
+
