@@ -9,16 +9,32 @@
 
 package com.facebook.testing.screenshot.plugin;
 
+import android.text.TextUtils;
 import android.view.View;
-
 import java.util.Map;
 
 /**
  * A plugin to get more metadata about a View.
  *
- * When screenshots are generated we use all registered plugins to
- * generate metadata for each of the views in the hierarchy.
+ * <p>When screenshots are generated we use all registered plugins to generate metadata for each of
+ * the views in the hierarchy.
  */
-public interface ViewDumpPlugin {
-  void dump(View view, Map<String, String> output);
+public abstract class ViewDumpPlugin {
+  public abstract void dump(View view, Map<String, String> output);
+
+  public String attributeNamespace() {
+    return "";
+  }
+
+  public String prefix(String name) {
+    String prefix = attributeNamespace();
+    if (TextUtils.isEmpty(prefix)) {
+      return name;
+    }
+    return prefix + ":" + name;
+  }
+
+  public void put(Map<String, String> output, String key, String value) {
+    output.put(prefix(key), value);
+  }
 }

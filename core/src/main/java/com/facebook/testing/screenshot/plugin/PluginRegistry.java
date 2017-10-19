@@ -18,7 +18,7 @@ public class PluginRegistry {
   private static ArrayList<ViewDumpPlugin> sPlugins = new ArrayList<>();
 
   static {
-    sPlugins.add(new TextViewDumper());
+    sPlugins.add(TextViewDumper.getInstance());
   }
 
   /**

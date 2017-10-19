@@ -25,6 +25,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import com.facebook.testing.screenshot.plugin.PluginRegistry;
+import com.facebook.testing.screenshot.plugin.TextViewDumper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -94,6 +96,7 @@ public class ScreenshotImplTest {
 
   @Test
   public void testRecordBuilderImplHasAHierarchyDumpFile() throws Throwable {
+    PluginRegistry.removePlugin(TextViewDumper.getInstance());
     RecordBuilderImpl rb = mScreenshot.snap(mTextView)
       .setName("blahblah");
     rb.record();
@@ -111,14 +114,14 @@ public class ScreenshotImplTest {
       builder.append(new String(buffer, 0, read));
     }
 
-    String expected = "{" +
-        "  \"class\": \"android.widget.TextView\"," +
-        "  \"x\": 0," +
-        "  \"y\": 0," +
-        "  \"width\": 200," +
-        "  \"height\": 100," +
-        "  \"text\": \"foobar\"" +
-        "}";
+    String expected =
+        "{"
+            + "  \"class\": \"android.widget.TextView\","
+            + "  \"x\": 0,"
+            + "  \"y\": 0,"
+            + "  \"width\": 200,"
+            + "  \"height\": 100"
+            + "}";
     assertEquals(expected, builder.toString().replace("\n", ""));
 
     File metadata = mAlbumImpl.getMetadataFile();

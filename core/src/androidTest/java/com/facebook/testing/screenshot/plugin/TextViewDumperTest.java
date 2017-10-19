@@ -9,58 +9,83 @@
 
 package com.facebook.testing.screenshot.plugin;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import android.graphics.Color;
+import android.os.Build;
 import android.support.test.InstrumentationRegistry;
 import android.widget.TextView;
-
-import org.junit.Before;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.Test;
-import static org.junit.Assert.*;
 
-/**
- * Dumps useful details from a TextView
- */
+/** Dumps useful details from a TextView */
 public class TextViewDumperTest {
-  TextViewDumper mTextViewDumper;
-  Map<String, String> mOutput = new HashMap<String, String>();
-  TextView tv;
-
-  @Before
-  public void before() throws Throwable {
-    mTextViewDumper = new TextViewDumper();
-    tv = new TextView(InstrumentationRegistry.getTargetContext());
-  }
-
   @Test
   public void testDumpsCorrectly() throws Throwable {
-    tv.setText("foobar");
+    TextView textView =
+        new TextView(InstrumentationRegistry.getTargetContext()) {
+          @Override
+          public CharSequence getText() {
+            return "foobar";
+          }
 
-    mTextViewDumper.dump(tv, mOutput);
-    assertEquals("foobar", mOutput.get("text"));
+          @Override
+          public float getTextSize() {
+            return 1337f;
+          }
+        };
+    textView.setTextColor(Color.BLACK);
+    Map<String, String> output = new HashMap<>();
+
+    TextViewDumper dumper = TextViewDumper.getInstance();
+    dumper.dump(textView, output);
+
+    ViewDumpAssertions.assertContainsPairs(
+        dumper,
+        output,
+        TextViewDumper.TEXT,
+        "foobar",
+        TextViewDumper.TEXT_SIZE,
+        "1337.0",
+        TextViewDumper.TEXT_COLOR,
+        "ff000000");
+
+    if (Build.VERSION.SDK_INT >= 17) {
+      ViewDumpAssertions.assertContainsPairs(
+          dumper, output, TextViewDumper.TEXT_ALIGNMENT, "TEXT_ALIGNMENT_GRAVITY");
+    }
   }
 
   @Test
   public void testNullDoesntKillUs() throws Throwable {
-    tv.setText(null);
-    mTextViewDumper.dump(tv, mOutput);
-    assertEquals("", mOutput.get("text"));
+    TextView textView =
+        new TextView(InstrumentationRegistry.getTargetContext()) {
+          @Override
+          public CharSequence getText() {
+            return null;
+          }
+        };
+    Map<String, String> output = new HashMap<>();
+
+    TextViewDumper dumper = TextViewDumper.getInstance();
+    dumper.dump(textView, output);
+
+    ViewDumpAssertions.assertContainsPairs(dumper, output, TextViewDumper.TEXT, "null");
   }
 
   @Test
   public void testABadTextViewDoesntKillUs() throws Throwable {
-    // Android engineers like to break the world
-    tv = new TextView(InstrumentationRegistry.getTargetContext()) {
-        @Override
-        public CharSequence getText() {
-          throw new RuntimeException("Foobar");
-        }
-      };
+    TextView textView =
+        new TextView(InstrumentationRegistry.getTargetContext()) {
+          @Override
+          public CharSequence getText() {
+            throw new RuntimeException("Foobar");
+          }
+        };
+    Map<String, String> output = new HashMap<>();
 
-    tv.setText("bleh");
-    mTextViewDumper.dump(tv, mOutput);
+    TextViewDumper dumper = TextViewDumper.getInstance();
+    dumper.dump(textView, output);
 
-    assertEquals("unsupported", mOutput.get("text"));
+    ViewDumpAssertions.assertContainsPairs(dumper, output, TextViewDumper.TEXT, "Foobar");
   }
 }
