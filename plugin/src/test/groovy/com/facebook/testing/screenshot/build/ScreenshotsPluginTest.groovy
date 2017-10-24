@@ -78,7 +78,7 @@ class ScreenshotsPluginTest {
     def found = false
     for (dep in depSet) {
       if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
-        found = true;
+        found = true
       }
     }
 
@@ -92,17 +92,6 @@ class ScreenshotsPluginTest {
     setupProject()
 
     project.evaluate()
-  }
-
-  @Test
-  public void testUsesTestApk() {
-    def plugin = new ScreenshotsPlugin()
-    project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-    setupProject()
-    project.evaluate()
-
-    assert plugin.getTestApkOutput(project).contains("androidTest")
   }
 
   @Test
@@ -126,7 +115,7 @@ class ScreenshotsPluginTest {
     def plugin = new ScreenshotsPlugin()
     plugin.addRuntimeDep(project)
 
-    hasRuntimeDep(project);
+    hasRuntimeDep(project)
   }
 
   @Test
