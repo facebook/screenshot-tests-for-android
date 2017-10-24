@@ -32,8 +32,8 @@ class ScreenshotsPlugin implements Plugin<Project> {
     def recordMode = false
     def verifyMode = false
 
-    def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource();
-    def jarFile = new File(codeSource.getLocation().toURI().getPath());
+    def codeSource = ScreenshotsPlugin.class.getProtectionDomain().getCodeSource()
+    def jarFile = new File(codeSource.getLocation().toURI().getPath())
 
     // We'll figure out the adb in afterEvaluate
     def adb = null
@@ -82,7 +82,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
 
           if (!referenceDir || !targetPackage) {
             printPullFromDirectoryUsage(getLogger(), referenceDir, targetPackage)
-            return;
+            return
           }
 
           logger.quiet(" >>> Using (${referenceDir}) for screenshot verification")
