@@ -14,11 +14,15 @@ ext {
 
   final supportLibraryVersion = '26.0.2'
   final dexmakerVersion = "1.4"
+  final lithoVersion = "0.7.0"
 
   deps = [
       supportAppCompat : "com.android.support:appcompat-v7:$supportLibraryVersion",
       supportDesign    : "com.android.support:design:$supportLibraryVersion",
       supportMultidex  : "com.android.support:multidex:1.0.1",
+
+      lithoCore        : "com.facebook.litho:litho-core:$lithoVersion",
+      lithoWidget      : "com.facebook.litho:litho-widget:$lithoVersion",
 
       "dexmaker"       : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
       "dexmakerDx"     : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
