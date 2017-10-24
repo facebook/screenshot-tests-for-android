@@ -14,24 +14,14 @@ android {
   defaultConfig {
     minSdkVersion versions.minSdk
     targetSdkVersion versions.targetSdk
-    testInstrumentationRunner "com.facebook.testing.screenshot.CustomScreenshotTestRunner"
-  }
-
-  lintOptions {
-    abortOnError false
-    disable 'InvalidPackage'
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
   }
 }
 
 dependencies {
-  compile deps.dexmaker
-  compile deps.dexmakerDx
-  compile deps.junit
+  compile project(':core')
 
   androidTestCompile deps.espresso
-  androidTestCompile deps.mockito
-  androidTestCompile deps.dexmakerMockito
-  androidTestCompile deps.hamcrest
 }
 
 uploadArchives {

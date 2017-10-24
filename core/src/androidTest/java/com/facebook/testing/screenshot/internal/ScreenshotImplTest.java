@@ -9,7 +9,10 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -25,15 +28,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.facebook.testing.screenshot.plugin.PluginRegistry;
-import com.facebook.testing.screenshot.plugin.TextViewDumper;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.IllegalArgumentException;
-import java.lang.StringBuilder;
 import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
@@ -96,7 +95,6 @@ public class ScreenshotImplTest {
 
   @Test
   public void testRecordBuilderImplHasAHierarchyDumpFile() throws Throwable {
-    PluginRegistry.removePlugin(TextViewDumper.getInstance());
     RecordBuilderImpl rb = mScreenshot.snap(mTextView)
       .setName("blahblah");
     rb.record();
@@ -117,8 +115,8 @@ public class ScreenshotImplTest {
     String expected =
         "{"
             + "  \"class\": \"android.widget.TextView\","
-            + "  \"x\": 0,"
-            + "  \"y\": 0,"
+            + "  \"left\": 0,"
+            + "  \"top\": 0,"
             + "  \"width\": 200,"
             + "  \"height\": 100"
             + "}";
