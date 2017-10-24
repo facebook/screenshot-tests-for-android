@@ -8,16 +8,12 @@
 include_defs("//SCREENSHOT_TESTS_DEFS")
 
 android_library(
-    name = "screenshot",
-    exported_deps = [
-        SCREENSHOT_TESTS_CORE_TARGET,
-        SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET,
-        SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET,
-    ],
+    name = "litho",
+    srcs = glob(["**/*.java"]),
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
         SCREENSHOT_TESTS_CORE_TARGET,
-        SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET,
-        SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET,
+        SCREENSHOT_TESTS_LITHO_CORE_TARGET,
+        SCREENSHOT_TESTS_LITHO_WIDGET_TARGET
     ],
 )
