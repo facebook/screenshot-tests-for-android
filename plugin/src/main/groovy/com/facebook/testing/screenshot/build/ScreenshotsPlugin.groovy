@@ -8,6 +8,7 @@ class ScreenshotsPluginExtension {
     def customTestRunner = false
     def recordDir = "screenshots"
     def addCompileDeps = true
+    def multipleDevices = false
 
     def pythonExecutable = "python"
 
@@ -64,6 +65,11 @@ class ScreenshotsPlugin implements Plugin<Project> {
           } else if (verifyMode) {
             args += ["--verify", project.screenshots.recordDir]
           }
+
+          if (project.screenshots.multipleDevices) {
+            args += ["--multiple-devices", project.screenshots.multipleDevices]
+          }
+
         }
       }
     }

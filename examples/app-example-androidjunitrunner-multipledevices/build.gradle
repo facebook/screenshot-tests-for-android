@@ -1,0 +1,27 @@
+buildscript {
+  apply from: rootProject.file('../../versions.gradle')
+
+  repositories {
+    mavenLocal()
+    jcenter()
+  }
+
+  dependencies {
+    classpath plugs.agp
+    classpath plugs.screenshot
+  }
+}
+
+allprojects {
+  repositories {
+    mavenLocal()
+    jcenter()
+    maven {
+      url "https://maven.google.com"
+    }
+  }
+}
+
+task clean(type: Delete) {
+  delete rootProject.buildDir
+}

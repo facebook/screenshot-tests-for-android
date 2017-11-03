@@ -1,0 +1,39 @@
+apply plugin: 'com.android.application'
+apply plugin: 'com.facebook.testing.screenshot'
+
+project.screenshots.customTestRunner = true
+
+android {
+  compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
+  defaultConfig {
+    multiDexEnabled true
+    applicationId "com.example.screenshots"
+    minSdkVersion 15
+    targetSdkVersion versions.targetSdk
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "com.example.screenshots.CustomTestRunner"
+  }
+  buildTypes {
+    release {
+      minifyEnabled false
+      proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    }
+  }
+}
+
+dependencies {
+  compile deps.supportAppCompat
+  compile deps.supportDesign
+  compile deps.supportMultidex
+
+  androidTestCompile deps.junit
+  androidTestCompile(deps.espresso) {
+    exclude group: 'com.android.support', module: 'support-annotations'
+  }
+}
+
+screenshots {
+  multipleDevices true
+}
