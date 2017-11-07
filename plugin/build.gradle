@@ -14,12 +14,12 @@ repositories {
 
 dependencies {
   compile gradleApi()
-  compile group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
+  implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
 
-  testCompile deps.junit
-  testCompile plugs.agp
-  testCompile deps.mockito
-  testCompile deps.hamcrest
+  testImplementation deps.junit
+  testImplementation plugs.agp
+  testImplementation deps.mockito
+  testImplementation deps.hamcrest
 }
 
 group = 'com.facebook.testing.screenshot'

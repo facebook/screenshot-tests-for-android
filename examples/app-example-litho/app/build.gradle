@@ -18,20 +18,20 @@ android {
 }
 
 dependencies {
-  compile deps.kotlinStdlib
+  implementation deps.kotlinStdlib
 
-  compile deps.supportAppCompat
-  compile deps.supportDesign
+  implementation deps.supportAppCompat
+  implementation deps.supportDesign
 
-  compile deps.lithoCore
-  compile deps.lithoWidget
-  compile deps.lithoAnnotations
+  implementation deps.lithoCore
+  implementation deps.lithoWidget
+  implementation deps.lithoAnnotations
   kapt deps.lithoProcessor
 
-  androidTestCompile deps.screenshotTestCommon
-  androidTestCompile deps.screenshotTestLitho
-  androidTestCompile deps.junit
-  androidTestCompile(deps.espresso) {
+  androidTestImplementation deps.screenshotTestCommon
+  androidTestImplementation deps.screenshotTestLitho
+  androidTestImplementation deps.junit
+  androidTestImplementation(deps.espresso) {
     exclude group: 'com.android.support', module: 'support-annotations'
     exclude group: 'com.google.code.findbugs', module: 'jsr305'
   }

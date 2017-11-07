@@ -19,9 +19,9 @@ android {
 }
 
 dependencies {
-  compile project(':core')
+  api project(':core')
 
-  androidTestCompile deps.espresso
+  androidTestApi deps.espresso
 }
 
 uploadArchives {

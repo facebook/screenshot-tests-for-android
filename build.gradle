@@ -2,9 +2,7 @@ buildscript {
   apply from: rootProject.file('versions.gradle')
   repositories {
     jcenter()
-    maven {
-      url "https://maven.google.com"
-    }
+    google()
   }
 
   dependencies {

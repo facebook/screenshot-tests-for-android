@@ -5,15 +5,15 @@ ext {
   final lithoVersion = "0.7.0"
 
   versions = [
-      kotlin    : '1.1.50',
+      kotlin    : '1.1.51',
       targetSdk : 26,
       compileSdk: 26,
       minSdk    : 9,
-      buildTools: '26.0.1',
+      buildTools: '26.0.2',
   ]
 
   plugs = [
-      "agp"        : "com.android.tools.build:gradle:2.3.3",
+      "agp"        : "com.android.tools.build:gradle:3.0.0",
       "mavenGradle": "com.github.dcendents:android-maven-gradle-plugin:1.5",
       "screenshot" : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
       "kotlin"     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
@@ -31,7 +31,7 @@ ext {
       lithoAnnotations    : "com.facebook.litho:litho-annotations:$lithoVersion",
       lithoProcessor      : "com.facebook.litho:litho-processor:$lithoVersion",
 
-      screenshotTestCommon: "com.facebook.testing.screenshot:layout-hierarchy-common:$screenshotTestVersion",
+      screenshotTestCommon: "com.facebook.testing.screenshot:layout-hierarchy-common:$screenshotTestVersion@aar",
       screenshotTestLitho : "com.facebook.testing.screenshot:layout-hierarchy-litho:$screenshotTestVersion@aar",
 
       "dexmaker"          : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",

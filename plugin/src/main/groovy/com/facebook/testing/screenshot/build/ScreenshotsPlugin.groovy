@@ -16,13 +16,6 @@ class ScreenshotsPluginExtension {
     def targetPackage = ""
 
     def GROUP = "Screenshot tests"
-
-    // Deprecated. We automatically detect adb now. Using this will
-    // throw an error.
-    @Deprecated
-    public void setAdb(String path) {
-      throw new IllegalArgumentException("Use of 'adb' is deprecated, we automatically detect it now")
-    }
 }
 
 class ScreenshotsPlugin implements Plugin<Project> {
@@ -148,14 +141,24 @@ class ScreenshotsPlugin implements Plugin<Project> {
     }
   }
 
-  String getTestApkOutput(Project project) {
-
-    return project.tasks.getByPath(project.screenshots.testApkTarget).getOutputs().getFiles().filter {
-      it.getAbsolutePath().endsWith ".apk"
-    }.getSingleFile().getAbsolutePath()
+  static String getTestApkOutput(Project project) {
+    def apkMatcher = { File f -> f.isFile() && f.name.endsWith(".apk") }
+    def outputFiles = project.tasks.getByPath(project.screenshots.testApkTarget).outputs.files
+    for (File file in outputFiles) {
+      if (file.isDirectory()) {
+        for (File child in file.listFiles()) {
+          if (apkMatcher(child)) {
+            return child.absolutePath
+          }
+        }
+      } else if (apkMatcher(file)) {
+        return file.absolutePath
+      }
+    }
+    throw new IllegalStateException("Couldn't determine APK location!")
   }
 
-  void printPullFromDirectoryUsage(def logger, def referenceDir, def targetPackage) {
+  static void printPullFromDirectoryUsage(def logger, def referenceDir, def targetPackage) {
     logger.error(" >>> You must specify referenceDir=[$referenceDir] and targetPackage=[$targetPackage]")
     logger.error("""
       EXAMPLE screenshot config
@@ -167,7 +170,7 @@ class ScreenshotsPlugin implements Plugin<Project> {
         // Your app's application id
         targetPackage = "your.application.package"
       }
-""")
+    """)
   }
 
   void addRuntimeDep(Project project) {
@@ -178,6 +181,6 @@ class ScreenshotsPlugin implements Plugin<Project> {
       implementationVersion = '0.4.4'
     }
 
-    project.dependencies.androidTestCompile('com.facebook.testing.screenshot:core:' + implementationVersion)
+    project.dependencies.androidTestApi('com.facebook.testing.screenshot:core:' + implementationVersion)
   }
 }

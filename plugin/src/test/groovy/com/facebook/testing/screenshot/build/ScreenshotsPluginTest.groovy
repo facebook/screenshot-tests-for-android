@@ -16,15 +16,15 @@ class ScreenshotsPluginForTest extends ScreenshotsPlugin {
 }
 
 class ScreenshotsPluginTest {
-  def project;
+  Project project
 
   @Before
-  public void setup() {
+  void setup() {
     project = ProjectBuilder.builder().build()
   }
 
   @After
-  public void tearDown() {
+  void tearDown() {
     ScreenshotsPluginForTest.runtimeDepAdded = false
   }
 
@@ -63,7 +63,7 @@ class ScreenshotsPluginTest {
   }
 
   @Test
-  public void testHasTestDep() {
+  void testHasTestDep() {
     project.getPluginManager().apply 'com.android.library'
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
@@ -72,13 +72,13 @@ class ScreenshotsPluginTest {
     project.evaluate()
   }
 
-  public void hasRuntimeDep(Project project) {
-    def depSet = project.getConfigurations().getByName('androidTestCompile').getAllDependencies()
+  static void hasRuntimeDep(Project project) {
+    def depSet = project.getConfigurations().getByName('androidTestApi').getAllDependencies()
 
     def found = false
     for (dep in depSet) {
       if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
-        found = true;
+        found = true
       }
     }
 
@@ -86,7 +86,7 @@ class ScreenshotsPluginTest {
   }
 
   @Test
-  public void testApplicationHappyPath() {
+  void testApplicationHappyPath() {
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
@@ -95,19 +95,29 @@ class ScreenshotsPluginTest {
   }
 
   @Test
-  public void testUsesTestApk() {
+  void testUsesTestApk() {
     def plugin = new ScreenshotsPlugin()
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
     project.evaluate()
+
+    // Create dummy APK file to find
+    Task task = project.tasks.getByPath(project.screenshots.testApkTarget)
+    for (File dir in task.outputs.files) {
+      if (dir.absolutePath.contains("outputs/apk/androidTest")) {
+        assertTrue(dir.mkdirs())
+        File dummyAPK = new File(dir, "test.apk")
+        assertTrue(dummyAPK.createNewFile())
+        break
+      }
+    }
 
     assert plugin.getTestApkOutput(project).contains("androidTest")
   }
 
   @Test
-  public void testCanSetApkTarget() {
-    def plugin = new ScreenshotsPlugin()
+  void testCanSetApkTarget() {
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()
@@ -120,30 +130,17 @@ class ScreenshotsPluginTest {
   }
 
   @Test
-  public void testAddRuntimeDep() {
+  void testAddRuntimeDep() {
     project.getPluginManager().apply 'com.android.application'
 
     def plugin = new ScreenshotsPlugin()
     plugin.addRuntimeDep(project)
 
-    hasRuntimeDep(project);
+    hasRuntimeDep(project)
   }
 
   @Test
-  public void testUsingAdbConfigurationThrowsError() {
-    project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-
-    try {
-      project.screenshots.adb = "foobar"
-      fail("Expected exception")
-    } catch (IllegalArgumentException cause) {
-      assertThat(cause.getMessage(), containsString("deprecated"));
-    }
-  }
-
-  @Test
-  public void addsLocalScreenshotsTask() {
+  void addsLocalScreenshotsTask() {
     project.getPluginManager().apply 'com.android.application'
     project.getPluginManager().apply ScreenshotsPluginForTest
     setupProject()

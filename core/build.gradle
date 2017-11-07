@@ -24,14 +24,14 @@ android {
 }
 
 dependencies {
-  compile deps.dexmaker
-  compile deps.dexmakerDx
+  api deps.dexmaker
+  api deps.dexmakerDx
   compile deps.junit
 
-  androidTestCompile deps.espresso
-  androidTestCompile deps.mockito
-  androidTestCompile deps.dexmakerMockito
-  androidTestCompile deps.hamcrest
+  androidTestApi deps.espresso
+  androidTestApi deps.mockito
+  androidTestApi deps.dexmakerMockito
+  androidTestApi deps.hamcrest
 }
 
 uploadArchives {

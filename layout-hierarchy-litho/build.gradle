@@ -15,16 +15,15 @@ android {
     minSdkVersion 15
     targetSdkVersion versions.targetSdk
     testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
   }
 }
 
 dependencies {
-  compile project(':core')
-  compile deps.lithoCore
-  compile deps.lithoWidget
+  api project(':core')
+  api deps.lithoCore
+  api deps.lithoWidget
 
-  androidTestCompile deps.espresso
+  androidTestApi deps.espresso
 }
 
 uploadArchives {
