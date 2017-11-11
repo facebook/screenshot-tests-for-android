@@ -8,6 +8,10 @@ def dep(target):
   return SCREENSHOT_TESTS_ROOT + target
 
 SCREENSHOT_TESTS_CORE_TARGET = dep('core/src/main/java/com/facebook/testing/screenshot:screenshot')
+SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET = dep('layout-hierarchy-common/src/main/java/com/facebook/testing/screenshot/layouthierarchy/common:common')
+SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET = dep('layout-hierarchy-litho/src/main/java/com/facebook/testing/screenshot/layouthierarchy/litho:litho')
+SCREENSHOT_TESTS_LITHO_CORE_TARGET = dep('lib/litho:litho-core')
+SCREENSHOT_TESTS_LITHO_WIDGET_TARGET = dep('lib/litho:litho-widget')
 SCREENSHOT_TESTS_JUNIT_TARGET = dep('lib/junit:junit')
 SCREENSHOT_TESTS_DEXMAKER_TARGET = dep('lib/dexmaker:dexmaker')
 SCREENSHOT_TESTS_DEXMAKER_DX_TARGET = dep('lib/dexmaker:dexmaker-dx')

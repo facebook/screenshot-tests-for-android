@@ -1,0 +1,46 @@
+# Copyright (c) 2014-present, Facebook, Inc.
+# All rights reserved.
+#
+# This source code is licensed under the BSD-style license found in the
+# LICENSE file in the root directory of this source tree. An additional grant
+# of patent rights can be found in the PATENTS file in the same directory.
+
+android_library(
+    name = "litho-core",
+    exported_deps = [
+        ":litho-core-prebuilt",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+android_prebuilt_aar(
+    name = "litho-core-prebuilt",
+    aar = ":litho-core.aar",
+    visibility = ["PUBLIC"],
+)
+
+remote_file(
+    name = "litho-core.aar",
+    sha1 = "76ec5c2f13063cc2698b7c1c430b91af8f59fab4",
+    url = "mvn:com.facebook.litho:litho-core:aar:0.7.0",
+)
+
+android_library(
+    name = "litho-widget",
+    exported_deps = [
+        ":litho-widget-prebuilt",
+    ],
+    visibility = ["PUBLIC"],
+)
+
+android_prebuilt_aar(
+    name = "litho-widget-prebuilt",
+    aar = ":litho-widget.aar",
+    visibility = ["PUBLIC"],
+)
+
+remote_file(
+    name = "litho-widget.aar",
+    sha1 = "2b16fcb64582263fa7cb1803ffd6ced74ba7422a",
+    url = "mvn:com.facebook.litho:litho-widget:aar:0.7.0",
+)

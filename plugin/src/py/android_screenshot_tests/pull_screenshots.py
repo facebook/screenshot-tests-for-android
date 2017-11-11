@@ -35,10 +35,15 @@ from .no_op_device_name_calculator import NoOpDeviceNameCalculator
 from .simple_puller import SimplePuller
 
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
+KEY_CLASS = 'class'
+KEY_LEFT = 'left'
+KEY_TOP = 'top'
+KEY_WIDTH = 'width'
+KEY_HEIGHT = 'height'
 
 
 def usage():
-    print >> sys.stderr, "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]"
+    print ( "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]", file=sys.stderr)
     return
 
 
@@ -168,10 +173,10 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
     to_output.put(hierarchy)
     while not to_output.empty():
         node = to_output.get()
-        x = node['x']
-        y = node['y']
-        width = node['width'] - 4
-        height = node['height'] - 4
+        left = node[KEY_LEFT]
+        top  = node[KEY_TOP]
+        width = node[KEY_WIDTH] - 4
+        height = node[KEY_HEIGHT] - 4
         id = get_view_hierarchy_overlay_node_id(node)
         node_html = """
         <div 
@@ -179,7 +184,7 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
           style="left:%dpx;top:%dpx;width:%dpx;height:%dpx;"
           id="%s-%s"></div>
         """
-        html.write(node_html % (x, y, width, height, parent_id, id))
+        html.write(node_html % (left, top, width, height, parent_id, id))
 
         if 'children' in node:
             for child in node['children']:
@@ -187,11 +192,11 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
 
 
 def get_view_hierarchy_overlay_node_id(node):
-    cls = node['class']
-    x = node['x']
-    y = node['y']
-    width = node['width']
-    height = node['height']
+    cls = node[KEY_CLASS]
+    x = node[KEY_LEFT]
+    y = node[KEY_TOP]
+    width = node[KEY_WIDTH]
+    height = node[KEY_HEIGHT]
     return "node-%s-%d-%d-%d-%d" % (cls.replace(".", "-"), x, y, width, height)
 
 

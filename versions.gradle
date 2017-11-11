@@ -1,32 +1,46 @@
 ext {
+  final screenshotTestVersion = '0.4.4'
+  final supportLibraryVersion = '26.0.2'
+  final dexmakerVersion = "1.4"
+  final lithoVersion = "0.7.0"
+
   versions = [
+      kotlin    : '1.1.51',
       targetSdk : 26,
       compileSdk: 26,
       minSdk    : 9,
-      buildTools: '26.0.1',
+      buildTools: '26.0.2',
   ]
 
   plugs = [
-      "agp"        : "com.android.tools.build:gradle:2.3.3",
+      "agp"        : "com.android.tools.build:gradle:3.0.0",
       "mavenGradle": "com.github.dcendents:android-maven-gradle-plugin:1.5",
-      "screenshot" : "com.facebook.testing.screenshot:plugin:0.4.4",
+      "screenshot" : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
+      "kotlin"     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
   ]
 
-  final supportLibraryVersion = '26.0.2'
-  final dexmakerVersion = "1.4"
-
   deps = [
-      supportAppCompat : "com.android.support:appcompat-v7:$supportLibraryVersion",
-      supportDesign    : "com.android.support:design:$supportLibraryVersion",
-      supportMultidex  : "com.android.support:multidex:1.0.1",
+      supportAppCompat    : "com.android.support:appcompat-v7:$supportLibraryVersion",
+      supportDesign       : "com.android.support:design:$supportLibraryVersion",
+      supportMultidex     : "com.android.support:multidex:1.0.1",
 
-      "dexmaker"       : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
-      "dexmakerDx"     : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
-      "dexmakerMockito": "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion",
+      kotlinStdlib        : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}",
 
-      "espresso"       : "com.android.support.test.espresso:espresso-core:3.0.1",
-      "junit"          : "junit:junit:4.12",
-      "mockito"        : "org.mockito:mockito-core:1.10.19",
-      "hamcrest"       : "org.hamcrest:hamcrest-core:1.3",
+      lithoCore           : "com.facebook.litho:litho-core:$lithoVersion",
+      lithoWidget         : "com.facebook.litho:litho-widget:$lithoVersion",
+      lithoAnnotations    : "com.facebook.litho:litho-annotations:$lithoVersion",
+      lithoProcessor      : "com.facebook.litho:litho-processor:$lithoVersion",
+
+      screenshotTestCommon: "com.facebook.testing.screenshot:layout-hierarchy-common:$screenshotTestVersion@aar",
+      screenshotTestLitho : "com.facebook.testing.screenshot:layout-hierarchy-litho:$screenshotTestVersion@aar",
+
+      "dexmaker"          : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
+      "dexmakerDx"        : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
+      "dexmakerMockito"   : "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion",
+
+      "espresso"          : "com.android.support.test.espresso:espresso-core:3.0.1",
+      "junit"             : "junit:junit:4.12",
+      "mockito"           : "org.mockito:mockito-core:1.10.19",
+      "hamcrest"          : "org.hamcrest:hamcrest-core:1.3",
   ]
 }
