@@ -1,34 +1,7 @@
-buildscript {
-  repositories {
-    jcenter()
-    mavenCentral()
-  }
-
-  dependencies {
-    classpath plugs.agp
-    classpath plugs.mavenGradle
-  }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.facebook.testing.screenshot'
-
-repositories {
-  mavenCentral()
-}
-
-dependencies {
-  compile deps.dexmaker
-  compile deps.dexmakerDx
-  compile deps.junit
-
-  androidTestCompile deps.espresso
-  androidTestCompile deps.mockito
-  androidTestCompile deps.dexmakerMockito
-  androidTestCompile deps.hamcrest
-}
 
 android {
   compileSdkVersion versions.compileSdk
@@ -48,6 +21,17 @@ android {
     abortOnError false
     disable 'InvalidPackage'
   }
+}
+
+dependencies {
+  api deps.dexmaker
+  api deps.dexmakerDx
+  compile deps.junit
+
+  androidTestApi deps.espresso
+  androidTestApi deps.mockito
+  androidTestApi deps.dexmakerMockito
+  androidTestApi deps.hamcrest
 }
 
 uploadArchives {

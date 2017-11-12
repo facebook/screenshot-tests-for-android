@@ -12,31 +12,40 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
+
+import codecs
+import getopt
+import json
 import os
+import shutil
+import subprocess
 import sys
 import tempfile
-import subprocess
 import xml.etree.ElementTree as ET
-import getopt
-import shutil
-import codecs
-import json
-from . import metadata
-from .simple_puller import SimplePuller
 import zipfile
+from Queue import Queue
+from os.path import abspath
+from os.path import join
+
 from . import aapt
 from . import common
+from . import metadata
 from .device_name_calculator import DeviceNameCalculator
-
-from os.path import join
-from os.path import abspath
-from Queue import Queue
+from .no_op_device_name_calculator import NoOpDeviceNameCalculator
+from .simple_puller import SimplePuller
 
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
+KEY_CLASS = 'class'
+KEY_LEFT = 'left'
+KEY_TOP = 'top'
+KEY_WIDTH = 'width'
+KEY_HEIGHT = 'height'
+
 
 def usage():
-    print >>sys.stderr, "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]"
+    print ( "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]", file=sys.stderr)
     return
+
 
 def sort_screenshots(screenshots):
     def sort_key(screenshot):
@@ -58,10 +67,13 @@ def generate_html(dir):
         html.write('<html>')
         html.write('<head>')
         html.write('<title>Screenshot Test Results</title>')
-        html.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>')
-        html.write('<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>')
+        html.write(
+            '<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>')
+        html.write(
+            '<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>')
         html.write('<script src="default.js"></script>')
-        html.write('<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />')
+        html.write(
+            '<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />')
         html.write('<link rel="stylesheet" href="default.css"></head>')
         html.write('<body>')
 
@@ -161,10 +173,10 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
     to_output.put(hierarchy)
     while not to_output.empty():
         node = to_output.get()
-        x = node['x']
-        y  = node['y']
-        width = node['width'] - 4
-        height = node['height'] - 4
+        left = node[KEY_LEFT]
+        top  = node[KEY_TOP]
+        width = node[KEY_WIDTH] - 4
+        height = node[KEY_HEIGHT] - 4
         id = get_view_hierarchy_overlay_node_id(node)
         node_html = """
         <div 
@@ -172,7 +184,7 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
           style="left:%dpx;top:%dpx;width:%dpx;height:%dpx;"
           id="%s-%s"></div>
         """
-        html.write(node_html % (x, y, width, height, parent_id, id))
+        html.write(node_html % (left, top, width, height, parent_id, id))
 
         if 'children' in node:
             for child in node['children']:
@@ -180,11 +192,11 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
 
 
 def get_view_hierarchy_overlay_node_id(node):
-    cls = node['class']
-    x = node['x']
-    y = node['y']
-    width = node['width']
-    height = node['height']
+    cls = node[KEY_CLASS]
+    x = node[KEY_LEFT]
+    y = node[KEY_TOP]
+    width = node[KEY_WIDTH]
+    height = node[KEY_HEIGHT]
     return "node-%s-%d-%d-%d-%d" % (cls.replace(".", "-"), x, y, width, height)
 
 
@@ -310,9 +322,9 @@ def create_empty_metadata_file(dir):
     with open(join(dir, 'metadata.xml'), 'w') as out:
         out.write(
 
-    """<?xml version="1.0" encoding="UTF-8"?>
-<screenshots>
-</screenshots>""")
+            """<?xml version="1.0" encoding="UTF-8"?>
+        <screenshots>
+        </screenshots>""")
 
 
 def pull_images(dir, device_dir, adb_puller):
@@ -325,7 +337,8 @@ def pull_images(dir, device_dir, adb_puller):
                 join(dir, os.path.basename(filename_node.text)))
         dump_node = s.find('view_hierarchy')
         if dump_node is not None:
-            adb_puller.pull(android_path_join(device_dir, dump_node.text), join(dir, os.path.basename(dump_node.text)))
+            adb_puller.pull(android_path_join(device_dir, dump_node.text),
+                            join(dir, os.path.basename(dump_node.text)))
 
 
 def pull_all(package, dir, adb_puller):
@@ -350,7 +363,8 @@ def _validate_metadata(dir):
     try:
         ET.parse(join(dir, 'metadata.xml'))
     except ET.ParseError:
-        raise RuntimeError("Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation")
+        raise RuntimeError(
+            "Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation")
 
 
 def pull_screenshots(process,
@@ -362,7 +376,6 @@ def pull_screenshots(process,
                      record=None,
                      verify=None,
                      opt_generate_png=None):
-
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
 
@@ -374,7 +387,8 @@ def pull_screenshots(process,
     copy_assets(temp_dir)
 
     if perform_pull is True:
-        pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, filter_name_regex=filter_name_regex)
+        pull_filtered(process, adb_puller=adb_puller, dir=temp_dir,
+                      filter_name_regex=filter_name_regex)
 
     _validate_metadata(temp_dir)
 
@@ -414,7 +428,8 @@ def main(argv):
         opt_list, rest_args = getopt.gnu_getopt(
             argv[1:],
             "eds:",
-            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=", "no-pull"])
+            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=",
+             "no-pull", "multiple-devices="])
     except getopt.GetoptError:
         usage()
         return 2
@@ -443,6 +458,9 @@ def main(argv):
     if "-s" in opts:
         puller_args += ["-s", opts["-s"]]
 
+    multiple_devices = opts.get('--multiple-devices')
+    device_calculator = DeviceNameCalculator() if multiple_devices else NoOpDeviceNameCalculator()
+
     return pull_screenshots(process,
                             perform_pull=should_perform_pull,
                             temp_dir=opts.get('--temp-dir'),
@@ -451,7 +469,7 @@ def main(argv):
                             record=opts.get('--record'),
                             verify=opts.get('--verify'),
                             adb_puller=SimplePuller(puller_args),
-                            device_name_calculator=DeviceNameCalculator())
+                            device_name_calculator=device_calculator)
 
 
 if __name__ == '__main__':

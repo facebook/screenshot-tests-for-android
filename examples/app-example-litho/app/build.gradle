@@ -1,0 +1,38 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.facebook.testing.screenshot'
+
+android {
+  compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
+  defaultConfig {
+    applicationId "com.facebook.testing.screenshot.example.litho"
+    minSdkVersion 15
+    targetSdkVersion versions.targetSdk
+    versionCode 1
+    versionName "1.0"
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+}
+
+dependencies {
+  implementation deps.kotlinStdlib
+
+  implementation deps.supportAppCompat
+  implementation deps.supportDesign
+
+  implementation deps.lithoCore
+  implementation deps.lithoWidget
+  implementation deps.lithoAnnotations
+  kapt deps.lithoProcessor
+
+  androidTestImplementation deps.screenshotTestCommon
+  androidTestImplementation deps.screenshotTestLitho
+  androidTestImplementation deps.junit
+  androidTestImplementation(deps.espresso) {
+    exclude group: 'com.android.support', module: 'support-annotations'
+    exclude group: 'com.google.code.findbugs', module: 'jsr305'
+  }
+}

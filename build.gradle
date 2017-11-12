@@ -1,7 +1,13 @@
 buildscript {
   apply from: rootProject.file('versions.gradle')
   repositories {
-    mavenCentral()
+    jcenter()
+    google()
+  }
+
+  dependencies {
+    classpath plugs.agp
+    classpath plugs.mavenGradle
   }
 }
 
@@ -9,9 +15,7 @@ allprojects {
   version = property('VERSION_NAME')
   repositories {
     jcenter()
-    maven {
-      url "https://maven.google.com"
-    }
+    google()
   }
 }
 

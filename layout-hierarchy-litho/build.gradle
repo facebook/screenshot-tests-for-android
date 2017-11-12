@@ -1,0 +1,36 @@
+apply plugin: 'com.android.library'
+apply plugin: 'com.github.dcendents.android-maven'
+
+group = 'com.facebook.testing.screenshot'
+
+android {
+  compileSdkVersion versions.compileSdk
+  buildToolsVersion versions.buildTools
+
+  packagingOptions {
+    exclude 'LICENSE.txt'
+  }
+
+  defaultConfig {
+    minSdkVersion 15
+    targetSdkVersion versions.targetSdk
+    testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+  }
+}
+
+dependencies {
+  api project(':core')
+  api deps.lithoCore
+  api deps.lithoWidget
+
+  androidTestApi deps.espresso
+}
+
+uploadArchives {
+  repositories {
+    mavenInstaller {
+    }
+  }
+}
+
+apply from: rootProject.file("release.gradle")

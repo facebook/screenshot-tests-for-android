@@ -9,7 +9,10 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -30,8 +33,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.lang.IllegalArgumentException;
-import java.lang.StringBuilder;
 import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
@@ -111,14 +112,14 @@ public class ScreenshotImplTest {
       builder.append(new String(buffer, 0, read));
     }
 
-    String expected = "{" +
-        "  \"class\": \"android.widget.TextView\"," +
-        "  \"x\": 0," +
-        "  \"y\": 0," +
-        "  \"width\": 200," +
-        "  \"height\": 100," +
-        "  \"text\": \"foobar\"" +
-        "}";
+    String expected =
+        "{"
+            + "  \"class\": \"android.widget.TextView\","
+            + "  \"left\": 0,"
+            + "  \"top\": 0,"
+            + "  \"width\": 200,"
+            + "  \"height\": 100"
+            + "}";
     assertEquals(expected, builder.toString().replace("\n", ""));
 
     File metadata = mAlbumImpl.getMetadataFile();

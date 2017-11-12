@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Copyright (c) 2014-present, Facebook, Inc.
+ All rights reserved.
+
+ This source code is licensed under the license found in the
+ LICENSE-examples file in the root directory of this source tree.
+-->
+<com.facebook.litho.LithoView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/litho_view"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"/>

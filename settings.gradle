@@ -1,1 +1,1 @@
-include 'core', 'plugin'
+include 'core', 'plugin', 'layout-hierarchy-common', 'layout-hierarchy-litho'
