@@ -9,7 +9,7 @@ ghrepo: "facebook/screenshot-tests-for-android"
 
 # Build settings
 markdown: redcarpet
-highlighter: pygments
+highlighter: rouge
 lsi: false
 
 exclude: [README.md, Gemfile, scripts, vendor]
