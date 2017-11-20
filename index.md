@@ -48,7 +48,7 @@ Gradle plugin. All you need to do is apply the
     // ...
     dependencies {
       // ...
-      classpath 'com.facebook.testing.screenshot:plugin:0.4.3'
+      classpath 'com.facebook.testing.screenshot:plugin:0.5.0'
     }
   }
 
@@ -67,6 +67,31 @@ Take a look at our [example build.gradle](https://github.com/facebook/screenshot
 
 NOTE: By default this overrides your instrumentation test runner, and depending on your set up this can cause problems. See [Custom InstrumentationTestRunners](#custom-instrumentation-test-runners) for how to avoid this.
 
+**Layout Hierarchy Plugins**
+
+We provide extra plugins for the layout hierarchy viewer included in screenshot test reports to add specific information for custom view types and objects.
+
+Simply include the dependencies:
+```groovy
+  // Standard Android View Plugins (TextView, etc)
+  compile 'com.facebook.testing.screenshot:layout-hierarchy-common:0.5.0'
+
+  // Litho Component Plugins
+  compile 'com.facebook.testing.screenshot:layout-hierarchy-litho:0.5.0'
+```
+
+And then use the plugins relevant to your test in your test class:
+```java
+  // Common Plugins
+  LayoutHierarchyDumper.addGlobalAttributePlugin(TextViewAttributePlugin.getInstance());
+
+  // Litho plugins
+  ComponentsConfiguration.isDebugModeEnabled = true
+  LayoutHierarchyDumper.addGlobalHierarchyPlugin(LithoHierarchyPlugin.getInstance())
+  LayoutHierarchyDumper.addGlobalAttributePlugin(LithoAttributePlugin.getInstance())
+```
+
+You may also create your own plugins by implementing either the `AttributePlugin` or `HierarchyPlugin` interface.
 
 **AndroidManifest permissions**
 
