@@ -1,5 +1,5 @@
 ext {
-  final screenshotTestVersion = '0.4.4'
+  final screenshotTestVersion = '0.5.0'
   final supportLibraryVersion = '26.0.2'
   final dexmakerVersion = "1.4"
   final lithoVersion = "0.7.0"

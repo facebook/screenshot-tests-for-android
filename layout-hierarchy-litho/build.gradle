@@ -19,9 +19,9 @@ android {
 }
 
 dependencies {
-  api project(':core')
-  api deps.lithoCore
-  api deps.lithoWidget
+  implementation project(':core')
+  implementation deps.lithoCore
+  implementation deps.lithoWidget
 
   androidTestApi deps.espresso
 }

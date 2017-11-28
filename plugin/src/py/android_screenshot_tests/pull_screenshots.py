@@ -23,9 +23,6 @@ import sys
 import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
-from Queue import Queue
-from os.path import abspath
-from os.path import join
 
 from . import aapt
 from . import common
@@ -33,6 +30,15 @@ from . import metadata
 from .device_name_calculator import DeviceNameCalculator
 from .no_op_device_name_calculator import NoOpDeviceNameCalculator
 from .simple_puller import SimplePuller
+
+from os.path import join
+from os.path import abspath
+
+try:
+    from Queue import Queue
+except ImportError:
+    from queue import Queue
+
 
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
 KEY_CLASS = 'class'
@@ -179,8 +185,8 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
         height = node[KEY_HEIGHT] - 4
         id = get_view_hierarchy_overlay_node_id(node)
         node_html = """
-        <div 
-          class="hierarchy-node" 
+        <div
+          class="hierarchy-node"
           style="left:%dpx;top:%dpx;width:%dpx;height:%dpx;"
           id="%s-%s"></div>
         """
