@@ -49,7 +49,7 @@ KEY_HEIGHT = 'height'
 
 
 def usage():
-    print ( "usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]", file=sys.stderr)
+    print("usage: ./scripts/screenshot_tests/pull_screenshots com.facebook.apk.name.tests [--generate-png]", file=sys.stderr)
     return
 
 
@@ -180,7 +180,7 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
     while not to_output.empty():
         node = to_output.get()
         left = node[KEY_LEFT]
-        top  = node[KEY_TOP]
+        top = node[KEY_TOP]
         width = node[KEY_WIDTH] - 4
         height = node[KEY_HEIGHT] - 4
         id = get_view_hierarchy_overlay_node_id(node)

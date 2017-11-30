@@ -16,23 +16,23 @@ class IntentWithParametersTest {
 
     @Test
     fun warningTextColorShown() {
-        val activity = rule.launchActivity(intent(MessageType.Warning()))
+        val activity = rule.launchActivity(intent(MessageType.WARNING))
         Screenshot.snapActivity(activity).record()
     }
 
     @Test
     fun successTextColorShown() {
-        val activity = rule.launchActivity(intent(MessageType.Success()))
+        val activity = rule.launchActivity(intent(MessageType.SUCCESS))
         Screenshot.snapActivity(activity).record()
     }
 
     @Test
     fun errorTextColorShown() {
-        val activity = rule.launchActivity(intent(MessageType.Error()))
+        val activity = rule.launchActivity(intent(MessageType.ERROR))
         Screenshot.snapActivity(activity).record()
     }
 
-    private fun intent(messageType: MessageType) = Intent().apply {
+    private fun intent(messageType: Int) = Intent().apply {
         putExtra(MESSAGE_TYPE_KEY, messageType)
     }
 }

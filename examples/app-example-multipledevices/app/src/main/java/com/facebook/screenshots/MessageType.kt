@@ -2,8 +2,11 @@ package com.facebook.screenshots
 
 import java.io.Serializable
 
-sealed class MessageType : Serializable {
-    class Warning : MessageType()
-    class Error : MessageType()
-    class Success : MessageType()
+class MessageType {
+
+    companion object {
+        val WARNING : Int = 0
+        val ERROR : Int = 1
+        val SUCCESS : Int = 2
+    }
 }

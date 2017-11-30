@@ -21,11 +21,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         intent?.let {
-            val messageType = it.getSerializableExtra(MESSAGE_TYPE_KEY) as MessageType?
+            val messageType = it.getIntExtra(MESSAGE_TYPE_KEY, 0)
             when (messageType) {
-                is MessageType.Warning -> default_text.setTextColor(ContextCompat.getColor(this, R.color.warning))
-                is MessageType.Error -> default_text.setTextColor(ContextCompat.getColor(this, R.color.error))
-                is MessageType.Success -> default_text.setTextColor(ContextCompat.getColor(this, R.color.ok))
+                MessageType.WARNING -> default_text.setTextColor(ContextCompat.getColor(this, R.color.warning))
+                MessageType.ERROR -> default_text.setTextColor(ContextCompat.getColor(this, R.color.error))
+                MessageType.SUCCESS -> default_text.setTextColor(ContextCompat.getColor(this, R.color.ok))
             }
         }
 
