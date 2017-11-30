@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">app-example-multipledevices</string>
+    <string name="action_settings">Settings</string>
+    <string name="hi_text">Hello screenshot testers</string>
+</resources>
