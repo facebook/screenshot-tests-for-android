@@ -44,7 +44,7 @@ public class LithoAttributePlugin extends AbstractAttributePlugin {
     if (obj instanceof LithoView) {
       ((LithoView) obj).rebind();
       debugComponent = DebugComponent.getRootInstance((LithoView) obj);
-      if (debugComponent == null || !debugComponent.isValidInstance()) {
+      if (debugComponent == null) {
         return;
       }
     } else {
