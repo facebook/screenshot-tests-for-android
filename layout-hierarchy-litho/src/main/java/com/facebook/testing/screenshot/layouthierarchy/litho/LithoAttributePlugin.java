@@ -9,11 +9,9 @@ package com.facebook.testing.screenshot.layouthierarchy.litho;
 
 import android.graphics.Point;
 import android.graphics.Rect;
-
 import com.facebook.litho.DebugComponent;
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.layouthierarchy.AbstractAttributePlugin;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -55,7 +53,7 @@ public class LithoAttributePlugin extends AbstractAttributePlugin {
       Rect bounds = debugComponent.getBoundsInLithoView();
       putRequired(
           node,
-          debugComponent.getName(),
+          debugComponent.getComponent().getClass().getName(),
           offset.x + bounds.left,
           offset.y + bounds.top,
           bounds.width(),
