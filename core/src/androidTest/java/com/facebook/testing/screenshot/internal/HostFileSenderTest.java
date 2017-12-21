@@ -1,36 +1,31 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
  */
-
 package com.facebook.testing.screenshot.internal;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
+import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
 
 import android.app.Instrumentation;
 import android.os.Bundle;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.junit.runner.RunWith;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
 
-/**
- * Tests {@link HostFileSender}
- */
+/** Tests {@link HostFileSender} */
 @RunWith(AndroidJUnit4.class)
 public class HostFileSenderTest {
   Instrumentation mInstrumentation;
@@ -40,8 +35,7 @@ public class HostFileSenderTest {
   private boolean mDeleted = false;
   private boolean mFinished = false;
 
-  @Rule
-  public TemporaryFolder mFolder = new TemporaryFolder();
+  @Rule public TemporaryFolder mFolder = new TemporaryFolder();
 
   @Before
   public void before() throws Exception {
@@ -49,12 +43,13 @@ public class HostFileSenderTest {
     arguments.putString("HostFileSender_supported", "true");
     arguments.putString("keep_files", "true");
 
-    mInstrumentation = new Instrumentation() {
-        @Override
-        public void sendStatus(int code, Bundle status) {
-          mStatus.add(status);
-        }
-      };
+    mInstrumentation =
+        new Instrumentation() {
+          @Override
+          public void sendStatus(int code, Bundle status) {
+            mStatus.add(status);
+          }
+        };
     mHostFileSender = new HostFileSender(mInstrumentation, arguments);
   }
 
@@ -75,8 +70,7 @@ public class HostFileSenderTest {
   }
 
   @Test
-  public void testCreation() throws Throwable {
-  }
+  public void testCreation() throws Throwable {}
 
   @Test
   public void testSendFileSendsStatus() throws Throwable {
@@ -118,26 +112,26 @@ public class HostFileSenderTest {
     }
 
     // The next one should block until we delete a file
-    Thread thread = new Thread() {
-        @Override
-        public void run() {
-          try {
-            Thread.sleep(100);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
+    Thread thread =
+        new Thread() {
+          @Override
+          public void run() {
+            try {
+              Thread.sleep(100);
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
 
-          synchronized(HostFileSenderTest.this) {
-            mDeleted = true;
-            toDelete.delete();
+            synchronized (HostFileSenderTest.this) {
+              mDeleted = true;
+              toDelete.delete();
+            }
           }
-
-        }
-      };
+        };
     thread.start();
     mHostFileSender.send(newFile("6"));
 
-    synchronized(this) {
+    synchronized (this) {
       assertTrue(mDeleted);
     }
     thread.join();
@@ -150,29 +144,30 @@ public class HostFileSenderTest {
     mHostFileSender.send(one);
     mHostFileSender.send(two);
 
-    Thread thread = new Thread() {
-        @Override
-        public void run() {
-          try {
-            Thread.sleep(100);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+    Thread thread =
+        new Thread() {
+          @Override
+          public void run() {
+            try {
+              Thread.sleep(100);
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
+
+            assertFalse(mFinished);
+            one.delete();
+            try {
+              Thread.sleep(100);
+            } catch (InterruptedException e) {
+              throw new RuntimeException(e);
+            }
+
+            assertFalse(mFinished);
+            two.delete();
           }
+        };
 
-          assertFalse(mFinished);
-          one.delete();
-          try {
-            Thread.sleep(100);
-          } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-          }
-
-          assertFalse(mFinished);
-          two.delete();
-        }
-      };
-
-    synchronized(this) {
+    synchronized (this) {
       thread.start();
       mHostFileSender.flush();
       mFinished = true;
@@ -221,15 +216,13 @@ public class HostFileSenderTest {
   public void testFixesExternalDirectory() throws Throwable {
     Bundle args = new Bundle();
     String externalDirectory = System.getenv("EXTERNAL_STORAGE");
-    assertThat(externalDirectory,
-               is(not(isEmptyOrNullString())));
+    assertThat(externalDirectory, is(not(isEmptyOrNullString())));
 
-    ScreenshotDirectories sd = new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
+    ScreenshotDirectories sd =
+        new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
     File file = sd.get("default");
     mHostFileSender.send(file);
 
-    assertThat(mStatus.get(0).getString("HostFileSender_filename"),
-               startsWith(externalDirectory));
-
+    assertThat(mStatus.get(0).getString("HostFileSender_filename"), startsWith(externalDirectory));
   }
 }

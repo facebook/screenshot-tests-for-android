@@ -8,7 +8,6 @@
 package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.graphics.Point;
-import android.view.View;
 import org.json.JSONException;
 import org.json.JSONObject;
 

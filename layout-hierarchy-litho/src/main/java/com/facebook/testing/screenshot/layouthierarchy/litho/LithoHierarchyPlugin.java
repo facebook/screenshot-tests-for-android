@@ -8,14 +8,11 @@
 package com.facebook.testing.screenshot.layouthierarchy.litho;
 
 import android.graphics.Point;
-import android.graphics.Rect;
-
 import com.facebook.litho.DebugComponent;
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.layouthierarchy.BaseViewHierarchyPlugin;
 import com.facebook.testing.screenshot.layouthierarchy.HierarchyPlugin;
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +56,9 @@ public class LithoHierarchyPlugin implements HierarchyPlugin {
     }
   }
 
-  private void dumpHierarchy(LayoutHierarchyDumper dumper, JSONObject root, DebugComponent component, Point offset) throws JSONException {
+  private void dumpHierarchy(
+      LayoutHierarchyDumper dumper, JSONObject root, DebugComponent component, Point offset)
+      throws JSONException {
     JSONArray children = new JSONArray();
     for (DebugComponent child : component.getChildComponents()) {
       children.put(dumper.dumpHierarchy(child, offset));

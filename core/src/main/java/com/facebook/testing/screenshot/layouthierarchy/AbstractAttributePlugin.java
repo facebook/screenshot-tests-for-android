@@ -5,11 +5,9 @@
  * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
  * file in the same directory.
  */
-
 package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.text.TextUtils;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -30,8 +28,8 @@ public abstract class AbstractAttributePlugin implements AttributePlugin {
     node.put(key, value);
   }
 
-  protected void putRequired(
-      JSONObject node, String name, int left, int top, int width, int height) throws JSONException {
+  protected void putRequired(JSONObject node, String name, int left, int top, int width, int height)
+      throws JSONException {
     node.put(KEY_CLASS, name);
     node.put(KEY_LEFT, left);
     node.put(KEY_TOP, top);

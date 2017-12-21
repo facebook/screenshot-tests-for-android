@@ -7,16 +7,14 @@
  */
 package com.facebook.testing.screenshot.layouthierarchy.litho;
 
+import static org.junit.Assert.assertEquals;
+
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.widget.ImageView;
-
 import com.facebook.litho.LithoView;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.assertEquals;
 
 /** Tests {@link LithoAttributePlugin} */
 @RunWith(AndroidJUnit4.class)

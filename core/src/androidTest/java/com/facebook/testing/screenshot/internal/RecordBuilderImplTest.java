@@ -1,22 +1,18 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
  *
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
  */
-
 package com.facebook.testing.screenshot.internal;
+
+import static org.mockito.Mockito.*;
 
 import android.test.AndroidTestCase;
 import android.test.MoreAsserts;
 
-import static org.mockito.Mockito.*;
-
-/**
- * Tests {@link RecordBuilderImpl}
- */
+/** Tests {@link RecordBuilderImpl} */
 public class RecordBuilderImplTest extends AndroidTestCase {
   private ScreenshotImpl mScreenshotImpl;
 
@@ -27,8 +23,8 @@ public class RecordBuilderImplTest extends AndroidTestCase {
   }
 
   public void testIncompleteTiles() throws Throwable {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl)
-      .setTiling(new Tiling(3, 4));
+    RecordBuilderImpl recordBuilder =
+        new RecordBuilderImpl(mScreenshotImpl).setTiling(new Tiling(3, 4));
 
     try {
       recordBuilder.record();
@@ -39,8 +35,8 @@ public class RecordBuilderImplTest extends AndroidTestCase {
   }
 
   public void testCompleteTiles() throws Throwable {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(mScreenshotImpl)
-      .setTiling(new Tiling(3, 4));
+    RecordBuilderImpl recordBuilder =
+        new RecordBuilderImpl(mScreenshotImpl).setTiling(new Tiling(3, 4));
 
     for (int i = 0; i < 3; i++) {
       for (int j = 0; j < 4; j++) {

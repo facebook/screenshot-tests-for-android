@@ -1,12 +1,10 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
- * <p>
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
  */
-
 package com.facebook.testing.screenshot.internal;
 
 import android.annotation.TargetApi;
@@ -33,25 +31,22 @@ import org.json.JSONException;
 /**
  * Implementation for Screenshot class.
  *
- * The Screenshot class has static methods, because that's how the API
- * should look like, this class has all its implementation for
- * testability.
+ * <p>The Screenshot class has static methods, because that's how the API should look like, this
+ * class has all its implementation for testability.
  *
- * This is public only for implementation convenient for using
- * UiThreadHelper.
+ * <p>This is public only for implementation convenient for using UiThreadHelper.
  */
 public class ScreenshotImpl {
   /**
-   * We try to avoid tiling if we can, if the area of the view is less
-   * than this number multiplied by the area of a tile, we will not do
-   * tiling.
+   * We try to avoid tiling if we can, if the area of the view is less than this number multiplied
+   * by the area of a tile, we will not do tiling.
    */
   private static final int TILING_THRESHOLD = 2;
+
   private static ScreenshotImpl sInstance;
-  /**
-   * The album of all the screenshots taken in this run.
-   */
+  /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
+
   private int mTileSize = 512;
   private Bitmap mBitmap = null;
   private Canvas mCanvas = null;
@@ -62,20 +57,16 @@ public class ScreenshotImpl {
   }
 
   /**
-   * Factory method that creates this instance based on what arguments
-   * are passed to the instrumentation
+   * Factory method that creates this instance based on what arguments are passed to the
+   * instrumentation
    */
-  private static ScreenshotImpl create(
-      Context context,
-      HostFileSender hostFileSender) {
+  private static ScreenshotImpl create(Context context, HostFileSender hostFileSender) {
     Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
     album.cleanup();
     return new ScreenshotImpl(album);
   }
 
-  /**
-   * Get a singleton instance of the ScreenshotImpl
-   */
+  /** Get a singleton instance of the ScreenshotImpl */
   public static ScreenshotImpl getInstance() {
     if (sInstance != null) {
       return sInstance;
@@ -89,13 +80,9 @@ public class ScreenshotImpl {
       Instrumentation instrumentation = Registry.getRegistry().instrumentation;
       Bundle arguments = Registry.getRegistry().arguments;
 
-      HostFileSender hostFileSender = new HostFileSender(
-          instrumentation,
-          arguments);
+      HostFileSender hostFileSender = new HostFileSender(instrumentation, arguments);
 
-      sInstance = create(
-          instrumentation.getContext(),
-          hostFileSender);
+      sInstance = create(instrumentation.getContext(), hostFileSender);
 
       return sInstance;
     }
@@ -104,9 +91,8 @@ public class ScreenshotImpl {
   /**
    * Check if getInstance() has ever been called.
    *
-   * This is for a minor optimization to avoid creating a
-   * ScreenshotImpl at onDestroy() if it was never called during the
-   * run.
+   * <p>This is for a minor optimization to avoid creating a ScreenshotImpl at onDestroy() if it was
+   * never called during the run.
    */
   public static boolean hasBeenCreated() {
     return sInstance != null;
@@ -127,18 +113,16 @@ public class ScreenshotImpl {
     mCanvas = null;
   }
 
-  /**
-   * Snaps a screenshot of the activity using the testName as the
-   * name.
-   */
+  /** Snaps a screenshot of the activity using the testName as the name. */
   public RecordBuilderImpl snapActivity(final Activity activity) {
     if (!isUiThread()) {
-      return runCallableOnUiThread(new Callable<RecordBuilderImpl>() {
-        @Override
-        public RecordBuilderImpl call() {
-          return snapActivity(activity);
-        }
-      })
+      return runCallableOnUiThread(
+              new Callable<RecordBuilderImpl>() {
+                @Override
+                public RecordBuilderImpl call() {
+                  return snapActivity(activity);
+                }
+              })
           .setTestClass(TestNameDetector.getTestClass())
           .setTestName(TestNameDetector.getTestName());
     }
@@ -147,14 +131,15 @@ public class ScreenshotImpl {
   }
 
   /**
-   * Snaps a screenshot of the view (which should already be measured
-   * and layouted) using testName as the name.
+   * Snaps a screenshot of the view (which should already be measured and layouted) using testName
+   * as the name.
    */
   public RecordBuilderImpl snap(final View measuredView) {
-    RecordBuilderImpl recordBuilder = new RecordBuilderImpl(this)
-        .setView(measuredView)
-        .setTestClass(TestNameDetector.getTestClass())
-        .setTestName(TestNameDetector.getTestName());
+    RecordBuilderImpl recordBuilder =
+        new RecordBuilderImpl(this)
+            .setView(measuredView)
+            .setTestClass(TestNameDetector.getTestClass())
+            .setTestName(TestNameDetector.getTestName());
 
     return recordBuilder;
   }
@@ -170,25 +155,23 @@ public class ScreenshotImpl {
     }
 
     if (!isUiThread()) {
-      runCallableOnUiThread(new Callable<Void>() {
-        @Override
-        public Void call() {
-          storeBitmap(recordBuilder);
-          return null;
-        }
-      });
+      runCallableOnUiThread(
+          new Callable<Void>() {
+            @Override
+            public Void call() {
+              storeBitmap(recordBuilder);
+              return null;
+            }
+          });
       return;
     }
 
     View measuredView = recordBuilder.getView();
-    if (measuredView.getMeasuredHeight() == 0 ||
-        measuredView.getMeasuredWidth() == 0) {
+    if (measuredView.getMeasuredHeight() == 0 || measuredView.getMeasuredWidth() == 0) {
       throw new RuntimeException("Can't take a screenshot, since this view is not measured");
     }
 
-    int tileSize = Math.max(
-        measuredView.getWidth(),
-        measuredView.getHeight());
+    int tileSize = Math.max(measuredView.getWidth(), measuredView.getHeight());
 
     if (measuredView.getMeasuredHeight() * measuredView.getMeasuredWidth()
         > TILING_THRESHOLD * mTileSize * mTileSize) {
@@ -246,10 +229,7 @@ public class ScreenshotImpl {
     if (mBitmap != null) {
       return;
     }
-    mBitmap = Bitmap.createBitmap(
-        mTileSize,
-        mTileSize,
-        Bitmap.Config.ARGB_8888);
+    mBitmap = Bitmap.createBitmap(mTileSize, mTileSize, Bitmap.Config.ARGB_8888);
     mCanvas = new Canvas(mBitmap);
   }
 
@@ -258,14 +238,12 @@ public class ScreenshotImpl {
   }
 
   /**
-   * Draw a part of the view, in particular it returns a bitmap of
-   * dimensions <code>(right-left)*(bottom-top)</code>, with the
-   * rendering of the view starting from position (<code>left</code>,
-   * <code>top</code>).
+   * Draw a part of the view, in particular it returns a bitmap of dimensions <code>
+   * (right-left)*(bottom-top)</code>, with the rendering of the view starting from position (<code>
+   * left</code>, <code>top</code>).
    *
-   * For well behaved views, calling this repeatedly shouldn't change
-   * the rendering, so it should it okay to render each tile one by
-   * one and combine it later.
+   * <p>For well behaved views, calling this repeatedly shouldn't change the rendering, so it should
+   * it okay to render each tile one by one and combine it later.
    */
   private void drawClippedView(View view, int left, int top, Canvas canvas) {
     canvas.translate(-left, -top);
@@ -273,9 +251,7 @@ public class ScreenshotImpl {
     canvas.translate(left, top);
   }
 
-  /**
-   * Records the RecordBuilderImpl, and verifies if required
-   */
+  /** Records the RecordBuilderImpl, and verifies if required */
   public void record(RecordBuilderImpl recordBuilder) {
     storeBitmap(recordBuilder);
     OutputStream viewHierarchyDump = null;
@@ -305,10 +281,7 @@ public class ScreenshotImpl {
     }
 
     View view = recordBuilder.getView();
-    Bitmap bmp = Bitmap.createBitmap(
-        view.getWidth(),
-        view.getHeight(),
-        Bitmap.Config.ARGB_8888);
+    Bitmap bmp = Bitmap.createBitmap(view.getWidth(), view.getHeight(), Bitmap.Config.ARGB_8888);
 
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(recordBuilder.getView());
     try {
@@ -331,19 +304,20 @@ public class ScreenshotImpl {
     Handler handler = new Handler(Looper.getMainLooper());
 
     synchronized (lock) {
-      handler.post(new Runnable() {
-        @Override
-        public void run() {
-          try {
-            ret[0] = callable.call();
-          } catch (Exception ee) {
-            e[0] = ee;
-          }
-          synchronized (lock) {
-            lock.notifyAll();
-          }
-        }
-      });
+      handler.post(
+          new Runnable() {
+            @Override
+            public void run() {
+              try {
+                ret[0] = callable.call();
+              } catch (Exception ee) {
+                e[0] = ee;
+              }
+              synchronized (lock) {
+                lock.notifyAll();
+              }
+            }
+          });
 
       try {
         lock.wait();

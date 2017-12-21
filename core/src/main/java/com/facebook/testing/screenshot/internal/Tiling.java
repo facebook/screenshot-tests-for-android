@@ -1,17 +1,15 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
- * <p>
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
  */
-
 package com.facebook.testing.screenshot.internal;
 
 /**
- * A 2D layout of image tiles. We represent images as strings which
- * can be looked up in an {@code AlbumImpl}
+ * A 2D layout of image tiles. We represent images as strings which can be looked up in an {@code
+ * AlbumImpl}
  */
 public class Tiling {
   private int mWidth;
@@ -24,9 +22,7 @@ public class Tiling {
     mContents = new String[width][height];
   }
 
-  /**
-   * Convenience factory method for tests
-   */
+  /** Convenience factory method for tests */
   public static Tiling singleTile(String name) {
     Tiling ret = new Tiling(1, 1);
     ret.setAt(0, 0, name);

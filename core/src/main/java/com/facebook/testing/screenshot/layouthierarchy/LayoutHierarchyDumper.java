@@ -10,13 +10,11 @@ package com.facebook.testing.screenshot.layouthierarchy;
 import android.graphics.Point;
 import android.os.Build;
 import android.view.View;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /** Dumps information about a layout hierarchy into a JSON object */
 public final class LayoutHierarchyDumper {

@@ -1,12 +1,10 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
- * <p>
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
  */
-
 package com.facebook.testing.screenshot;
 
 import android.annotation.SuppressLint;
@@ -31,28 +29,21 @@ import java.util.WeakHashMap;
 @SuppressLint("PrivateApi")
 public abstract class WindowAttachment {
 
-  /**
-   * Keep track of all the attached windows here so that we don't
-   * double attach them.
-   */
+  /** Keep track of all the attached windows here so that we don't double attach them. */
   private static final WeakHashMap<View, Boolean> sAttachments = new WeakHashMap<>();
 
-  private WindowAttachment() {
-  }
+  private WindowAttachment() {}
 
   /**
-   * Dispatch onAttachedToWindow to all the views in the view
-   * hierarchy.
+   * Dispatch onAttachedToWindow to all the views in the view hierarchy.
    *
-   * Detach the view by calling {@code detach()} on the returned {@code Detacher}.
+   * <p>Detach the view by calling {@code detach()} on the returned {@code Detacher}.
    *
-   * Note that if the view is already attached (either via
-   * WindowAttachment or to a real window), then both the attach and
-   * the corresponding detach will be no-ops.
+   * <p>Note that if the view is already attached (either via WindowAttachment or to a real window),
+   * then both the attach and the corresponding detach will be no-ops.
    *
-   * Note that this is hacky, after these calls the views will still
-   * say that isAttachedToWindow() is false and getWindowToken() ==
-   * null.
+   * <p>Note that this is hacky, after these calls the views will still say that
+   * isAttachedToWindow() is false and getWindowToken() == null.
    */
   public static Detacher dispatchAttach(View view) {
     if (view.getWindowToken() != null || sAttachments.containsKey(view)) {
@@ -69,10 +60,7 @@ public abstract class WindowAttachment {
     return new RealDetacher(view);
   }
 
-  /**
-   * Similar to dispatchAttach, except dispatchest the corresponding
-   * detach.
-   */
+  /** Similar to dispatchAttach, except dispatchest the corresponding detach. */
   private static void dispatchDetach(View view) {
     invoke(view, "onDetachedFromWindow");
   }
@@ -98,9 +86,7 @@ public abstract class WindowAttachment {
     }
   }
 
-  /**
-   * Simulates the view as being attached.
-   */
+  /** Simulates the view as being attached. */
   public static void setAttachInfo(View view) {
     try {
       Class cAttachInfo = Class.forName("android.view.View$AttachInfo");
@@ -127,8 +113,10 @@ public abstract class WindowAttachment {
       final Object[] viewRootCtorValues;
 
       if (Build.VERSION.SDK_INT >= 26) {
-        viewRootImpl = cViewRootImpl.getConstructor(Context.class, Display.class)
-            .newInstance(context, display);
+        viewRootImpl =
+            cViewRootImpl
+                .getConstructor(Context.class, Display.class)
+                .newInstance(context, display);
 
         viewRootCtorParams =
             new Class[] {
@@ -167,8 +155,7 @@ public abstract class WindowAttachment {
               stub(cIWindowSession), window, display, viewRootImpl, new Handler(), stub(cCallbacks)
             };
       } else if (Build.VERSION.SDK_INT >= 16) {
-        viewRootImpl = cViewRootImpl.getConstructor(Context.class)
-            .newInstance(context);
+        viewRootImpl = cViewRootImpl.getConstructor(Context.class).newInstance(context);
 
         viewRootCtorParams =
             new Class[] {cIWindowSession, cIWindow, cViewRootImpl, Handler.class, cCallbacks};
@@ -202,10 +189,8 @@ public abstract class WindowAttachment {
     }
   }
 
-  private static Object invokeConstructor(
-      Class clazz,
-      Class[] params,
-      Object[] values) throws Exception {
+  private static Object invokeConstructor(Class clazz, Class[] params, Object[] values)
+      throws Exception {
     Constructor cons = clazz.getDeclaredConstructor(params);
     cons.setAccessible(true);
     return cons.newInstance(values);
@@ -215,37 +200,34 @@ public abstract class WindowAttachment {
     Class cIWindow = Class.forName("android.view.IWindow");
 
     // Since IWindow is an interface, I don't need dexmaker for this
-    InvocationHandler handler = new InvocationHandler() {
-      @Override
-      public Object invoke(Object proxy, Method method, Object[] args) {
-        if (method.getName().equals("asBinder")) {
-          return new Binder();
-        }
-        return null;
-      }
-    };
+    InvocationHandler handler =
+        new InvocationHandler() {
+          @Override
+          public Object invoke(Object proxy, Method method, Object[] args) {
+            if (method.getName().equals("asBinder")) {
+              return new Binder();
+            }
+            return null;
+          }
+        };
 
     return Proxy.newProxyInstance(cIWindow.getClassLoader(), new Class[] {cIWindow}, handler);
   }
 
   private static Object stub(Class klass) {
     try {
-      InvocationHandler handler = new InvocationHandler() {
-        @Override
-        public Object invoke(Object project, Method method, Object[] args) {
-          return null;
-        }
-      };
+      InvocationHandler handler =
+          new InvocationHandler() {
+            @Override
+            public Object invoke(Object project, Method method, Object[] args) {
+              return null;
+            }
+          };
 
       if (klass.isInterface()) {
-        return Proxy.newProxyInstance(
-            klass.getClassLoader(),
-            new Class[]{klass},
-            handler);
+        return Proxy.newProxyInstance(klass.getClassLoader(), new Class[] {klass}, handler);
       } else {
-        return ProxyBuilder.forClass(klass)
-            .handler(handler)
-            .build();
+        return ProxyBuilder.forClass(klass).handler(handler).build();
       }
     } catch (IOException e) {
       throw new RuntimeException(e);
@@ -265,8 +247,7 @@ public abstract class WindowAttachment {
 
   private static class NoopDetacher implements Detacher {
     @Override
-    public void detach() {
-    }
+    public void detach() {}
   }
 
   private static class RealDetacher implements Detacher {

@@ -1,19 +1,15 @@
 /**
- * Copyright (c) 2014-present, Facebook, Inc.
- * All rights reserved.
- * <p>
- * This source code is licensed under the BSD-style license found in the
- * LICENSE file in the root directory of this source tree. An additional grant
- * of patent rights can be found in the PATENTS file in the same directory.
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
  */
-
 package com.facebook.testing.screenshot.internal;
 
 import android.graphics.Bitmap;
 import android.view.View;
-
 import com.facebook.testing.screenshot.RecordBuilder;
-
 import java.io.File;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
@@ -23,8 +19,8 @@ import java.util.Map;
 /**
  * A builder for all the metadata associated with a screenshot.
  *
- * Use Screenshot#snap() or Screenshot#snapActivity() to get an
- * instance of this, and commit the record with #record().
+ * <p>Use Screenshot#snap() or Screenshot#snapActivity() to get an instance of this, and commit the
+ * record with #record().
  */
 public class RecordBuilderImpl implements RecordBuilder {
   private final ScreenshotImpl mScreenshotImpl;
@@ -46,9 +42,7 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mDescription;
   }
 
-  /**
-   * @inherit
-   */
+  /** @inherit */
   @Override
   public RecordBuilderImpl setDescription(String description) {
     mDescription = description;
@@ -62,9 +56,7 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mName;
   }
 
-  /**
-   * @inherit
-   */
+  /** @inherit */
   @Override
   public RecordBuilderImpl setName(String name) {
     CharsetEncoder charsetEncoder = Charset.forName("latin-1").newEncoder();
@@ -87,8 +79,8 @@ public class RecordBuilderImpl implements RecordBuilder {
   }
 
   /**
-   * Set the name of the test from which this screenshot is
-   * generated. This should be detected by default most of the time.
+   * Set the name of the test from which this screenshot is generated. This should be detected by
+   * default most of the time.
    */
   public RecordBuilderImpl setTestName(String testName) {
     mTestName = testName;
@@ -100,8 +92,8 @@ public class RecordBuilderImpl implements RecordBuilder {
   }
 
   /**
-   * Set the class name of the TestCase from which this screenshot is
-   * generated. This should be detected by default most of the time.
+   * Set the class name of the TestCase from which this screenshot is generated. This should be
+   * detected by default most of the time.
    */
   public RecordBuilderImpl setTestClass(String testClass) {
     mTestClass = testClass;
@@ -109,28 +101,23 @@ public class RecordBuilderImpl implements RecordBuilder {
   }
 
   /**
-   * Stops the recording and returns the generated bitmap, possibly
-   * compressed.
+   * Stops the recording and returns the generated bitmap, possibly compressed.
    *
-   * You cannot call this after record(), nor can you call record()
-   * after this call.
+   * <p>You cannot call this after record(), nor can you call record() after this call.
    */
   public Bitmap getBitmap() {
     return mScreenshotImpl.getBitmap(this);
   }
 
   /**
-   * Returns true if this record has been given an explicit name using
-   * setName(). If false, getName() will still generate a name.
+   * Returns true if this record has been given an explicit name using setName(). If false,
+   * getName() will still generate a name.
    */
   public boolean hasExplicitName() {
     return mName != null;
   }
 
-  /**
-   * Get's any error that was encountered while creating the
-   * screenshot.
-   */
+  /** Get's any error that was encountered while creating the screenshot. */
   public String getError() {
     return mError;
   }
@@ -140,18 +127,14 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /**
-   * @inherit
-   */
+  /** @inherit */
   @Override
   public void record() {
     mScreenshotImpl.record(this);
     checkState();
   }
 
-  /**
-   * Sanity checks that the record is ready to be persisted
-   */
+  /** Sanity checks that the record is ready to be persisted */
   /* package */ void checkState() {
     if (mError != null) {
       return;
