@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the license found in the LICENSE-examples file in the root
+ * directory of this source tree.
+ */
+
 package com.facebook.screenshots
 
 import android.os.Bundle
@@ -11,35 +18,35 @@ import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        setSupportActionBar(toolbar)
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setContentView(R.layout.activity_main)
+    setSupportActionBar(toolbar)
 
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, R.string.hi_text, Snackbar.LENGTH_LONG).show()
-        }
-
-        intent?.let {
-            val messageType = it.getIntExtra(MESSAGE_TYPE_KEY, 0)
-            when (messageType) {
-                MessageType.WARNING -> default_text.setTextColor(ContextCompat.getColor(this, R.color.warning))
-                MessageType.ERROR -> default_text.setTextColor(ContextCompat.getColor(this, R.color.error))
-                MessageType.SUCCESS -> default_text.setTextColor(ContextCompat.getColor(this, R.color.ok))
-            }
-        }
-
+    fab.setOnClickListener { view ->
+      Snackbar.make(view, R.string.hi_text, Snackbar.LENGTH_LONG).show()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_main, menu)
-        return true
+    intent?.let {
+      val messageType = it.getIntExtra(MESSAGE_TYPE_KEY, 0)
+      when (messageType) {
+        MessageType.WARNING -> default_text.setTextColor(ContextCompat.getColor(this, R.color.warning))
+        MessageType.ERROR -> default_text.setTextColor(ContextCompat.getColor(this, R.color.error))
+        MessageType.SUCCESS -> default_text.setTextColor(ContextCompat.getColor(this, R.color.ok))
+      }
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> true
-            else -> super.onOptionsItemSelected(item)
-        }
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    menuInflater.inflate(R.menu.menu_main, menu)
+    return true
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    return when (item.itemId) {
+      R.id.action_settings -> true
+      else -> super.onOptionsItemSelected(item)
     }
+  }
 }

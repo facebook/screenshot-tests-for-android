@@ -1,5 +1,9 @@
-// Copyright 2004-present Facebook. All Rights Reserved.
-
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the license found in the LICENSE-examples file in the root
+ * directory of this source tree.
+ */
 package com.example.screenshots;
 
 import static android.support.test.InstrumentationRegistry.getInstrumentation;

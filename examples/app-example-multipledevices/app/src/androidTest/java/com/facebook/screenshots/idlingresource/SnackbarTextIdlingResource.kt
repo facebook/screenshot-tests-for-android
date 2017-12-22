@@ -1,3 +1,10 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the license found in the LICENSE-examples file in the root
+ * directory of this source tree.
+ */
+
 package com.facebook.screenshots.idlingresource
 
 import android.app.Activity
@@ -7,12 +14,12 @@ import com.facebook.screenshots.R
 
 class SnackbarTextIdlingResource(private val activity: Activity, private val textId: Int) : IdlingResource {
 
-    override fun getName(): String = "SnackbarTextIdlingResource"
+  override fun getName(): String = "SnackbarTextIdlingResource"
 
-    override fun isIdleNow(): Boolean {
-        val textView = activity.findViewById<TextView>(R.id.snackbar_text)
-        return textView?.text == activity.resources.getString(textId) ?: false
-    }
+  override fun isIdleNow(): Boolean {
+    val textView = activity.findViewById<TextView>(R.id.snackbar_text)
+    return textView?.text == activity.resources.getString(textId) ?: false
+  }
 
-    override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {}
+  override fun registerIdleTransitionCallback(callback: IdlingResource.ResourceCallback?) {}
 }
