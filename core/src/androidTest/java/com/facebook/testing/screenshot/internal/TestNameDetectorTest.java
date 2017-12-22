@@ -7,11 +7,14 @@
  */
 package com.facebook.testing.screenshot.internal;
 
-import android.test.InstrumentationTestCase;
+import static org.junit.Assert.assertEquals;
+
 import android.test.UiThreadTest;
+import org.junit.Test;
 
 /** Tests {@link TestNameDetector} */
-public class TestNameDetectorTest extends InstrumentationTestCase {
+public class TestNameDetectorTest {
+  @Test
   @UiThreadTest
   public void testTestNameIsDetected() throws Throwable {
     assertEquals("testTestNameIsDetected", TestNameDetector.getTestName());
@@ -20,8 +23,22 @@ public class TestNameDetectorTest extends InstrumentationTestCase {
         TestNameDetector.getTestClass());
   }
 
+  @Test
   public void testTestNameIsDetectedOnNonUiThread() throws Throwable {
     assertEquals("testTestNameIsDetectedOnNonUiThread", TestNameDetector.getTestName());
+    assertEquals(
+        "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
+        TestNameDetector.getTestClass());
+  }
+
+  @Test
+  @UiThreadTest
+  public void testTestNameIsDetectedThroughExtraMethod() throws Throwable {
+    extraLayerMethod();
+  }
+
+  private void extraLayerMethod() {
+    assertEquals("testTestNameIsDetectedThroughExtraMethod", TestNameDetector.getTestName());
     assertEquals(
         "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
         TestNameDetector.getTestClass());
