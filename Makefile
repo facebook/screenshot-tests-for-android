@@ -1,5 +1,3 @@
-
-
 FILES_WITH_VERSIONS = \
 	gradle.properties \
 	examples/app-example/build.gradle \
@@ -12,10 +10,6 @@ TMPFILE:=$(shell mktemp)
 
 .PHONY:
 	@true
-
-env-check:
-	@echo Checking if emulator or device is connected for tests
-	adb get-serialno
 
 set-release:
 	[ x$(NEW_VERSION) != x ]
@@ -32,29 +26,27 @@ old-release:
 
 cleanup:
 	rm -rf ~/.m2/repository/com/facebook/testing/screenshot/
-	./gradlew clean
+	./gradlew plugin:clean core:clean layout-hierarchy-common:clean layout-hierarchy-litho:clean
 
 release-tests: integration-tests
 	./gradlew :releaseTests
 
-integration-tests: |  env-check cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
+integration-tests: |  cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
 	@true
 
 app-example-tests:
-	cd examples/app-example && ./gradlew connectedAndroidTest
-	cd examples/app-example && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
+	./gradlew app-example:screenshotTests 2>&1 | tee $(TMPFILE)
 
 	grep "Found 3 screenshots" $(TMPFILE)
 
 app-example-androidjunitrunner-tests:
-	cd examples/app-example-androidjunitrunner && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
+	./gradlew app-example-androidjunitrunner:screenshotTests 2>&1 | tee $(TMPFILE)
 
 	grep "Found 6 screenshots" $(TMPFILE)
 
 app-example-litho-tests:
-	cd examples/app-example-litho && ./gradlew screenshotTests 2>&1 | tee $(TMPFILE)
+	./gradlew app-example-litho:screenshotTests 2>&1 | tee $(TMPFILE)
 	grep "Found 1 screenshots" $(TMPFILE)
-
 
 install-local:
 	./gradlew :plugin:install

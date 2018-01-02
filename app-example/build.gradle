@@ -1,5 +1,5 @@
 buildscript {
-  apply from: rootProject.file('../../versions.gradle')
+  apply from: rootProject.file('versions.gradle')
 
   repositories {
     mavenLocal()
@@ -13,9 +13,6 @@ buildscript {
   }
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'com.facebook.testing.screenshot'
-
 allprojects {
   repositories {
     mavenLocal()
@@ -23,6 +20,9 @@ allprojects {
     google()
   }
 }
+
+apply plugin: 'com.android.application'
+apply plugin: 'com.facebook.testing.screenshot'
 
 android {
   compileSdkVersion versions.compileSdk
