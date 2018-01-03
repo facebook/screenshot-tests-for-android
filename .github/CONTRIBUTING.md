@@ -4,14 +4,14 @@ possible.
 
 ## Our Development Process
 
-Our GitHub repository is our source of truth, and all development
-happens directly in GitHub. Internally, we might build tools around
-this framework that we might move into the GitHub repository in the
-future, but we won't fork for internal changes.
+Our internal repository, which is copied to GitHub, is our source of truth, 
+and development happens both directly in GitHub and internally. 
+Internally, we might build tools around this framework that we might move 
+into the GitHub repository in the future, but we won't fork for internal changes.
 
 This repository has two components:
 
-* in `src/` you'll find code that actually runs on the device along
+* in `core/` you'll find code that actually runs on the device along
   with the test
 
 * in `plugin/` you'll find code that runs on the "host" machine.
