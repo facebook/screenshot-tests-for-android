@@ -1,13 +1,17 @@
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the license found in the LICENSE-examples file in the root
+ * directory of this source tree.
+ */
 package com.facebook.testing.screenshot.sample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
 import android.view.LayoutInflater;
-
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.Screenshot;
 import com.facebook.testing.screenshot.ViewHelpers;
-
 import org.junit.Test;
 
 public class ExampleScreenshotTest {
