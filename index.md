@@ -63,7 +63,7 @@ This plugin sets up a few convenience commands:
 
 The plugin also sets up compile dependencies for your tests, so you can now just start calling the `Screenshot` API. See the [Creating a screenshot](#creating-a-screenshot) section for more information.
 
-Take a look at our [example build.gradle](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/build.gradle).
+Take a look at our [sample build.gradle](https://github.com/facebook/screenshot-tests-for-android/blob/master/sample/build.gradle).
 
 NOTE: By default this overrides your instrumentation test runner, and depending on your set up this can cause problems. See [Custom Test Runner](#custom-test-runner) for how to avoid this.
 
@@ -131,7 +131,7 @@ public class MyTests {
 }
 ```
 
-We have an example of this at [SearchBarTest.java](https://github.com/facebook/screenshot-tests-for-android/blob/master/examples/app-example/src/androidTest/java/com/facebook/testing/screenshot/SearchBarTest.java). You can generate your screenshots using:
+We have an example of this in [StandardAndroidViewTest.kt](https://github.com/facebook/screenshot-tests-for-android/blob/master/sample/src/androidTest/java/com/facebook/testing/screenshot/sample/StandardAndroidViewTest.kt). You can generate your screenshots using:
 
 ```bash
 $ gradle screenshotTests
