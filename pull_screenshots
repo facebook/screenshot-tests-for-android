@@ -1,4 +1,0 @@
-#!/bin/sh
-
-export PYTHONPATH=`dirname $0`/src/py:$PYTHONPATH
-python -m android_screenshot_tests.pull_screenshots "$@"
