@@ -1,0 +1,56 @@
+package com.facebook.testing.screenshot.sample
+
+import android.support.test.InstrumentationRegistry
+import android.view.LayoutInflater
+import android.view.View
+import android.widget.TextView
+import com.facebook.testing.screenshot.Screenshot
+import com.facebook.testing.screenshot.ViewHelpers
+import org.junit.Test
+
+class StandardAndroidViewTest {
+  @Test
+  @Throws(Throwable::class)
+  fun testRendering() {
+    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    val inflater = LayoutInflater.from(targetContext)
+    val view = inflater.inflate(R.layout.search_bar, null, false)
+
+    ViewHelpers.setupView(view).setExactWidthDp(300).layout()
+    Screenshot.snap(view).record()
+  }
+
+  @Test
+  @Throws(Throwable::class)
+  fun testLongText() {
+    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    val inflater = LayoutInflater.from(targetContext)
+    val view = inflater.inflate(R.layout.search_bar, null, false)
+
+    val tv = view.findViewById<View>(R.id.search_box) as TextView
+
+    tv.text = "This is a really long text and should overflow"
+    ViewHelpers.setupView(view).setExactWidthDp(300).layout()
+
+    Screenshot.snap(view).record()
+  }
+
+  @Test
+  @Throws(Throwable::class)
+  fun testChinese() {
+    val targetContext = InstrumentationRegistry.getInstrumentation().targetContext
+    val inflater = LayoutInflater.from(targetContext)
+    val view = inflater.inflate(R.layout.search_bar, null, false)
+
+    val tv = view.findViewById<View>(R.id.search_box) as TextView
+    val btn = view.findViewById<View>(R.id.button) as TextView
+
+    tv.hint = "搜索世界"
+    btn.text = "搜"
+
+    ViewHelpers.setupView(view).setExactWidthDp(300).layout()
+
+    Screenshot.snap(view).record()
+  }
+}
+

@@ -31,22 +31,13 @@ cleanup:
 release-tests: integration-tests
 	./gradlew :releaseTests
 
-integration-tests: |  cleanup install-local app-example-tests app-example-androidjunitrunner-tests cleanup
+integration-tests: |  cleanup install-local sample-tests cleanup
 	@true
 
-app-example-tests:
-	./gradlew app-example:screenshotTests 2>&1 | tee $(TMPFILE)
+sample-tests:
+	./gradlew :sample:screenshotTests 2>&1 | tee $(TMPFILE)
 
-	grep "Found 3 screenshots" $(TMPFILE)
-
-app-example-androidjunitrunner-tests:
-	./gradlew app-example-androidjunitrunner:screenshotTests 2>&1 | tee $(TMPFILE)
-
-	grep "Found 6 screenshots" $(TMPFILE)
-
-app-example-litho-tests:
-	./gradlew app-example-litho:screenshotTests 2>&1 | tee $(TMPFILE)
-	grep "Found 1 screenshots" $(TMPFILE)
+	grep "Found 11 screenshots" $(TMPFILE)
 
 install-local:
 	./gradlew :plugin:install

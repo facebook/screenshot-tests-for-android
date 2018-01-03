@@ -1,2 +1,1 @@
-include 'core', 'plugin', 'layout-hierarchy-common', 'layout-hierarchy-litho'
-include 'app-example', 'app-example-androidjunitrunner', 'app-example-litho', 'app-example-multipledevices'
+include 'core', 'plugin', 'layout-hierarchy-common', 'layout-hierarchy-litho', 'sample'
