@@ -26,7 +26,6 @@ android {
 dependencies {
   api deps.dexmaker
   api deps.dexmakerDx
-  compile deps.junit
 
   androidTestApi deps.espresso
   androidTestApi deps.mockito
