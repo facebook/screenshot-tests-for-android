@@ -179,7 +179,7 @@ public class MyTestRunner extends AndroidJUnitRunner {
 You should make your build.gradle point to your new test runner using `android.testInstrumentationRunner` property.
 
 ### Contributions
-Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/CONTRIBUTING.md).
+Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/.github/CONTRIBUTING.md).
 
 ### License
 
