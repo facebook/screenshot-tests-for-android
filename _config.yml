@@ -8,7 +8,7 @@ url: https://facebook.github.io
 ghrepo: "facebook/screenshot-tests-for-android"
 
 # Build settings
-markdown: redcarpet
+markdown: kramdown
 highlighter: rouge
 lsi: false
 
