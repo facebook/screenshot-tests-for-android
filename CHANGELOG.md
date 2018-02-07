@@ -1,3 +1,12 @@
+0.6.0 (Feb 06 2018)
+-----
+- Added the ability to run screenshot tests on multiple devices at once
+  - Set `multipleDevices` to `true` in your `screenshots` config in your Gradle file to enable this.
+- The core module no longer depends on junit
+- Upgraded to Gradle 4.4.1
+- Removed R and BuildConfig classes from release artifacts
+- Added a Buck file for the Python module
+
 0.5.0 (Nov 20 2017)
 -----
 - Upgraded to AGP 3
