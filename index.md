@@ -149,6 +149,19 @@ screenshots {
 }
 ```
 
+### Running Across Multiple Devices
+
+When recording screenshots for later verification, the screenshots are not strictly tied to a specific device by default. If you wish to record screenshots for multiple device configurations and verify each independently, then you should enable `multipleDevices` in your `screenshots` block:
+
+```groovy
+screenshots {
+  // ...
+  multipleDevices true
+}
+```
+
+Now recorded screenshots will be placed in individual directories based on a unique device identifier. This unique identifier combines the API level, screen density category, availability of Google Play Services, screen resolution and device architecture. For an example, you can take a look at the [sample app's screenshot directory](https://github.com/facebook/screenshot-tests-for-android/tree/master/sample/screenshots/).
+
 ### Custom Test Runner
 
 By default, screenshot tests use a specialized
