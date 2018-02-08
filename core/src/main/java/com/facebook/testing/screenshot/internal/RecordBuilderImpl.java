@@ -100,11 +100,8 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /**
-   * Stops the recording and returns the generated bitmap, possibly compressed.
-   *
-   * <p>You cannot call this after record(), nor can you call record() after this call.
-   */
+  /** @inherit */
+  @Override
   public Bitmap getBitmap() {
     return mScreenshotImpl.getBitmap(this);
   }

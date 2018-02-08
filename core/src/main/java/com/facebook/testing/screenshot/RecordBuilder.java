@@ -7,6 +7,8 @@
  */
 package com.facebook.testing.screenshot;
 
+import android.graphics.Bitmap;
+
 /** Builds all the information related to a screenshot. */
 public interface RecordBuilder {
   /**
@@ -34,6 +36,13 @@ public interface RecordBuilder {
 
   /** Groups similar or identical screenshots which makes it easier to compare. */
   RecordBuilder setGroup(String groupName);
+
+  /**
+   * Stops the recording and returns the generated bitmap, possibly compressed.
+   *
+   * <p>You cannot call this after record(), nor can you call record() after this call.
+   */
+  Bitmap getBitmap();
 
   /** Finish the recording. */
   void record();
