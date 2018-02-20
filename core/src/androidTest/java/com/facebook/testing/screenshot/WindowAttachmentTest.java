@@ -9,7 +9,6 @@ package com.facebook.testing.screenshot;
 
 import static android.support.test.espresso.action.ViewActions.*;
 import static android.support.test.espresso.matcher.ViewMatchers.*;
-import static org.junit.Assert.*;
 
 import android.app.KeyguardManager;
 import android.content.Context;

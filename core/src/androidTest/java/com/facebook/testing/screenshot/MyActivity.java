@@ -9,7 +9,7 @@ package com.facebook.testing.screenshot;
 
 import android.app.Activity;
 
-/** A dummy activity used in {@link BaseActivityInstrumentationTestCase2Test} */
+/** A dummy activity */
 public class MyActivity extends Activity {
   public boolean destroyed = false;
 
