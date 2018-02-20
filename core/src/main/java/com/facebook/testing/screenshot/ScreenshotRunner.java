@@ -13,11 +13,8 @@ import com.facebook.testing.screenshot.internal.Registry;
 import com.facebook.testing.screenshot.internal.ScreenshotImpl;
 
 /**
- * The ScreenshotRunner needs to be called from the top level Instrumentation runner before and
+ * The ScreenshotRunner needs to be called from the top level Instrumentation test runner before and
  * after all the tests run.
- *
- * <p>You don't need to call this directly if you're using {@code ScreenshotTestRunner} as your
- * instrumentation.
  */
 public abstract class ScreenshotRunner {
 
@@ -27,7 +24,7 @@ public abstract class ScreenshotRunner {
   /**
    * Call this exactly once in your process before any screenshots are generated.
    *
-   * <p>Typically this will be in {@code InstrumentationTestRunner#onCreate()}
+   * <p>Typically this will be in {@code AndroidJUnitRunner#onCreate()}
    */
   public static void onCreate(Instrumentation instrumentation, Bundle arguments) {
     Registry registry = Registry.getRegistry();
@@ -38,7 +35,7 @@ public abstract class ScreenshotRunner {
   /**
    * Call this exactly once after all your tests have run.
    *
-   * <p>Typically this can be in {@code InstrumentationTestRunner#finish()}
+   * <p>Typically this can be in {@code AndroidJUnitRunner#finish()}
    */
   public static void onDestroy() {
     if (ScreenshotImpl.hasBeenCreated()) {
