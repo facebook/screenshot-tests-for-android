@@ -16,6 +16,8 @@ public class Registry {
   public Instrumentation instrumentation;
   public Bundle arguments;
 
+  Registry() {}
+
   public static Registry getRegistry() {
     if (sRegistry == null) {
       sRegistry = new Registry();

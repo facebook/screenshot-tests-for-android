@@ -119,7 +119,7 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mError;
   }
 
-  /* package */ RecordBuilderImpl setError(String error) {
+  RecordBuilderImpl setError(String error) {
     mError = error;
     return this;
   }
@@ -132,7 +132,7 @@ public class RecordBuilderImpl implements RecordBuilder {
   }
 
   /** Sanity checks that the record is ready to be persisted */
-  /* package */ void checkState() {
+  void checkState() {
     if (mError != null) {
       return;
     }
@@ -149,7 +149,7 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mView;
   }
 
-  /* package */ RecordBuilderImpl setView(View view) {
+  RecordBuilderImpl setView(View view) {
     mView = view;
     return this;
   }
@@ -158,7 +158,7 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mTiling;
   }
 
-  /* package */ RecordBuilderImpl setTiling(Tiling tiling) {
+  RecordBuilderImpl setTiling(Tiling tiling) {
     mTiling = tiling;
     return this;
   }
