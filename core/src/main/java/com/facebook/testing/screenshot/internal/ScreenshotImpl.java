@@ -37,12 +37,6 @@ import org.json.JSONException;
  * <p>This is public only for implementation convenient for using UiThreadHelper.
  */
 public class ScreenshotImpl {
-  /**
-   * We try to avoid tiling if we can, if the area of the view is less than this number multiplied
-   * by the area of a tile, we will not do tiling.
-   */
-  private static final int TILING_THRESHOLD = 2;
-
   private static ScreenshotImpl sInstance;
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
@@ -50,9 +44,9 @@ public class ScreenshotImpl {
   private int mTileSize = 512;
   private Bitmap mBitmap = null;
   private Canvas mCanvas = null;
-  private boolean mEnableBitmapReconfigure = (Build.VERSION.SDK_INT >= 19);
+  private boolean mEnableBitmapReconfigure = Build.VERSION.SDK_INT >= 19;
 
-  /* package */ ScreenshotImpl(Album album) {
+  ScreenshotImpl(Album album) {
     mAlbum = album;
   }
 
@@ -171,13 +165,6 @@ public class ScreenshotImpl {
       throw new RuntimeException("Can't take a screenshot, since this view is not measured");
     }
 
-    int tileSize = Math.max(measuredView.getWidth(), measuredView.getHeight());
-
-    if (measuredView.getMeasuredHeight() * measuredView.getMeasuredWidth()
-        > TILING_THRESHOLD * mTileSize * mTileSize) {
-      tileSize = mTileSize;
-    }
-
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(measuredView);
     try {
       int width = measuredView.getWidth();
@@ -275,7 +262,7 @@ public class ScreenshotImpl {
     }
   }
 
-  /* package */ Bitmap getBitmap(RecordBuilderImpl recordBuilder) {
+  Bitmap getBitmap(RecordBuilderImpl recordBuilder) {
     if (recordBuilder.getTiling().getAt(0, 0) != null) {
       throw new IllegalArgumentException("can't call getBitmap() after record()");
     }
