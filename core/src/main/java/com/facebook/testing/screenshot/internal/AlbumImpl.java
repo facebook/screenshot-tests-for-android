@@ -83,11 +83,6 @@ public class AlbumImpl implements Album {
       mXmlSerializer.endTag(null, "screenshots");
       mXmlSerializer.endDocument();
       mXmlSerializer.flush();
-
-      if (!getMetadataFile().setReadable(/* readable = */ true, /* ownerOnly = */ false)) {
-        //        throw new RuntimeException("Could not set permission on the screenshot metadata
-        // file");
-      }
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
@@ -100,7 +95,7 @@ public class AlbumImpl implements Album {
   }
 
   /** Returns the stored screenshot in the album, or null if no such test case exists. */
-  /* package private */ Bitmap getScreenshot(String name) {
+  Bitmap getScreenshot(String name) {
     if (getScreenshotFile(name) == null) {
       return null;
     }
@@ -110,7 +105,7 @@ public class AlbumImpl implements Album {
   /**
    * Returns the file in which the screenshot is stored, or null if this is not a valid screenshot
    */
-  /* package private */ File getScreenshotFile(String name) {
+  File getScreenshotFile(String name) {
     if (mHostFileSender != null) {
       throw new UnsupportedOperationException("Cannot be called with HostFileSender");
     }
@@ -154,14 +149,11 @@ public class AlbumImpl implements Album {
    * doesn't exist.
    */
   private File getScreenshotFileInternal(String name) {
-    String fileName = name + ".png";
-    File file = new File(mDir, fileName);
-    return file;
+    return new File(mDir, name + ".png");
   }
 
   private File getViewHierarchyFile(String name) {
-    String fileName = name + "_dump.json";
-    return new File(mDir, fileName);
+    return new File(mDir, name + "_dump.json");
   }
 
   @Override
@@ -185,11 +177,11 @@ public class AlbumImpl implements Album {
       if (recordBuilder.hasExplicitName()) {
         throw new AssertionError(
             "Can't create multiple screenshots with the same name: " + recordBuilder.getName());
-      } else {
-        throw new AssertionError(
-            "Can't create multiple screenshots from the same test, or "
-                + "use .setName() to name each screenshot differently");
       }
+
+      throw new AssertionError(
+          "Can't create multiple screenshots from the same test, or "
+              + "use .setName() to name each screenshot differently");
     }
 
     mXmlSerializer.startTag(null, "screenshot");
@@ -241,7 +233,6 @@ public class AlbumImpl implements Album {
         }
 
         addTextNode("absolute_file_name", file.getAbsolutePath());
-
         addTextNode("relative_file_name", getRelativePath(file, mDir));
       }
     }
