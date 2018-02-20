@@ -24,8 +24,8 @@ android {
 }
 
 dependencies {
-  api deps.dexmaker
-  api deps.dexmakerDx
+  androidTestApi deps.dexmaker
+  androidTestApi deps.dexmakerDx
 
   androidTestApi deps.espresso
   androidTestApi deps.mockito
