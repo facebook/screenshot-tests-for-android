@@ -17,8 +17,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import com.android.dx.stock.ProxyBuilder;
-import java.io.IOException;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -31,6 +30,14 @@ public abstract class WindowAttachment {
 
   /** Keep track of all the attached windows here so that we don't double attach them. */
   private static final WeakHashMap<View, Boolean> sAttachments = new WeakHashMap<>();
+
+  private static final InvocationHandler sInvocationHandler =
+      new InvocationHandler() {
+        @Override
+        public Object invoke(Object project, Method method, Object[] args) {
+          return null;
+        }
+      };
 
   private WindowAttachment() {}
 
@@ -100,7 +107,7 @@ public abstract class WindowAttachment {
 
       Class cIWindowSession = Class.forName("android.view.IWindowSession");
       Class cIWindow = Class.forName("android.view.IWindow");
-      Class cCallbacks = Class.forName("android.view.View$AttachInfo$Callbacks");
+      Class cICallbacks = Class.forName("android.view.View$AttachInfo$Callbacks");
 
       Context context = view.getContext();
       WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -125,7 +132,7 @@ public abstract class WindowAttachment {
               Display.class,
               cViewRootImpl,
               Handler.class,
-              cCallbacks,
+              cICallbacks,
               Context.class
             };
 
@@ -136,7 +143,7 @@ public abstract class WindowAttachment {
               display,
               viewRootImpl,
               new Handler(),
-              stub(cCallbacks),
+              stub(cICallbacks),
               context
             };
       } else if (Build.VERSION.SDK_INT >= 17) {
@@ -147,28 +154,28 @@ public abstract class WindowAttachment {
 
         viewRootCtorParams =
             new Class[] {
-              cIWindowSession, cIWindow, Display.class, cViewRootImpl, Handler.class, cCallbacks
+              cIWindowSession, cIWindow, Display.class, cViewRootImpl, Handler.class, cICallbacks
             };
 
         viewRootCtorValues =
             new Object[] {
-              stub(cIWindowSession), window, display, viewRootImpl, new Handler(), stub(cCallbacks)
+              stub(cIWindowSession), window, display, viewRootImpl, new Handler(), stub(cICallbacks)
             };
       } else if (Build.VERSION.SDK_INT >= 16) {
         viewRootImpl = cViewRootImpl.getConstructor(Context.class).newInstance(context);
 
         viewRootCtorParams =
-            new Class[] {cIWindowSession, cIWindow, cViewRootImpl, Handler.class, cCallbacks};
+            new Class[] {cIWindowSession, cIWindow, cViewRootImpl, Handler.class, cICallbacks};
 
         viewRootCtorValues =
             new Object[] {
-              stub(cIWindowSession), window, viewRootImpl, new Handler(), stub(cCallbacks)
+              stub(cIWindowSession), window, viewRootImpl, new Handler(), stub(cICallbacks)
             };
       } else {
-        viewRootCtorParams = new Class[] {cIWindowSession, cIWindow, Handler.class, cCallbacks};
+        viewRootCtorParams = new Class[] {cIWindowSession, cIWindow, Handler.class, cICallbacks};
 
         viewRootCtorValues =
-            new Object[] {stub(cIWindowSession), window, new Handler(), stub(cCallbacks)};
+            new Object[] {stub(cIWindowSession), window, new Handler(), stub(cICallbacks)};
       }
 
       Object attachInfo = invokeConstructor(cAttachInfo, viewRootCtorParams, viewRootCtorValues);
@@ -215,23 +222,11 @@ public abstract class WindowAttachment {
   }
 
   private static Object stub(Class klass) {
-    try {
-      InvocationHandler handler =
-          new InvocationHandler() {
-            @Override
-            public Object invoke(Object project, Method method, Object[] args) {
-              return null;
-            }
-          };
-
-      if (klass.isInterface()) {
-        return Proxy.newProxyInstance(klass.getClassLoader(), new Class[] {klass}, handler);
-      } else {
-        return ProxyBuilder.forClass(klass).handler(handler).build();
-      }
-    } catch (IOException e) {
-      throw new RuntimeException(e);
+    if (!klass.isInterface()) {
+      throw new IllegalArgumentException("Cannot stub an non-interface");
     }
+
+    return Proxy.newProxyInstance(klass.getClassLoader(), new Class[] {klass}, sInvocationHandler);
   }
 
   private static void setField(Object o, String fieldName, Object value) throws Exception {
