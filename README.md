@@ -105,8 +105,10 @@ See the CONTRIBUTING file for how to help out.
 
 ## Authors
 
-screenshot-tests-for-android has been written by Arnold Noronha (arnold@fb.com)
+screenshot-tests-for-android was originally written by Arnold Noronha (arnold@fb.com)
 You can reach him at @tdrhq on GitHub.
+
+It is currently maintained by Hilal Alsibai (@xiphirx)
 
 ## License
 
