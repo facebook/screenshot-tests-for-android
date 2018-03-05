@@ -57,6 +57,17 @@ public final class LayoutHierarchyDumper {
     allAttributePlugins.addAll(attributePlugins);
     allAttributePlugins.addAll(sGlobalAttributePlugins);
 
+    return createWithOnly(allHierarchyPlugins, allAttributePlugins);
+  }
+
+  public static LayoutHierarchyDumper createWithOnly(
+      List<HierarchyPlugin> hierarchyPlugins, List<AttributePlugin> attributePlugins) {
+    final List<HierarchyPlugin> allHierarchyPlugins = new ArrayList<>(hierarchyPlugins.size());
+    allHierarchyPlugins.addAll(hierarchyPlugins);
+
+    final List<AttributePlugin> allAttributePlugins = new ArrayList<>(attributePlugins.size());
+    allAttributePlugins.addAll(attributePlugins);
+
     return new LayoutHierarchyDumper(allHierarchyPlugins, allAttributePlugins);
   }
 
