@@ -34,7 +34,9 @@ import java.io.InputStreamReader;
 import java.util.Locale;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.Timeout;
 import org.junit.runner.RunWith;
 
 /** Tests for {@link ScreenshotImpl} */
@@ -45,6 +47,8 @@ public class ScreenshotImplTest {
   private TextView mTextView;
   private ScreenshotImpl mScreenshot;
   private ScreenshotDirectories mScreenshotDirectories;
+
+  @Rule public Timeout mTimeout = new Timeout(60000);
 
   @Before
   public void setUp() throws Exception {
@@ -118,6 +122,20 @@ public class ScreenshotImplTest {
     String metadataContents = fileToString(metadata);
 
     MoreAsserts.assertContainsRegex("blahblah.*.json", metadataContents);
+  }
+
+  @Test
+  public void testLargeViewThrows() throws Throwable {
+    measureAndLayout(200, 0xffff00);
+
+    assertEquals(200, mTextView.getMeasuredWidth());
+    assertEquals(0xffff00, mTextView.getMeasuredHeight());
+    try {
+      mScreenshot.snap(mTextView).setName("largeView").record();
+      fail("expected exception");
+    } catch (RuntimeException e) {
+      MoreAsserts.assertContainsRegex(".*View too large.*", e.getMessage());
+    }
   }
 
   private String fileToString(File file) {

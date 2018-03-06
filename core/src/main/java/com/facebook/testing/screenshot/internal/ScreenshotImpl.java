@@ -25,6 +25,7 @@ import com.facebook.testing.screenshot.WindowAttachment;
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import org.json.JSONException;
 
@@ -170,6 +171,8 @@ public class ScreenshotImpl {
       int width = measuredView.getWidth();
       int height = measuredView.getHeight();
 
+      assertNotTooLarge(width, height);
+
       int maxi = (width + mTileSize - 1) / mTileSize;
       int maxj = (height + mTileSize - 1) / mTileSize;
       recordBuilder.setTiling(new Tiling(maxi, maxj));
@@ -183,6 +186,14 @@ public class ScreenshotImpl {
       throw new RuntimeException(e);
     } finally {
       detacher.detach();
+    }
+  }
+
+  private static void assertNotTooLarge(int width, int height) {
+    long maxPixels = 10000000L;
+    if (((long) width) * height > maxPixels) {
+      throw new IllegalStateException(
+          String.format(Locale.US, "View too large: (%d, %d)", width, height));
     }
   }
 
