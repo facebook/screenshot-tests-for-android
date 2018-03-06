@@ -16,7 +16,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -55,8 +54,8 @@ public class ScreenshotImpl {
    * Factory method that creates this instance based on what arguments are passed to the
    * instrumentation
    */
-  private static ScreenshotImpl create(Context context, HostFileSender hostFileSender) {
-    Album album = AlbumImpl.createStreaming(context, "default", hostFileSender);
+  private static ScreenshotImpl create(Context context) {
+    Album album = AlbumImpl.create(context, "default");
     album.cleanup();
     return new ScreenshotImpl(album);
   }
@@ -73,11 +72,8 @@ public class ScreenshotImpl {
       }
 
       Instrumentation instrumentation = Registry.getRegistry().instrumentation;
-      Bundle arguments = Registry.getRegistry().arguments;
 
-      HostFileSender hostFileSender = new HostFileSender(instrumentation, arguments);
-
-      sInstance = create(instrumentation.getContext(), hostFileSender);
+      sInstance = create(instrumentation.getContext());
 
       return sInstance;
     }

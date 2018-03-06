@@ -30,34 +30,21 @@ public class AlbumImpl implements Album {
   private final Set<String> mAllNames = new HashSet<>();
   private XmlSerializer mXmlSerializer;
   private FileOutputStream mOutputStream;
-  private HostFileSender mHostFileSender;
 
   /* VisibleForTesting */
-  AlbumImpl(
-      ScreenshotDirectories screenshotDirectories, String name, HostFileSender hostFileSender) {
+  AlbumImpl(ScreenshotDirectories screenshotDirectories, String name) {
     mDir = screenshotDirectories.get(name);
-    mHostFileSender = hostFileSender;
   }
 
-  /** Creates a "local" album that stores all the images on the local disk. */
-  public static AlbumImpl createLocal(Context context, String name) {
-    return new AlbumImpl(new ScreenshotDirectories(context), name, null);
-  }
-
-  /** Creates an album that streams the images as they are created onto the host machine. */
-  public static AlbumImpl createStreaming(
-      Context context, String name, HostFileSender hostFileSender) {
-    return new AlbumImpl(new ScreenshotDirectories(context), name, hostFileSender);
+  /** Creates a "local" album that stores all the images on device. */
+  public static AlbumImpl create(Context context, String name) {
+    return new AlbumImpl(new ScreenshotDirectories(context), name);
   }
 
   @Override
   public void flush() {
     if (mOutputStream != null) {
       endXml();
-    }
-
-    if (mHostFileSender != null) {
-      mHostFileSender.flush();
     }
   }
 
@@ -106,11 +93,8 @@ public class AlbumImpl implements Album {
    * Returns the file in which the screenshot is stored, or null if this is not a valid screenshot
    */
   File getScreenshotFile(String name) {
-    if (mHostFileSender != null) {
-      throw new UnsupportedOperationException("Cannot be called with HostFileSender");
-    }
     File file = getScreenshotFileInternal(name);
-    if (!file.exists()) {
+    if (!file.isFile()) {
       return null;
     }
     return file;
@@ -126,9 +110,6 @@ public class AlbumImpl implements Album {
     bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, outputStream);
     outputStream.close();
     file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
-    if (mHostFileSender != null) {
-      mHostFileSender.send(file);
-    }
     return tileName;
   }
 
@@ -228,7 +209,7 @@ public class AlbumImpl implements Album {
       for (int j = 0; j < tiling.getHeight(); j++) {
         File file = getScreenshotFileInternal(tiling.getAt(i, j));
 
-        if (!file.exists() && mHostFileSender == null) {
+        if (!file.isFile()) {
           throw new RuntimeException("The tile file doesn't exist");
         }
 
