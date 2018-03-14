@@ -27,6 +27,8 @@ task uploadAllLocal(dependsOn: [
 task installAll(dependsOn: [
     ":core:install",
     ":plugin:install",
+    ":layout-hierarchy-common:install",
+    ":layout-hierarchy-litho:install",
 ])
 
 task uploadAllArchives(dependsOn:
