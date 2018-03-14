@@ -1,150 +1,71 @@
-package com.facebook.testing.screenshot.build;
+/**
+ * Copyright (c) 2014-present, Facebook, Inc. All rights reserved.
+ *
+ * <p>This source code is licensed under the BSD-style license found in the LICENSE file in the root
+ * directory of this source tree. An additional grant of patent rights can be found in the PATENTS
+ * file in the same directory.
+ */
+package com.facebook.testing.screenshot.build
 
-import org.junit.*
-import static org.junit.Assert.*
-import org.gradle.api.*
-import org.gradle.testfixtures.*
-import static org.hamcrest.CoreMatchers.*
+import org.gradle.api.Project
+import org.gradle.api.Task
+import org.gradle.testfixtures.ProjectBuilder
+import org.junit.Before
+import org.junit.Test
 
-class ScreenshotsPluginForTest extends ScreenshotsPlugin {
-  static public runtimeDepAdded = false
-
-  @Override
-  void addRuntimeDep(Project project) {
-    runtimeDepAdded = true
-  }
-}
+import static org.junit.Assert.assertTrue
+import static org.junit.Assert.fail
 
 class ScreenshotsPluginTest {
   Project project
 
   @Before
-  void setup() {
+  void "setup"() {
+    final appId = "com.facebook.testing.screenshot.integration"
     project = ProjectBuilder.builder().build()
-  }
 
-  @After
-  void tearDown() {
-    ScreenshotsPluginForTest.runtimeDepAdded = false
-  }
+    File manifest = new File(project.projectDir, "src/main/AndroidManifest.xml")
+    manifest.parentFile.mkdirs()
+    manifest.write("""<?xml version="1.0" encoding="utf-8"?>
+      <manifest package="$appId">
+        <application/>
+      </manifest>""")
 
-  def setupProject() {
-    // make an android manifest
-    def mainDir = project.projectDir.toString() + "/src/main/"
-    new File(mainDir).mkdirs()
-
-    println("making directories" + mainDir.toString())
-
-    def manifest = new File(mainDir + "/AndroidManifest.xml")
-
-    manifest.withWriter('utf-8') { writer ->
-      writer.writeLine('''<?xml version="1.0" encoding="utf-8"?>
-<manifest
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    package='com.facebook.testing.screenshot.examples'>
-   <uses-sdk android:minSdkVersion='9' android:targetSdkVersion="22" />
-   <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-   <application>
-     <!-- not having an empty application block seems to cause the
-          instrumentation tests to fail with a ClassNotFoundException . -->
-   </application>
-</manifest>''')
-    }
+    project.getPluginManager().apply 'com.android.application'
+    project.getPluginManager().apply ScreenshotsPlugin
 
     project.repositories {
       mavenCentral()
     }
 
-
     project.android {
       compileSdkVersion 22
       buildToolsVersion "26.0.1"
+
+      defaultConfig {
+        applicationId appId
+      }
     }
-  }
 
-  @Test
-  void testHasTestDep() {
-    project.getPluginManager().apply 'com.android.library'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-    setupProject()
-
-    assertTrue(ScreenshotsPluginForTest.runtimeDepAdded)
     project.evaluate()
   }
 
-  static void hasRuntimeDep(Project project) {
+  @Test
+  void "Ensure core dependency added"() {
     def depSet = project.getConfigurations().getByName('androidTestApi').getAllDependencies()
-
-    def found = false
     for (dep in depSet) {
       if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
-        found = true
+        return
       }
     }
-
-    assertTrue(found)
+    fail()
   }
 
   @Test
-  void testApplicationHappyPath() {
-    project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-    setupProject()
-
-    project.evaluate()
-  }
-
-  @Test
-  void testUsesTestApk() {
-    def plugin = new ScreenshotsPlugin()
-    project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-    setupProject()
-    project.evaluate()
-
-    // Create dummy APK file to find
-    Task task = project.tasks.getByPath(project.screenshots.testApkTarget)
-    for (File dir in task.outputs.files) {
-      if (dir.absolutePath.contains("outputs/apk/androidTest")) {
-        assertTrue(dir.mkdirs())
-        File dummyAPK = new File(dir, "test.apk")
-        assertTrue(dummyAPK.createNewFile())
-        break
-      }
-    }
-
-    assert plugin.getTestApkOutput(project).contains("androidTest")
-  }
-
-  @Test
-  void testCanSetApkTarget() {
-    project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-    setupProject()
-    project.screenshots.testApkTarget = "packageReleaseAndroidTest"
-
-    project.evaluate()
-    def deps = project.tasks.getByPath("pullScreenshots").getDependsOn()
-
-    assert deps.contains("packageReleaseAndroidTest")
-  }
-
-  @Test
-  void testAddRuntimeDep() {
-    project.getPluginManager().apply 'com.android.application'
-
-    def plugin = new ScreenshotsPlugin()
-    plugin.addRuntimeDep(project)
-
-    hasRuntimeDep(project)
-  }
-
-  @Test
-  void addsLocalScreenshotsTask() {
-    project.getPluginManager().apply 'com.android.application'
-    project.getPluginManager().apply ScreenshotsPluginForTest
-    setupProject()
-
-    assertTrue(project.tasks.pullScreenshotsFromDirectory instanceof Task)
+  void "Ensure tasks added"() {
+    assertTrue(project.tasks.pullDebugAndroidTestScreenshots instanceof Task)
+    assertTrue(project.tasks.runDebugAndroidTestScreenshotTest instanceof Task)
+    assertTrue(project.tasks.recordDebugAndroidTestScreenshotTest instanceof Task)
+    assertTrue(project.tasks.verifyDebugAndroidTestScreenshotTest instanceof Task)
   }
 }

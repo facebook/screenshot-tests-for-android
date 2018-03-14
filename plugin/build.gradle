@@ -1,10 +1,17 @@
-apply plugin: 'groovy'
-jar {
-  manifest {
-    attributes "Implementation-Version": project.version.toString()
+buildscript {
+  repositories {
+    jcenter()
+    google()
+    mavenLocal()
+  }
+  dependencies {
+    classpath plugs.kotlin
   }
 }
 
+apply plugin: 'groovy'
+apply plugin: 'kotlin'
+apply plugin: "java-gradle-plugin"
 apply plugin: 'maven'
 
 repositories {
@@ -12,9 +19,34 @@ repositories {
   mavenCentral()
 }
 
+final GENERATED_PACKAGE_NAME = "com.facebook.testing.screenshot.generated"
+final GENERATED_BUILD_DIR =
+    new File(
+        projectDir.absolutePath,
+        "src/generated/kotlin/${GENERATED_PACKAGE_NAME.replace('.', '/')}")
+
+task generateBuildConfig {
+  doLast {
+    GENERATED_BUILD_DIR.deleteDir()
+    GENERATED_BUILD_DIR.mkdirs()
+
+    final className = "ScreenshotTestBuildConfig"
+    final configClass = new File(GENERATED_BUILD_DIR, "${className}.kt")
+    BufferedWriter writer = configClass.newWriter()
+    try {
+      writer.writeLine("package $GENERATED_PACKAGE_NAME")
+      writer.writeLine("object $className { val VERSION = \"${project.version.toString()}\" }")
+      writer.flush()
+    } finally {
+      writer.close()
+    }
+  }
+}
+
 dependencies {
-  compile gradleApi()
-  implementation group: 'org.eclipse.jetty', name: 'jetty-server', version: '9.3.10.v20160621'
+  implementation deps.kotlinStdlib
+  compileOnly plugs.agp
+
 
   testImplementation deps.junit
   testImplementation plugs.agp
@@ -27,6 +59,15 @@ group = 'com.facebook.testing.screenshot'
 uploadArchives {
   repositories {
     mavenInstaller {
+    }
+  }
+}
+
+compileKotlin {
+  dependsOn generateBuildConfig
+  sourceSets {
+    main {
+      kotlin.srcDirs += 'src/generated'
     }
   }
 }
@@ -44,6 +85,10 @@ compileJava {
   }
 }
 
+clean {
+  delete GENERATED_BUILD_DIR
+}
+
 task pyTests(type: Exec) {
   workingDir file('./src/py')
   commandLine 'python', '-m', 'unittest', 'discover'
@@ -54,10 +99,5 @@ task py3Tests(type: Exec) {
   commandLine 'python3', '-m', 'unittest', 'discover'
 }
 
-task sampleServer() {
-  doLast {
-    file = new File("plugin/src/py/android_screenshot_tests/fixtures/sdcard/screenshots/com.foo/screenshots-default/metadata.xml")
-  }
-}
 
 apply from: rootProject.file("release.gradle")
