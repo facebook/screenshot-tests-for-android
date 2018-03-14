@@ -61,6 +61,5 @@ dependencies {
 }
 
 screenshots {
-  customTestRunner true
   multipleDevices true
 }
