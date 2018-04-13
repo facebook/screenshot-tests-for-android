@@ -112,5 +112,4 @@ It is currently maintained by Hilal Alsibai (@xiphirx)
 
 ## License
 
-screenshot-tests-for-android is BSD-licensed. We also provide an
-additional patent grant.
+screenshot-tests-for-android is Apache-2-licensed.

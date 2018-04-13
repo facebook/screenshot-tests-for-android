@@ -36,7 +36,7 @@ def configureScreenshotTestsForAndroidPom(def pom) {
 
         licenses {
             license {
-                name 'BSD License'
+                name 'Apache-2'
                 url 'https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE'
                 distribution 'repo'
             }
