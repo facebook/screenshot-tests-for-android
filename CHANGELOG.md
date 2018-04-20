@@ -1,3 +1,11 @@
+0.7.0 (Apr 19 2018)
+-----
+- Added the ability to retrieve the resulting Bitmap for custom use on your RecordBuilder
+- Removed the runtime dependency on Dexmaker, this will resolve any issues of using frameworks such as Mockito in your screenshot tests
+- Added a a check to fail when resultant screenshots are extremely large
+- Rewrote the client plugin to provide screenshot test tasks per applicable variant
+- Re-license to Apache 2
+
 0.6.0 (Feb 06 2018)
 -----
 - Added the ability to run screenshot tests on multiple devices at once
