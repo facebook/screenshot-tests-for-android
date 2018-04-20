@@ -15,3 +15,7 @@ SCREENSHOT_TESTS_LITHO_WIDGET_TARGET = dep('lib/litho:litho-widget')
 SCREENSHOT_TESTS_JUNIT_TARGET = dep('lib/junit:junit')
 SCREENSHOT_TESTS_DEXMAKER_TARGET = dep('lib/dexmaker:dexmaker')
 SCREENSHOT_TESTS_DEXMAKER_DX_TARGET = dep('lib/dexmaker:dexmaker-dx')
+
+
+def fb_core_android_library(**kwargs):
+  native.android_library(**kwargs)

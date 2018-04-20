@@ -11,8 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+load("//:SCREENSHOT_TESTS_DEFS", "fb_core_android_library")
 
-android_library(
+fb_core_android_library(
     name = "litho-core",
     exported_deps = [
         ":litho-core-prebuilt",
@@ -32,7 +33,7 @@ remote_file(
     url = "mvn:com.facebook.litho:litho-core:aar:0.7.0",
 )
 
-android_library(
+fb_core_android_library(
     name = "litho-widget",
     exported_deps = [
         ":litho-widget-prebuilt",

@@ -11,10 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+load("//:SCREENSHOT_TESTS_DEFS", "SCREENSHOT_TESTS_CORE_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET", "SCREENSHOT_TESTS_VISIBILITY", "fb_core_android_library")
 
-load("//:SCREENSHOT_TESTS_DEFS", "SCREENSHOT_TESTS_CORE_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET", "SCREENSHOT_TESTS_VISIBILITY")
-
-android_library(
+fb_core_android_library(
     name = "screenshot",
     exported_deps = [
         SCREENSHOT_TESTS_CORE_TARGET,
