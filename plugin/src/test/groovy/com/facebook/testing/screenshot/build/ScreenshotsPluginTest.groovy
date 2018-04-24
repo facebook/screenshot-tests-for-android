@@ -60,7 +60,7 @@ class ScreenshotsPluginTest {
 
   @Test
   void "Ensure core dependency added"() {
-    def depSet = project.getConfigurations().getByName('androidTestApi').getAllDependencies()
+    def depSet = project.getConfigurations().getByName('androidTestImplementation').getAllDependencies()
     for (dep in depSet) {
       if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
         return
