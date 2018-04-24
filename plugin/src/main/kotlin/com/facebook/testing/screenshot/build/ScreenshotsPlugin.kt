@@ -49,7 +49,7 @@ class ScreenshotsPlugin : Plugin<Project> {
     screenshotExtensions = extensions.create("screenshots", ScreenshotsPluginExtension::class.java)
 
     if (screenshotExtensions.addDeps) {
-      project.dependencies.add("androidTestApi", "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
+      project.dependencies.add("androidTestImplementation", "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
     }
 
     val variants = when {

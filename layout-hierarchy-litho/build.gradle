@@ -39,7 +39,7 @@ dependencies {
   implementation deps.lithoCore
   implementation deps.lithoWidget
 
-  androidTestApi deps.espresso
+  androidTestImplementation deps.espresso
 }
 
 uploadArchives {
