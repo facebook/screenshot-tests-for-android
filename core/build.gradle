@@ -40,13 +40,13 @@ android {
 }
 
 dependencies {
-  androidTestApi deps.dexmaker
-  androidTestApi deps.dexmakerDx
+  androidTestImplementation deps.dexmaker
+  androidTestImplementation deps.dexmakerDx
 
-  androidTestApi deps.espresso
-  androidTestApi deps.mockito
-  androidTestApi deps.dexmakerMockito
-  androidTestApi deps.hamcrest
+  androidTestImplementation deps.espresso
+  androidTestImplementation deps.mockito
+  androidTestImplementation deps.dexmakerMockito
+  androidTestImplementation deps.hamcrest
 }
 
 uploadArchives {
