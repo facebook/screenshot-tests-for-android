@@ -69,6 +69,17 @@ public abstract class WindowAttachment {
     }
 
     sAttachments.put(view, true);
+    if (Build.VERSION.SDK_INT < 23) {
+      // On older versions of Android, requesting focus on a view that would bring the
+      // soft keyboard up prior to attachment would result in a NPE in the view's onAttachedToWindow
+      // callback. This is due to the fact that it internally calls
+      // InputMethodManager.peekInstance() to
+      // grab the singleton instance, however it isn't created at that point, leading to the NPE.
+      // So in order to avoid that, we just grab the InputMethodManager from the view's context
+      // ahead of time to ensure the instance exists.
+      // https://android.googlesource.com/platform/frameworks/base/+/a046faaf38ad818e6b5e981a39fd7394cf7cee03
+      view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+    }
     invoke(view, "onAttachedToWindow");
 
     return new RealDetacher(view);
