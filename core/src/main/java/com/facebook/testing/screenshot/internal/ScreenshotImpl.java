@@ -175,7 +175,7 @@ public class ScreenshotImpl {
       int width = measuredView.getWidth();
       int height = measuredView.getHeight();
 
-      assertNotTooLarge(width, height);
+      assertNotTooLarge(width, height, recordBuilder);
 
       int maxi = (width + mTileSize - 1) / mTileSize;
       int maxj = (height + mTileSize - 1) / mTileSize;
@@ -193,8 +193,11 @@ public class ScreenshotImpl {
     }
   }
 
-  private static void assertNotTooLarge(int width, int height) {
-    long maxPixels = 10000000L;
+  private static void assertNotTooLarge(int width, int height, RecordBuilderImpl recordBuilder) {
+    final long maxPixels = recordBuilder.getMaxPixels();
+    if (maxPixels <= 0) {
+      return;
+    }
     if (((long) width) * height > maxPixels) {
       throw new IllegalStateException(
           String.format(Locale.US, "View too large: (%d, %d)", width, height));

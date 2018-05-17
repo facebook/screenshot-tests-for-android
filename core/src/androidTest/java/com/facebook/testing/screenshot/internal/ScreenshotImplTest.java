@@ -133,7 +133,7 @@ public class ScreenshotImplTest {
   }
 
   @Test
-  public void testLargeViewThrows() throws Throwable {
+  public void testLargeViewThrowsWithDefaultMax() throws Throwable {
     measureAndLayout(200, 0xffff00);
 
     assertEquals(200, mTextView.getMeasuredWidth());
@@ -144,6 +144,24 @@ public class ScreenshotImplTest {
     } catch (RuntimeException e) {
       MoreAsserts.assertContainsRegex(".*View too large.*", e.getMessage());
     }
+  }
+
+  @Test
+  public void testLargeViewDoesntThrowWithCustomMax() throws Throwable {
+    measureAndLayout(1440, 1000);
+
+    assertEquals(1440, mTextView.getMeasuredWidth());
+    assertEquals(1000, mTextView.getMeasuredHeight());
+    mScreenshot.snap(mTextView).setMaxPixels(10733760L).setName("largeView").record();
+  }
+
+  @Test
+  public void testLargeViewDoesntThrowWithNoMax() throws Throwable {
+    measureAndLayout(1440, 1000);
+
+    assertEquals(1440, mTextView.getMeasuredWidth());
+    assertEquals(1000, mTextView.getMeasuredHeight());
+    mScreenshot.snap(mTextView).setMaxPixels(0).setName("largeView").record();
   }
 
   private String fileToString(File file) {

@@ -41,6 +41,7 @@ public class RecordBuilderImpl implements RecordBuilder {
   private String mGroup;
   private Tiling mTiling = new Tiling(1, 1);
   private View mView;
+  private long mMaxPixels = 10000000L;
 
   /* package */ RecordBuilderImpl(ScreenshotImpl screenshotImpl) {
     mScreenshotImpl = screenshotImpl;
@@ -112,6 +113,22 @@ public class RecordBuilderImpl implements RecordBuilder {
   @Override
   public Bitmap getBitmap() {
     return mScreenshotImpl.getBitmap(this);
+  }
+
+  /**
+   * Set the maximum number of pixels this screenshot should produce. Producing any number higher
+   * will throw an exception.
+   *
+   * @param maxPixels Maximum number of pixels this screenshot should produce. <= 0 for no limit.
+   */
+  public RecordBuilderImpl setMaxPixels(long maxPixels) {
+    mMaxPixels = maxPixels;
+    return this;
+  }
+
+  /** @return The maximum number of pixels that is expected to be produced by this screenshot */
+  public long getMaxPixels() {
+    return mMaxPixels;
   }
 
   /**
