@@ -61,9 +61,9 @@ public class ScreenshotImplTest {
   @Before
   public void setUp() throws Exception {
     mScreenshotDirectories = new ScreenshotDirectories(getInstrumentation().getTargetContext());
-    mAlbumImpl = AlbumImpl.createLocal(getInstrumentation().getTargetContext(), "verify-in-test");
+    mAlbumImpl = AlbumImpl.create(getInstrumentation().getTargetContext(), "verify-in-test");
     mSecondAlbumImpl =
-        AlbumImpl.createLocal(getInstrumentation().getTargetContext(), "recorded-in-test");
+        AlbumImpl.create(getInstrumentation().getTargetContext(), "recorded-in-test");
     mTextView = new TextView(getInstrumentation().getTargetContext());
     mTextView.setText("foobar");
 

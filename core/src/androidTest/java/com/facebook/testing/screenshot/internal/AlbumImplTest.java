@@ -38,20 +38,17 @@ public class AlbumImplTest {
   private Bitmap mSomeBitmap;
   private String mFooFile;
   private String mBarFile;
-  private HostFileSender mHostFileSender;
   private ScreenshotDirectories mScreenshotDirectories;
 
   @Before
   public void setUp() throws Exception {
     mScreenshotDirectories = new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
-    mAlbumImpl = AlbumImpl.createLocal(InstrumentationRegistry.getTargetContext(), "screenshots");
+    mAlbumImpl = AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
     mSomeBitmap = Bitmap.createBitmap(BITMAP_DIMENSION, BITMAP_DIMENSION, Bitmap.Config.ARGB_8888);
     mSomeBitmap.setPixel(1, 1, 0xff0000ff);
 
     mFooFile = mAlbumImpl.writeBitmap("foo", 0, 0, mSomeBitmap);
     mBarFile = mAlbumImpl.writeBitmap("bar", 0, 0, mSomeBitmap);
-
-    mHostFileSender = mock(HostFileSender.class);
   }
 
   @After
@@ -97,7 +94,7 @@ public class AlbumImplTest {
         new RecordBuilderImpl(null).setName("foo").setTiling(Tiling.singleTile(mFooFile)));
 
     AlbumImpl anotherAlbumImpl =
-        AlbumImpl.createLocal(InstrumentationRegistry.getTargetContext(), "screenshots");
+        AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
 
     assertNotNull(anotherAlbumImpl.getScreenshot("foo"));
     anotherAlbumImpl.cleanup();
@@ -307,25 +304,4 @@ public class AlbumImplTest {
     String relativeFourthFile = relativeFileNames.item(4).getTextContent();
     assertEquals("foo_1_0.png", relativeFourthFile);
   }
-
-  @Test
-  public void testAlbumWithHostSenderSendsStuff() throws Throwable {
-    Album album = new AlbumImpl(mScreenshotDirectories, "foobar", mHostFileSender);
-
-    album.writeBitmap("foobar", 1, 1, mSomeBitmap);
-    verify(mHostFileSender).send(any(File.class));
-    album.cleanup();
-  }
-
-  @Test
-  public void testAlbumWithHostSenderFlushes() throws Throwable {
-    Album album = new AlbumImpl(mScreenshotDirectories, "foobar", mHostFileSender);
-
-    album.flush();
-    verify(mHostFileSender).flush();
-    album.cleanup();
-  }
-
-  @Test
-  public void testStoresRelativePathforTiles() throws Throwable {}
 }
