@@ -16,11 +16,11 @@ load("@xplat//build_defs:fb_java_library.bzl", "fb_java_library")
 
 fb_java_library(
     name = "dexmaker",
+    visibility = ["PUBLIC"],
     exported_deps = [
         ":dexmaker-dx-prebuilt",
         ":dexmaker-prebuilt",
     ],
-    visibility = ["PUBLIC"],
 )
 
 prebuilt_jar(

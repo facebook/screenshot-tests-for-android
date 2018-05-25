@@ -16,10 +16,10 @@ load("@xplat//build_defs:fb_java_library.bzl", "fb_java_library")
 
 fb_java_library(
     name = "junit",
+    visibility = ["PUBLIC"],
     exported_deps = [
         ":junit-prebuilt",
     ],
-    visibility = ["PUBLIC"],
 )
 
 prebuilt_jar(

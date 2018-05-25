@@ -15,10 +15,10 @@ load("//:SCREENSHOT_TESTS_DEFS", "fb_core_android_library")
 
 fb_core_android_library(
     name = "litho-core",
+    visibility = ["PUBLIC"],
     exported_deps = [
         ":litho-core-prebuilt",
     ],
-    visibility = ["PUBLIC"],
 )
 
 android_prebuilt_aar(
@@ -35,10 +35,10 @@ remote_file(
 
 fb_core_android_library(
     name = "litho-widget",
+    visibility = ["PUBLIC"],
     exported_deps = [
         ":litho-widget-prebuilt",
     ],
-    visibility = ["PUBLIC"],
 )
 
 android_prebuilt_aar(
