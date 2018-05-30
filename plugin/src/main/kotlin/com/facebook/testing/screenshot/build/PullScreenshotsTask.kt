@@ -44,6 +44,9 @@ open class PullScreenshotsTask : ScreenshotTask() {
   fun pullScreenshots() {
     val codeSource = ScreenshotsPlugin::class.java.protectionDomain.codeSource
     val jarFile = File(codeSource.location.toURI().path)
+    val outputDir = File(project.buildDir, "screenshots" + variant.name.capitalize())
+
+    assert(!outputDir.exists())
 
     project.exec {
       it.executable = "python"
@@ -53,7 +56,9 @@ open class PullScreenshotsTask : ScreenshotTask() {
         "-m",
         "android_screenshot_tests.pull_screenshots",
         "--apk",
-        apkPath.absolutePath
+        apkPath.absolutePath,
+        "--temp-dir",
+        outputDir.absolutePath
       ).apply {
         if (verify) {
           add("--verify")

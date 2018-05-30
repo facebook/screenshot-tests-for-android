@@ -20,8 +20,10 @@ import org.gradle.api.DefaultTask
 
 open class ScreenshotTask : DefaultTask() {
   protected lateinit var extension: ScreenshotsPluginExtension
+  protected lateinit var variant: TestVariant
 
   open fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
-    this.extension = extension
+      this.extension = extension
+      this.variant = variant
   }
 }
