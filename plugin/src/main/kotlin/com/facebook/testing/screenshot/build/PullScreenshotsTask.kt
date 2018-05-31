@@ -18,12 +18,16 @@ package com.facebook.testing.screenshot.build
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
 import org.gradle.api.tasks.TaskAction
+import org.gradle.api.Project
 import java.io.File
 
 
 open class PullScreenshotsTask : ScreenshotTask() {
   companion object {
-    fun taskName(variant: TestVariant) = "pull${variant.name.capitalize()}Screenshots"
+      fun taskName(variant: TestVariant) = "pull${variant.name.capitalize()}Screenshots"
+
+      fun getReportDir(project: Project, variant: TestVariant): File =
+          File(project.buildDir, "screenshots" + variant.name.capitalize())
   }
 
   private lateinit var apkPath: File
@@ -44,7 +48,7 @@ open class PullScreenshotsTask : ScreenshotTask() {
   fun pullScreenshots() {
     val codeSource = ScreenshotsPlugin::class.java.protectionDomain.codeSource
     val jarFile = File(codeSource.location.toURI().path)
-    val outputDir = File(project.buildDir, "screenshots" + variant.name.capitalize())
+    val outputDir = getReportDir(project, variant)
 
     assert(!outputDir.exists())
 

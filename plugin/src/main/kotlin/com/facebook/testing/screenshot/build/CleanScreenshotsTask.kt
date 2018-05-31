@@ -31,13 +31,9 @@ open class CleanScreenshotsTask : ScreenshotTask() {
     group = ScreenshotsPlugin.GROUP
   }
 
-  override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
-    super.init(variant, extension)
-  }
-
   @TaskAction
   fun cleanScreenshots() {
-      val outputDir = File(project.buildDir, "screenshots" + variant.name.capitalize()).getAbsolutePath()
-      project.delete(outputDir)
+    val outputDir = PullScreenshotsTask.getReportDir(project, variant)
+    project.delete(outputDir)
   }
 }
