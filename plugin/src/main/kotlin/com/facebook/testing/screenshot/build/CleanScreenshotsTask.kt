@@ -15,15 +15,25 @@
  */
 package com.facebook.testing.screenshot.build
 
+import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
-import org.gradle.api.DefaultTask
+import org.gradle.api.tasks.TaskAction
+import java.io.File
 
-open class ScreenshotTask : DefaultTask() {
-  protected lateinit var extension: ScreenshotsPluginExtension
-  protected lateinit var variant: TestVariant
 
-  open fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
-      this.extension = extension
-      this.variant = variant
+open class CleanScreenshotsTask : ScreenshotTask() {
+  companion object {
+    fun taskName(variant: TestVariant) = "clean${variant.name.capitalize()}Screenshots"
+  }
+
+  init {
+    description = "Clean last generated screenshot report"
+    group = ScreenshotsPlugin.GROUP
+  }
+
+  @TaskAction
+  fun cleanScreenshots() {
+    val outputDir = PullScreenshotsTask.getReportDir(project, variant)
+    project.delete(outputDir)
   }
 }
