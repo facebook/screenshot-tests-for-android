@@ -18,12 +18,6 @@ sample-tests:
 
 	grep "Found 11 screenshots" $(TMPFILE)
 
-install-local:
-	./gradlew :plugin:install
-	./gradlew :core:install
-	./gradlew :layout-hierarchy-common:install
-	./gradlew :layout-hierarchy-litho:install
-
 prod-integration-tests: env-check
 	$(MAKE) cleanup
 	cd examples/app-example && ./gradlew connectedAndroidTest
