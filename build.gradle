@@ -26,10 +26,9 @@ task installAll(dependsOn: [
     ":layout-hierarchy-litho:install",
 ])
 
-task uploadAllArchives(dependsOn:
-    [":plugin:uploadArchives",
-     ":core:uploadArchives"]) {
-  doLast {
-    println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
-  }
-}
+task uploadAllArchives(dependsOn: [
+    ":plugin:uploadArchives",
+    ":core:uploadArchives",
+    ":layout-hierarchy-common:install",
+    ":layout-hierarchy-litho:install",
+])
