@@ -19,11 +19,6 @@ allprojects {
   }
 }
 
-task uploadAllLocal(dependsOn: [
-    ":plugin:uploadArchives",
-    ":core:uploadArchives"]) {
-}
-
 task installAll(dependsOn: [
     ":core:install",
     ":plugin:install",
@@ -38,9 +33,3 @@ task uploadAllArchives(dependsOn:
     println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
   }
 }
-
-// Run all the tests prior to release. Also run integration_test.sh
-task releaseTests(dependsOn:
-    [":plugin:pyTests",
-     ":plugin:test",
-     ":core:connectedAndroidTest"])
