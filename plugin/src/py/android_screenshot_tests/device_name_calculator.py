@@ -1,6 +1,7 @@
 from . import common
 import re
 
+
 class DeviceNameCalculator:
     def __init__(self):
         pass
@@ -11,21 +12,23 @@ class DeviceNameCalculator:
         screen_density_text = self._screen_density_text()
         screen_size_text = self._screen_size_text()
         architecture_text = self._architecture_text()
+        language_text = self._language_text()
 
         device_parameters = [api_version_text, play_services_text,
                              screen_density_text, screen_size_text,
-                             architecture_text]
+                             architecture_text, language_text]
 
         if None in device_parameters:
             raise RuntimeError("ERROR: you shouldn't see this in normal operation,"
                                "file a bug report please.\n\n "
                                "One or more device params are None")
 
-        return "{0}_{1}_{2}_{3}_{4}".format(api_version_text,
-                                            play_services_text,
-                                            screen_density_text,
-                                            screen_size_text,
-                                            architecture_text)
+        return "{0}_{1}_{2}_{3}_{4}_{5}".format(api_version_text,
+                                                play_services_text,
+                                                screen_density_text,
+                                                screen_size_text,
+                                                architecture_text,
+                                                language_text)
 
     def _screen_density_text(self):
         density = int(self._screen_density())
@@ -71,6 +74,10 @@ class DeviceNameCalculator:
 
     def _architecture_text(self):
         architecture = self._execute_adb_command(['shell', 'getprop', 'ro.product.cpu.abi'])
+        return architecture.rstrip()
+
+    def _language_text(self):
+        architecture = self._execute_adb_command(['shell', 'getprop', 'ro.product.locale'])
         return architecture.rstrip()
 
     def _execute_adb_command(self, command):
