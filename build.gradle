@@ -19,6 +19,13 @@ allprojects {
   }
 }
 
+task cleanAll(dependsOn: [
+    ':core:clean',
+    ':plugin:clean',
+    ':layout-hierarchy-common:clean',
+    ':layout-hierarchy-litho:clean',
+])
+
 task installAll(dependsOn: [
     ":core:install",
     ":plugin:install",
