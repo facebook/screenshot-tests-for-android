@@ -71,11 +71,16 @@ class ScreenshotsPlugin : Plugin<Project> {
   private fun generateTasksFor(project: Project, variant: TestVariant) {
     variant.outputs.all {
       if (it is ApkVariantOutput) {
+        val cleanScreenshots = createTask(
+            project,
+            CleanScreenshotsTask.taskName(variant),
+            variant,
+            CleanScreenshotsTask::class.java)
         createTask(
             project,
             PullScreenshotsTask.taskName(variant),
             variant,
-            PullScreenshotsTask::class.java)
+            PullScreenshotsTask::class.java).dependsOn(cleanScreenshots)
 
         createTask(
             project,
@@ -94,6 +99,7 @@ class ScreenshotsPlugin : Plugin<Project> {
             VerifyScreenshotTestTask.taskName(variant),
             variant,
             VerifyScreenshotTestTask::class.java)
+
       }
     }
   }
