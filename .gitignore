@@ -10,3 +10,4 @@ examples/**/.idea/*
 !.idea/codeStyleSettings.xml
 *.iml
 local.properties
+plugin/src/generated
