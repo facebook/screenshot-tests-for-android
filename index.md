@@ -200,4 +200,4 @@ Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/iss
 
 ### License
 
-*screenshot-tests-for-android* is [BSD-licensed](https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE). We also provide an additional [patent grant](https://github.com/facebook/screenshot-tests-for-android/blob/master/PATENTS).
+*screenshot-tests-for-android* is [Apache 2 licensed](https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE).
