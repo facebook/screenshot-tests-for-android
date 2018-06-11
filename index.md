@@ -48,18 +48,22 @@ Gradle plugin. All you need to do is apply the
     // ...
     dependencies {
       // ...
-      classpath 'com.facebook.testing.screenshot:plugin:0.6.0'
+      classpath 'com.facebook.testing.screenshot:plugin:0.7.0'
     }
   }
 
   apply plugin: 'com.facebook.testing.screenshot'
 ```
 
-This plugin sets up a few convenience commands:
+This plugin sets up a few Gradle tasks:
 
-+ `gradle screenshotTests` will run all the instrumentation tests, and then generate a report of all of the screenshots.
-+ `gradle recordMode screenshotTests` will run all the screenshot tests and record all the screenshots in your `screenshots/`. You can commit this directory into your repository.
-+ `gradle verifyMode screenshotTests` runs all the screenshot tests and compares it against the previously recorded screenshots. If any of them fails, this command will fail. We expect you to run this command in continuous integration.
+(_`<App Variant>` is the desired variant to target, for example: `DebugAndroidTest`_)
+
++ `clean<App Variant>Screenshots` - Clean last generated screenshot report
++ `pull<App Variant>Screenshots` - Pull screenshots from your device
++ `record<App Variant>ScreenshotTest` - Installs and runs screenshot tests, then records their output for later verification
++ `run<App Variant>ScreenshotTest` - Installs and runs screenshot tests, then generates a report
++ `verify<App Variant>ScreenshotTest` - Installs and runs screenshot tests, then verifies their output against previously recorded screenshots
 
 The plugin also sets up compile dependencies for your tests, so you can now just start calling the `Screenshot` API. See the [Creating a screenshot](#creating-a-screenshot) section for more information.
 
@@ -74,10 +78,10 @@ We provide extra plugins for the layout hierarchy viewer included in screenshot 
 Simply include the dependencies:
 ```groovy
   // Standard Android View Plugins (TextView, etc)
-  compile 'com.facebook.testing.screenshot:layout-hierarchy-common:0.5.0'
+  compile 'com.facebook.testing.screenshot:layout-hierarchy-common:0.7.0'
 
   // Litho Component Plugins
-  compile 'com.facebook.testing.screenshot:layout-hierarchy-litho:0.5.0'
+  compile 'com.facebook.testing.screenshot:layout-hierarchy-litho:0.7.0'
 ```
 
 And then use the plugins relevant to your test in your test class:
@@ -95,7 +99,7 @@ You may also create your own plugins by implementing either the `AttributePlugin
 
 **AndroidManifest permissions**
 
-The screenshots library needs the WRITE_EXTERNAL_STORAGE permission. For an instrumentation test for a library, add this permission to the manifest of the instrumentation apk. For a test for an application, add this permission to the app under test.
+The screenshots library needs the WRITE_EXTERNAL_STORAGE permission. For an instrumentation test for a library, add this permission to the manifest of the instrumentation APK. For a test for an application, add this permission to the app under test.
 
 ### Creating a screenshot
 
