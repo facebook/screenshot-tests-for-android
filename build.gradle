@@ -19,28 +19,49 @@ allprojects {
   }
 }
 
-task uploadAllLocal(dependsOn: [
-    ":plugin:uploadArchives",
-    ":core:uploadArchives"]) {
-}
+def taskLogOutput = new StringBuilder()
+gradle.addListener(new TaskExecutionListener() {
+  def listener = new StandardOutputListener() {
+    @Override
+    void onOutput(CharSequence charSequence) {
+      taskLogOutput.append(charSequence)
+    }
+  }
 
-task installAll(dependsOn: [
-    ":core:install",
-    ":plugin:install",
-    ":layout-hierarchy-common:install",
-    ":layout-hierarchy-litho:install",
+  @Override
+  void beforeExecute(Task task) {
+    task.logging.addStandardOutputListener(listener)
+  }
+
+  @Override
+  void afterExecute(Task task, TaskState state) {
+    task.logging.removeStandardOutputListener(listener)
+  }
+})
+
+task cleanAll(dependsOn: [
+    ':core:clean',
+    ':plugin:clean',
+    ':layout-hierarchy-common:clean',
+    ':layout-hierarchy-litho:clean',
 ])
 
-task uploadAllArchives(dependsOn:
-    [":plugin:uploadArchives",
-     ":core:uploadArchives"]) {
+task installAll(dependsOn: [
+    ':core:install',
+    ':plugin:install',
+    ':layout-hierarchy-common:install',
+    ':layout-hierarchy-litho:install',
+])
+
+task uploadAllArchives(dependsOn: [
+    ':plugin:uploadArchives',
+    ':core:uploadArchives',
+    ':layout-hierarchy-common:install',
+    ':layout-hierarchy-litho:install',
+])
+
+task integrationTest(dependsOn: ':sample:runDebugAndroidTestScreenshotTest') {
   doLast {
-    println("You need to close and release this from 'Staging Repositories' in http://oss.sonatype.org");
+    assert taskLogOutput.toString().contains('Found 11 screenshots')
   }
 }
-
-// Run all the tests prior to release. Also run integration_test.sh
-task releaseTests(dependsOn:
-    [":plugin:pyTests",
-     ":plugin:test",
-     ":core:connectedAndroidTest"])

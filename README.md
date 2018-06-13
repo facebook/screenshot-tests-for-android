@@ -39,14 +39,18 @@ You don't have to build screenshot-tests-for-android from scratch if
 you don't plan to contribute. All artifacts are available from Maven
 Central.
 
-If you plan to contribute, this is the code is broken up into two
-parts:
+If you plan to contribute, this is the code is broken up into a few modules:
 
-* The `core` library is packaged as part of your instrumentation tests
+* The `core` module is packaged as part of your instrumentation tests
   and generates screenshots on the device.
 
-* The `plugin` library adds Gradle tasks to make it easier to work
+* The `plugin` module adds Gradle tasks to make it easier to work
   with screenshot tests.
+
+* The `layout-hierarchy-common` module adds extra common `View` information to your reports' layout hierarchy viewer
+
+* The `layout-hierarchy-litho` module adds extra Litho component information to your reports' layout hierarchy viewer
+
 
 In addition you'll find python code inside `plugin/src/py`. This code
 is packaged into the gradle plugin.
@@ -73,39 +77,31 @@ You can install all the artifacts to your local maven repository using
 ## Running With a Remote Service
 
 For usage with a remote testing service (e.g. Google Cloud Test Lab) where ADB is not available directly the plugin supports a "disconnected" 
-workflow.  Collect all screenshots artifacts into a single directory and run the plugin in "local mode" using the pullScreenshotsFromDirectory task
+workflow.  Collect all screenshots into a single directory and run the plugin using the following options
 
 ### Example
 The location of the screenshot artifacts can be configured in the project's build.gradle:
 ```groovy
   screenshots {
       // Points to the directory containing all the files pulled from a device
-      referenceDir = path/to/artifacts
-
-      // Your app's application id
-      targetPackage = "your.application.package"
+      referenceDir = path/to/screenshots
   }
 ```
 
 Then, screenshots may be verified by executing the following:
 ```bash
-  $ gradle verifyMode pullScreenshotsFromDirectory
+  $ gradle :<project>:verify<flavor>ScreenshotTest
 ```
 
-To record, simply change `verifyMode` to `recordMode` and the local screenshots will become the master copy
+To record, simply change `verify` to `record`.
 
-## Join the screenshot-tests-for-android community
+## Contributing
 
-* Website: http://facebook.github.io/screenshot-tests-for-android
-* Discussion group:
-   https://groups.google.com/forum/#!forum/screenshot-tests-for-android<br />
-   screenshot-tests-for-android@googlegroups.com
-
-See the CONTRIBUTING file for how to help out.
+Please see the [contributing](.github/CONTRIBUTING.md) file.
 
 ## Authors
 
-screenshot-tests-for-android was originally written by Arnold Noronha (arnold@fb.com)
+screenshot-tests-for-android was originally written by Arnold Noronha (arnold@tdrhq.com)
 You can reach him at @tdrhq on GitHub.
 
 It is currently maintained by Hilal Alsibai (@xiphirx)

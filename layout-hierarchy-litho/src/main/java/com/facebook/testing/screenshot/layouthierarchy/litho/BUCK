@@ -11,7 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-load("//:SCREENSHOT_TESTS_DEFS", "SCREENSHOT_TESTS_CORE_TARGET", "SCREENSHOT_TESTS_LITHO_CORE_TARGET", "SCREENSHOT_TESTS_LITHO_WIDGET_TARGET", "SCREENSHOT_TESTS_VISIBILITY", "fb_core_android_library")
+load("//:screenshot_test_defs.bzl", "SCREENSHOT_TESTS_CORE_TARGET", "SCREENSHOT_TESTS_LITHO_CORE_TARGET", "SCREENSHOT_TESTS_LITHO_WIDGET_TARGET", "SCREENSHOT_TESTS_VISIBILITY", "fb_core_android_library")
 
 fb_core_android_library(
     name = "litho",

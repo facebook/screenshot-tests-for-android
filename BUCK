@@ -1,3 +1,4 @@
+# BUILD FILE SYNTAX: SKYLARK
 # Copyright 2014-present Facebook, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -11,7 +12,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-load("//:SCREENSHOT_TESTS_DEFS", "SCREENSHOT_TESTS_CORE_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET", "SCREENSHOT_TESTS_VISIBILITY", "fb_core_android_library")
+load("//:screenshot_test_defs.bzl", "SCREENSHOT_TESTS_CORE_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_COMMON_TARGET", "SCREENSHOT_TESTS_LAYOUT_HIERARCHY_LITHO_TARGET", "SCREENSHOT_TESTS_VISIBILITY", "fb_core_android_library")
 
 fb_core_android_library(
     name = "screenshot",
