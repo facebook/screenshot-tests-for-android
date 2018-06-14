@@ -1,10 +1,12 @@
-from . import common
 import re
+
+from .adb_executor import AdbExecutor
 
 
 class DeviceNameCalculator:
-    def __init__(self):
-        pass
+
+    def __init__(self, executor=AdbExecutor()):
+        self.executor = executor
 
     def name(self):
         api_version_text = self._api_version_text()
@@ -47,19 +49,19 @@ class DeviceNameCalculator:
         return 'XXXHDPI'
 
     def _screen_density(self):
-        result = self._execute_adb_command(['shell', 'wm', 'density'])
+        result = self.executor.execute(['shell', 'wm', 'density'])
         density = re.search('[0-9]+', result)
         if density:
             return density.group(0)
 
     def _screen_size_text(self):
-        result = self._execute_adb_command(['shell', 'wm', 'size'])
+        result = self.executor.execute(['shell', 'wm', 'size'])
         density = re.search('[0-9]+x[0-9]+', result)
         if density:
             return density.group(0)
 
     def _has_play_services(self):
-        output = self._execute_adb_command(['shell', 'pm', 'path', 'com.google.android.gms'])
+        output = self.executor.execute(['shell', 'pm', 'path', 'com.google.android.gms'])
         return True if output else False
 
     def _play_services_text(self):
@@ -67,23 +69,16 @@ class DeviceNameCalculator:
         return 'GP' if play_services else 'NO_GP'
 
     def _api_version(self):
-        return self._execute_adb_command(['shell', 'getprop', 'ro.build.version.sdk'])
+        return self.executor.execute(['shell', 'getprop', 'ro.build.version.sdk'])
 
     def _api_version_text(self):
         return 'API_{0}'.format(int(self._api_version()))
 
     def _architecture_text(self):
-        architecture = self._execute_adb_command(['shell', 'getprop', 'ro.product.cpu.abi'])
+        architecture = self.executor.execute(['shell', 'getprop', 'ro.product.cpu.abi'])
         return architecture.rstrip()
 
     def _language_text(self):
-        architecture = self._execute_adb_command(['shell', 'getprop', 'ro.product.locale'])
-        return architecture.rstrip()
-
-    def _execute_adb_command(self, command):
-        result = common.check_output([common.get_adb()] + command)
-        if result is None:
-            raise RuntimeError("ERROR: you shouldn't see this in normal operation,"
-                               "file a bug report please.\n\n "
-                               "Trying to execute adb " + ' '.join(command))
-        return result
+        persist_locale = self.executor.execute(['shell', 'getprop', 'persist.sys.locale'])
+        product_locale = self.executor.execute(['shell', 'getprop', 'ro.product.locale'])
+        return persist_locale.rstrip() if persist_locale else product_locale.rstrip()
