@@ -14,11 +14,11 @@ class DeviceNameCalculator:
         screen_density_text = self._screen_density_text()
         screen_size_text = self._screen_size_text()
         architecture_text = self._architecture_text()
-        language_text = self._language_text()
+        locale = self._locale()
 
         device_parameters = [api_version_text, play_services_text,
                              screen_density_text, screen_size_text,
-                             architecture_text, language_text]
+                             architecture_text, locale]
 
         if None in device_parameters:
             raise RuntimeError("ERROR: you shouldn't see this in normal operation,"
@@ -30,7 +30,7 @@ class DeviceNameCalculator:
                                                 screen_density_text,
                                                 screen_size_text,
                                                 architecture_text,
-                                                language_text)
+                                                locale)
 
     def _screen_density_text(self):
         density = int(self._screen_density())
@@ -78,7 +78,7 @@ class DeviceNameCalculator:
         architecture = self.executor.execute(['shell', 'getprop', 'ro.product.cpu.abi'])
         return architecture.rstrip()
 
-    def _language_text(self):
+    def _locale(self):
         persist_locale = self.executor.execute(['shell', 'getprop', 'persist.sys.locale'])
         product_locale = self.executor.execute(['shell', 'getprop', 'ro.product.locale'])
         return persist_locale.rstrip() if persist_locale else product_locale.rstrip()
