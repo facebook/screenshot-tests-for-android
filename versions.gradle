@@ -5,7 +5,7 @@ ext {
   final lithoVersion = "0.15.0"
 
   versions = [
-      kotlin    : '1.2.41',
+      kotlin    : '1.2.50',
       targetSdk : 26,
       compileSdk: 26,
       minSdk    : 9,
