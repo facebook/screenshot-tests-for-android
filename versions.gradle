@@ -9,12 +9,12 @@ ext {
       targetSdk : 26,
       compileSdk: 26,
       minSdk    : 9,
-      buildTools: '26.0.2',
+      buildTools: '27.0.3',
   ]
 
   plugs = [
-      "agp"        : "com.android.tools.build:gradle:3.0.0",
-      "mavenGradle": "com.github.dcendents:android-maven-gradle-plugin:1.5",
+      "agp"        : "com.android.tools.build:gradle:3.1.0",
+      "mavenGradle": "com.github.dcendents:android-maven-gradle-plugin:2.1",
       "screenshot" : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
       "kotlin"     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
   ]
