@@ -1,3 +1,11 @@
+0.8.0 (Jul 30 2018)
+-----
+- Replaced androidTestApi with androidTestImplementation when adding in core dependency via the plugin
+- Fixed a bug where requesting focus prior to being attached to a Window would crash
+- Added the ability to customize the max pixel size restriction
+- Moved generated report to build/ instead of /tmp
+- Added language to the device name calculation for multiple devices
+
 0.7.0 (Apr 19 2018)
 -----
 - Added the ability to retrieve the resulting Bitmap for custom use on your RecordBuilder
