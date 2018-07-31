@@ -115,12 +115,8 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mScreenshotImpl.getBitmap(this);
   }
 
-  /**
-   * Set the maximum number of pixels this screenshot should produce. Producing any number higher
-   * will throw an exception.
-   *
-   * @param maxPixels Maximum number of pixels this screenshot should produce. <= 0 for no limit.
-   */
+  /** @inherit */
+  @Override
   public RecordBuilderImpl setMaxPixels(long maxPixels) {
     mMaxPixels = maxPixels;
     return this;

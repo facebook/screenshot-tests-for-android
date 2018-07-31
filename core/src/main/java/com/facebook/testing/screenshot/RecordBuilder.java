@@ -52,6 +52,14 @@ public interface RecordBuilder {
    */
   Bitmap getBitmap();
 
+  /**
+   * Set the maximum number of pixels this screenshot should produce. Producing any number higher
+   * will throw an exception.
+   *
+   * @param maxPixels Maximum number of pixels this screenshot should produce. <= 0 for no limit.
+   */
+  public RecordBuilder setMaxPixels(long maxPixels);
+
   /** Finish the recording. */
   void record();
 }
