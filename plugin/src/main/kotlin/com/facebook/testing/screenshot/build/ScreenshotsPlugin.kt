@@ -29,7 +29,7 @@ open class ScreenshotsPluginExtension {
   /** Whether to have the plugin dependency automatically add the core dependency */
   var addDeps = true
   /** Whether to store screenshots in device specific folders */
-  var multipleDevices = true
+  var multipleDevices = false
   /** The python executable to use */
   var pythonExecutable = "python"
 }
