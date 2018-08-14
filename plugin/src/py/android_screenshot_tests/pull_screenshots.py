@@ -26,6 +26,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import urllib
 import xml.etree.ElementTree as ET
 import zipfile
 
@@ -69,10 +70,38 @@ def sort_screenshots(screenshots):
     return sorted(list(screenshots), key=sort_key)
 
 
-def generate_html(dir):
-    root = ET.parse(join(dir, 'metadata.xml')).getroot()
+def show_old_result(
+    test_name,
+    html,
+    new_screenshot,
+    test_img_api,
+    old_imgs_data,
+):
+    old_imgs_data['test'] = test_name
+    encoded_data = urllib.urlencode(old_imgs_data)
+    url = test_img_api + encoded_data
+    response = json.loads(urllib.urlopen(url).read().decode('utf-8'))
+    old_screenshot_url = response['url']
+    html.write('<div class="img-block">Current')
+    html.write('<div class="img-wrapper">')
+    html.write('<img src="%s"></img>' % old_screenshot_url)
+    html.write('</div></div>')
+
+
+def generate_html(
+    output_dir,
+    test_img_api,
+    old_imgs_data,
+):
+    # Take in:
+    # output_dir a directory with imgs and data outputted by the just-run test,
+    # test_img_api a url that takes in the name of the test and a dict w/ data,
+    #   and returns a url to an image from a previous run of the test,
+    # old_imgs_data a dict that will be used in the test_img_api url.
+    # Creates the html for showing a before and after comparison of the images.
+    output_root = ET.parse(join(output_dir, 'metadata.xml')).getroot()
     alternate = False
-    index_html = abspath(join(dir, "index.html"))
+    index_html = abspath(join(output_dir, "index.html"))
     with codecs.open(index_html, mode="w", encoding="utf-8") as html:
         html.write('<!DOCTYPE html>')
         html.write('<html>')
@@ -89,7 +118,7 @@ def generate_html(dir):
         html.write('<body>')
 
         screenshot_num = 0
-        for screenshot in sort_screenshots(root.iter('screenshot')):
+        for screenshot in sort_screenshots(output_root.iter('screenshot')):
             screenshot_num += 1
             alternate = not alternate
             canonical_name = screenshot.find('name').text
@@ -127,9 +156,25 @@ def generate_html(dir):
             if error is not None:
                 html.write('<div class="screenshot_error">%s</div>' % error.text)
             else:
-                hierarchy = get_view_hierarchy(dir, screenshot)
+                hierarchy = get_view_hierarchy(output_dir, screenshot)
                 html.write('<div class="flex-wrapper">')
-                write_image(hierarchy, dir, html, screenshot, screenshot_num)
+                comparing = test_img_api is not None
+                if comparing:
+                    show_old_result(
+                        canonical_name,
+                        html,
+                        screenshot,
+                        test_img_api,
+                        old_imgs_data,
+                    )
+                write_image(
+                    hierarchy,
+                    output_dir,
+                    html,
+                    screenshot,
+                    screenshot_num,
+                    comparing,
+                )
                 html.write('<div class="command-wrapper">')
                 write_commands(html)
                 write_view_hierarchy(hierarchy, html, screenshot_num)
@@ -219,7 +264,10 @@ def get_view_hierarchy(dir, screenshot):
         return json.loads(dump.read())
 
 
-def write_image(hierarchy, dir, html, screenshot, parent_id):
+def write_image(hierarchy, dir, html, screenshot, parent_id, comparing):
+    html.write('<div class="img-block">')
+    if comparing:
+        html.write('New Output')
     html.write('<div class="img-wrapper">')
     html.write('<table>')
     for y in range(int(screenshot.find('tile_height').text)):
@@ -236,7 +284,7 @@ def write_image(hierarchy, dir, html, screenshot, parent_id):
     html.write('</table>')
     html.write('<div class="hierarchy-overlay">')
     write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id)
-    html.write('</div></div>')
+    html.write('</div></div></div>')
 
 
 def test_for_wkhtmltoimage():
@@ -386,7 +434,9 @@ def pull_screenshots(process,
                      filter_name_regex=None,
                      record=None,
                      verify=None,
-                     opt_generate_png=None):
+                     opt_generate_png=None,
+                     test_img_api=None,
+                     old_imgs_data=None):
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
 
@@ -403,7 +453,7 @@ def pull_screenshots(process,
 
     _validate_metadata(temp_dir)
 
-    path_to_html = generate_html(temp_dir)
+    path_to_html = generate_html(temp_dir, test_img_api, old_imgs_data)
     device_name = device_name_calculator.name() if device_name_calculator else None
     record_dir = join(record, device_name) if record and device_name else record
     verify_dir = join(verify, device_name) if verify and device_name else verify

@@ -12,10 +12,16 @@ img {
     flex-direction: row;
 }
 
+.img-block {
+    border-right: 1px solid #aaaaaa;
+    margin-right: 8px;
+    margin-top: 10px;
+    padding-right: 8px;
+}
+
 .img-wrapper {
     background-image: url("background.png");
-    margin-top: 16px;
-    margin-right: 16px;
+    margin-top: 5px;
     position: relative;
 }
 
