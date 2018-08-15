@@ -80,12 +80,17 @@ def show_old_result(
     old_imgs_data['test'] = test_name
     encoded_data = urllib.urlencode(old_imgs_data)
     url = test_img_api + encoded_data
-    response = json.loads(urllib.urlopen(url).read().decode('utf-8'))
-    old_screenshot_url = response['url']
     html.write('<div class="img-block">Current')
-    html.write('<div class="img-wrapper">')
-    html.write('<img src="%s"></img>' % old_screenshot_url)
-    html.write('</div></div>')
+    try:
+        response = json.loads(urllib.urlopen(url).read().decode('utf-8'))
+        old_screenshot_url = response['url']
+        html.write('<div class="img-wrapper">')
+        html.write('<img src="%s"></img>' % old_screenshot_url)
+        html.write('</div>')
+    except:
+        html.write('Unable to query image from API')
+        pass
+    html.write('</div>')
 
 
 def generate_html(
