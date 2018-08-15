@@ -69,6 +69,7 @@ public class ViewHelpers {
     } else {
       layoutWithHeightDetection();
     }
+    dispatchOnGlobalLayout(mView);
     dispatchPreDraw(mView);
     return new AfterLayout();
   }
@@ -162,6 +163,17 @@ public class ViewHelpers {
         dispatchPreDraw(vg.getChildAt(i));
       }
     }
+  }
+
+  private void dispatchOnGlobalLayout(View view) {
+    if (view instanceof ViewGroup) {
+      ViewGroup vg = (ViewGroup) view;
+      for (int i = 0; i < vg.getChildCount(); i++) {
+        dispatchOnGlobalLayout(vg.getChildAt(i));
+      }
+    }
+
+    view.getViewTreeObserver().dispatchOnGlobalLayout();
   }
 
   private void layoutView() {
