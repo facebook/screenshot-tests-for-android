@@ -1,4 +1,3 @@
-# BUILD FILE SYNTAX: SKYLARK
 python_library(
     name = "screenshot_tests",
     srcs = glob(["**/*.py"]),
