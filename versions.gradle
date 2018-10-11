@@ -9,7 +9,6 @@ ext {
       targetSdk : 26,
       compileSdk: 26,
       minSdk    : 9,
-      buildTools: '27.0.3',
   ]
 
   plugs = [
