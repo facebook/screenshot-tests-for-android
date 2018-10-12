@@ -1,3 +1,5 @@
+apply plugin: 'com.github.ben-manes.versions'
+
 buildscript {
   apply from: rootProject.file('versions.gradle')
   repositories {
@@ -8,6 +10,7 @@ buildscript {
   dependencies {
     classpath plugs.agp
     classpath plugs.mavenGradle
+    classpath plugs.versions
   }
 }
 
