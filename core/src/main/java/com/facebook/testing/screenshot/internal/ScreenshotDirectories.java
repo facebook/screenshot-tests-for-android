@@ -89,6 +89,10 @@ class ScreenshotDirectories {
         stream.close();
       } catch (IOException ignored) {
       }
+      try {
+        pfd.close();
+      } catch (IOException ignored) {
+      }
     }
   }
 
