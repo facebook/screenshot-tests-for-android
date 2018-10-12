@@ -29,7 +29,6 @@ apply plugin: 'com.facebook.testing.screenshot'
 
 android {
   compileSdkVersion versions.compileSdk
-  buildToolsVersion versions.buildTools
   defaultConfig {
     applicationId "com.facebook.testing.screenshot.example"
     minSdkVersion 15
