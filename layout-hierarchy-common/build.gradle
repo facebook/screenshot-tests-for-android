@@ -21,7 +21,6 @@ group = 'com.facebook.testing.screenshot'
 
 android {
   compileSdkVersion versions.compileSdk
-  buildToolsVersion versions.buildTools
 
   packagingOptions {
     exclude 'LICENSE.txt'

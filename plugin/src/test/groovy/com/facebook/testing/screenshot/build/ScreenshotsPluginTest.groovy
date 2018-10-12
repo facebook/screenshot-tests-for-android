@@ -48,7 +48,6 @@ class ScreenshotsPluginTest {
 
     project.android {
       compileSdkVersion 22
-      buildToolsVersion "26.0.1"
 
       defaultConfig {
         applicationId appId
