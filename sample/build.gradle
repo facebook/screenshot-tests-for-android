@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates.
+
 buildscript {
   apply from: rootProject.file('versions.gradle')
   repositories {

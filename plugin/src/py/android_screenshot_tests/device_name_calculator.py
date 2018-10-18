@@ -1,3 +1,5 @@
+# Copyright (c) Facebook, Inc. and its affiliates.
+
 import re
 
 from .adb_executor import AdbExecutor

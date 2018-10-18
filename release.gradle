@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates.
+
 apply plugin: 'maven'
 apply plugin: 'signing'
 

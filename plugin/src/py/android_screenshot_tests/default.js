@@ -1,3 +1,5 @@
+// Copyright (c) Facebook, Inc. and its affiliates.
+//
 $(function () {
     $(".extra").click(function () {
             var str = $(this).attr('data');
