@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+load("@fbsource//tools/build_defs:fb_native_wrapper.bzl", "fb_native")
 load("@fbsource//tools/build_defs/android:fb_java_library.bzl", "fb_java_library")
 
 fb_java_library(
@@ -21,13 +22,13 @@ fb_java_library(
     ],
 )
 
-prebuilt_jar(
+fb_native.prebuilt_jar(
     name = "junit-prebuilt",
     binary_jar = ":junit.jar",
     visibility = ["PUBLIC"],
 )
 
-remote_file(
+fb_native.remote_file(
     name = "junit.jar",
     sha1 = "2973d150c0dc1fefe998f834810d68f278ea58ec",
     url = "mvn:junit:junit:jar:4.12",
