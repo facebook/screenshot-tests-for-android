@@ -17,6 +17,7 @@ package com.facebook.testing.screenshot.internal;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import javax.annotation.Nullable;
 import junit.framework.TestCase;
 
 /** Detect the test name and class that is being run currently. */
@@ -58,7 +59,7 @@ public class TestNameDetector {
     return methodName;
   }
 
-  private static StackTraceElement getFirstTestElement(StackTraceElement[] stack) {
+  private static @Nullable StackTraceElement getFirstTestElement(StackTraceElement[] stack) {
     for (StackTraceElement element : stack) {
       try {
         Class<?> clazz = Class.forName(element.getClassName());

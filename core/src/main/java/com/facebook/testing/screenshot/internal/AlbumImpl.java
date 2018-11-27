@@ -27,6 +27,7 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.xmlpull.v1.XmlSerializer;
 
 /** A "local" implementation of Album. */
@@ -90,6 +91,7 @@ public class AlbumImpl implements Album {
   }
 
   /** Returns the stored screenshot in the album, or null if no such test case exists. */
+  @Nullable
   Bitmap getScreenshot(String name) {
     if (getScreenshotFile(name) == null) {
       return null;
@@ -100,6 +102,7 @@ public class AlbumImpl implements Album {
   /**
    * Returns the file in which the screenshot is stored, or null if this is not a valid screenshot
    */
+  @Nullable
   File getScreenshotFile(String name) {
     File file = getScreenshotFileInternal(name);
     if (!file.isFile()) {

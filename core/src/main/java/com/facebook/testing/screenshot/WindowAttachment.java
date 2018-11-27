@@ -31,6 +31,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.WeakHashMap;
+import javax.annotation.Nullable;
 
 @SuppressLint("PrivateApi")
 public abstract class WindowAttachment {
@@ -41,7 +42,7 @@ public abstract class WindowAttachment {
   private static final InvocationHandler sInvocationHandler =
       new InvocationHandler() {
         @Override
-        public Object invoke(Object project, Method method, Object[] args) {
+        public @Nullable Object invoke(Object project, Method method, Object[] args) {
           return null;
         }
       };
@@ -228,7 +229,7 @@ public abstract class WindowAttachment {
     InvocationHandler handler =
         new InvocationHandler() {
           @Override
-          public Object invoke(Object proxy, Method method, Object[] args) {
+          public @Nullable Object invoke(Object proxy, Method method, Object[] args) {
             if (method.getName().equals("asBinder")) {
               return new Binder();
             }
