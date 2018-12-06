@@ -52,6 +52,8 @@ KEY_LEFT = 'left'
 KEY_TOP = 'top'
 KEY_WIDTH = 'width'
 KEY_HEIGHT = 'height'
+KEY_CHILDREN = 'children'
+DEFAULT_VIEW_CLASS = 'android.view.View'
 
 
 def usage():
@@ -227,16 +229,16 @@ def write_view_hierarchy(hierarchy, html, parent_id):
 
 def write_view_hierarchy_tree_node(node, html, parent_id):
     html.write('<details target="#%s-%s">' % (parent_id, get_view_hierarchy_overlay_node_id(node)))
-    html.write('<summary>%s</summary>' % node['class'])
+    html.write('<summary>%s</summary>' % node.get(KEY_CLASS, DEFAULT_VIEW_CLASS))
     html.write('<ul>')
     for item in sorted(node):
-        if item == 'children' or item == 'class':
+        if item == KEY_CHILDREN or item == KEY_CLASS:
             continue
         html.write('<li><strong>%s:</strong> %s</li>' % (item, node[item]))
 
     html.write('</ul>')
-    if 'children' in node:
-        for child in node['children']:
+    if KEY_CHILDREN in node:
+        for child in node[KEY_CHILDREN]:
             write_view_hierarchy_tree_node(child, html, parent_id)
 
     html.write('</details>')
@@ -263,13 +265,13 @@ def write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id):
         """
         html.write(node_html % (left, top, width, height, parent_id, id))
 
-        if 'children' in node:
-            for child in node['children']:
+        if KEY_CHILDREN in node:
+            for child in node[KEY_CHILDREN]:
                 to_output.put(child)
 
 
 def get_view_hierarchy_overlay_node_id(node):
-    cls = node[KEY_CLASS]
+    cls = node.get(KEY_CLASS, DEFAULT_VIEW_CLASS)
     x = node[KEY_LEFT]
     y = node[KEY_TOP]
     width = node[KEY_WIDTH]
