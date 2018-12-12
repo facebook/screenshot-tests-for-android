@@ -113,8 +113,8 @@ def show_old_result(
 
 def generate_html(
     output_dir,
-    test_img_api,
-    old_imgs_data,
+    test_img_api=None,
+    old_imgs_data=None,
 ):
     # Take in:
     # output_dir a directory with imgs and data outputted by the just-run test,
@@ -181,7 +181,7 @@ def generate_html(
             else:
                 hierarchy = get_view_hierarchy(output_dir, screenshot)
                 html.write('<div class="flex-wrapper">')
-                comparing = test_img_api is not None
+                comparing = test_img_api is not None and old_imgs_data is not None
                 if comparing:
                     show_old_result(
                         canonical_name,
