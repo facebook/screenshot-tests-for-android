@@ -33,6 +33,8 @@ ext {
       lithoAnnotations    : "com.facebook.litho:litho-annotations:$lithoVersion",
       lithoProcessor      : "com.facebook.litho:litho-processor:$lithoVersion",
 
+      jsr305              : "com.google.code.findbugs:jsr305:3.0.2",
+
       screenshotTestCommon: "com.facebook.testing.screenshot:layout-hierarchy-common:$screenshotTestVersion",
       screenshotTestLitho : "com.facebook.testing.screenshot:layout-hierarchy-litho:$screenshotTestVersion",
 
