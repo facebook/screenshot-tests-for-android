@@ -90,7 +90,7 @@ class TestDeviceNameCalculator(unittest.TestCase):
 
         assert result == "API_25_NO_GP_XXHDPI_1080x1920_x86_es-ES"
 
-    def density_10_to_LDPI(self):
+    def test_density_10_to_LDPI(self):
         def mock_data(parameters):
             return 'Physical density: 10'
 
@@ -103,7 +103,7 @@ class TestDeviceNameCalculator(unittest.TestCase):
 
         assert result == "LDPI"
 
-    def density_140_to_MDPI(self):
+    def test_density_140_to_MDPI(self):
         def mock_data(parameters):
             return 'Physical density: 140'
 
@@ -116,7 +116,7 @@ class TestDeviceNameCalculator(unittest.TestCase):
 
         assert result == "MDPI"
 
-    def density_200_to_HDPI(self):
+    def test_density_200_to_HDPI(self):
         def mock_data(parameters):
             return 'Physical density: 200'
 
@@ -129,7 +129,7 @@ class TestDeviceNameCalculator(unittest.TestCase):
 
         assert result == "HDPI"
 
-    def density_250_to_XHDPI(self):
+    def test_density_250_to_XHDPI(self):
         def mock_data(parameters):
             return 'Physical density: 250'
 
@@ -142,7 +142,7 @@ class TestDeviceNameCalculator(unittest.TestCase):
 
         assert result == "XHDPI"
 
-    def density_340_to_XXHDPI(self):
+    def test_density_340_to_XXHDPI(self):
         def mock_data(parameters):
             return 'Physical density: 340'
 
@@ -155,7 +155,7 @@ class TestDeviceNameCalculator(unittest.TestCase):
 
         assert result == "XXHDPI"
 
-    def density_500_to_XXXHDPI(self):
+    def test_density_500_to_XXXHDPI(self):
         def mock_data(parameters):
             return 'Physical density: 500'
 
