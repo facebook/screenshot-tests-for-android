@@ -1,5 +1,5 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
-
+import subprocess
 import sys
 import unittest
 
@@ -167,3 +167,16 @@ class TestDeviceNameCalculator(unittest.TestCase):
         result = device_calculator._screen_density_text()
 
         assert result == "XXXHDPI"
+
+    def test_absent_gms_gracefully_handled(self):
+        adb_executor = MagicMock()
+        adb_executor.execute.side_effect = subprocess.CalledProcessError(
+            returncode=1,
+            cmd=["irrelevant"]
+        )
+
+        device_calculator = DeviceNameCalculator(adb_executor)
+
+        result = device_calculator._has_play_services()
+
+        assert not result
