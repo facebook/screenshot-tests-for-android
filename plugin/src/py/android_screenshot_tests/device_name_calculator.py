@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates.
 
 import re
+import subprocess
 
 from .adb_executor import AdbExecutor
 
@@ -63,8 +64,11 @@ class DeviceNameCalculator:
             return density.group(0)
 
     def _has_play_services(self):
-        output = self.executor.execute(['shell', 'pm', 'path', 'com.google.android.gms'])
-        return True if output else False
+        try:
+            output = self.executor.execute(['shell', 'pm', 'path', 'com.google.android.gms'])
+            return True if output else False
+        except subprocess.CalledProcessError:
+            return False
 
     def _play_services_text(self):
         play_services = self._has_play_services()
