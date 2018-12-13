@@ -39,6 +39,9 @@ android {
 }
 
 dependencies {
+
+  compileOnly deps.jsr305
+
   androidTestImplementation deps.dexmaker
   androidTestImplementation deps.dexmakerDx
 
