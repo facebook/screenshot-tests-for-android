@@ -29,14 +29,12 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import com.facebook.testing.screenshot.WindowAttachment;
-import com.facebook.testing.screenshot.layouthierarchy.AccessibilityHierarchyDumper;
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * Implementation for Screenshot class.
@@ -264,12 +262,9 @@ public class ScreenshotImpl {
     OutputStream viewHierarchyDump = null;
     try {
       viewHierarchyDump = mAlbum.openViewHierarchyFile(recordBuilder.getName());
-      JSONObject dump = new JSONObject();
-      JSONObject viewDump = LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView());
-      JSONObject axDump = AccessibilityHierarchyDumper.dumpHierarchy(recordBuilder.getView());
-      dump.put("viewHierarchy", viewDump);
-      dump.put("axHierarchy", axDump);
-      viewHierarchyDump.write(dump.toString(2).getBytes());
+      String dump =
+          LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView()).toString(2);
+      viewHierarchyDump.write(dump.getBytes());
       viewHierarchyDump.flush();
       mAlbum.addRecord(recordBuilder);
     } catch (IOException | JSONException e) {
