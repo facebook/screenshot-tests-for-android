@@ -47,6 +47,8 @@ except ImportError:
 
 
 OLD_ROOT_SCREENSHOT_DIR = '/data/data/'
+KEY_VIEW_HIERARCHY = 'viewHierarchy'
+KEY_AX_HIERARCHY = 'axHierarchy'
 KEY_CLASS = 'class'
 KEY_LEFT = 'left'
 KEY_TOP = 'top'
@@ -179,7 +181,8 @@ def generate_html(
             if error is not None:
                 html.write('<div class="screenshot_error">%s</div>' % error.text)
             else:
-                hierarchy = get_view_hierarchy(output_dir, screenshot)
+                hierarchy = get_view_hierarchy(output_dir, screenshot)[KEY_VIEW_HIERARCHY]
+                ax_hierarchy = get_view_hierarchy(output_dir, screenshot)[KEY_AX_HIERARCHY]
                 html.write('<div class="flex-wrapper">')
                 comparing = test_img_api is not None and old_imgs_data is not None
                 if comparing:
@@ -201,6 +204,7 @@ def generate_html(
                 html.write('<div class="command-wrapper">')
                 write_commands(html)
                 write_view_hierarchy(hierarchy, html, screenshot_num)
+                write_ax_hierarchy(ax_hierarchy, html, screenshot_num)
                 html.write('</div>')
                 html.write('</div>')
 
@@ -223,13 +227,26 @@ def write_view_hierarchy(hierarchy, html, parent_id):
 
     html.write('<h3>View Hierarchy</h3>')
     html.write('<div class="view-hierarchy">')
-    write_view_hierarchy_tree_node(hierarchy, html, parent_id)
+    write_view_hierarchy_tree_node(hierarchy, html, parent_id, True)
     html.write('</div>')
 
 
-def write_view_hierarchy_tree_node(node, html, parent_id):
-    html.write('<details target="#%s-%s">' % (parent_id, get_view_hierarchy_overlay_node_id(node)))
-    html.write('<summary>%s</summary>' % node.get(KEY_CLASS, DEFAULT_VIEW_CLASS))
+def write_ax_hierarchy(hierarchy, html, parent_id):
+    if not hierarchy:
+        return
+
+    html.write('<h3>Accessibility Hierarchy</h3>')
+    html.write('<div class="view-hierarchy">')
+    write_view_hierarchy_tree_node(hierarchy, html, parent_id, False)
+    html.write('</div>')
+
+
+def write_view_hierarchy_tree_node(node, html, parent_id, with_overlay_target):
+    if with_overlay_target:
+        html.write('<details target="#%s-%s">' % (parent_id, get_view_hierarchy_overlay_node_id(node)))
+    else:
+        html.write('<details>')
+    html.write('<summary>%s</summary>' % node['class'])
     html.write('<ul>')
     for item in sorted(node):
         if item == KEY_CHILDREN or item == KEY_CLASS:
@@ -239,7 +256,7 @@ def write_view_hierarchy_tree_node(node, html, parent_id):
     html.write('</ul>')
     if KEY_CHILDREN in node:
         for child in node[KEY_CHILDREN]:
-            write_view_hierarchy_tree_node(child, html, parent_id)
+            write_view_hierarchy_tree_node(child, html, parent_id, with_overlay_target)
 
     html.write('</details>')
 

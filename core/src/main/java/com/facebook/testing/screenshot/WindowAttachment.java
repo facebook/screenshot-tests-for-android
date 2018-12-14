@@ -39,6 +39,8 @@ public abstract class WindowAttachment {
   /** Keep track of all the attached windows here so that we don't double attach them. */
   private static final WeakHashMap<View, Boolean> sAttachments = new WeakHashMap<>();
 
+  @Nullable private static Object sAttachInfo = null;
+
   private static final InvocationHandler sInvocationHandler =
       new InvocationHandler() {
         @Override
@@ -81,14 +83,15 @@ public abstract class WindowAttachment {
       // https://android.googlesource.com/platform/frameworks/base/+/a046faaf38ad818e6b5e981a39fd7394cf7cee03
       view.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
-    invoke(view, "onAttachedToWindow");
+    sAttachInfo = generateAttachInfo(view);
+    setAttachInfo(view);
 
     return new RealDetacher(view);
   }
 
   /** Similar to dispatchAttach, except dispatchest the corresponding detach. */
   private static void dispatchDetach(View view) {
-    invoke(view, "onDetachedFromWindow");
+    invoke(view, "dispatchDetachedFromWindow");
   }
 
   private static void invoke(View view, String methodName) {
@@ -103,17 +106,30 @@ public abstract class WindowAttachment {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
 
-    if (view instanceof ViewGroup) {
-      ViewGroup vg = (ViewGroup) view;
-      for (int i = 0; i < vg.getChildCount(); i++) {
-        invokeUnchecked(vg.getChildAt(i), methodName);
-      }
+  public static void setAttachInfo(View view) {
+    if (sAttachInfo == null) {
+      sAttachInfo = generateAttachInfo(view);
+    }
+
+    try {
+      Method dispatch =
+          View.class.getDeclaredMethod(
+              "dispatchAttachedToWindow", Class.forName("android.view.View$AttachInfo"), int.class);
+      dispatch.setAccessible(true);
+      dispatch.invoke(view, sAttachInfo, 0);
+    } catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 
   /** Simulates the view as being attached. */
-  public static void setAttachInfo(View view) {
+  public static @Nullable Object generateAttachInfo(View view) {
+    if (sAttachInfo != null) {
+      return sAttachInfo;
+    }
+
     try {
       Class cAttachInfo = Class.forName("android.view.View$AttachInfo");
       Class cViewRootImpl;
@@ -121,7 +137,7 @@ public abstract class WindowAttachment {
       if (Build.VERSION.SDK_INT >= 11) {
         cViewRootImpl = Class.forName("android.view.ViewRootImpl");
       } else {
-        return;
+        return null;
       }
 
       Class cIWindowSession = Class.forName("android.view.IWindowSession");
@@ -206,10 +222,7 @@ public abstract class WindowAttachment {
         setField(attachInfo, "mHardwareAccelerated", false);
       }
 
-      Method dispatch =
-          View.class.getDeclaredMethod("dispatchAttachedToWindow", cAttachInfo, int.class);
-      dispatch.setAccessible(true);
-      dispatch.invoke(view, attachInfo, 0);
+      return attachInfo;
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
