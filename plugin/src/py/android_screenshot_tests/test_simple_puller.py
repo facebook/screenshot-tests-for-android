@@ -60,6 +60,7 @@ class TestSimplePuller(unittest.TestCase):
 
     def test_get_external_data_dir(self):
         accepted_dirs = [
+            '/mnt/sdcard',
             '/sdcard',
             '/storage/sdcard',
             '/storage/emulated/legacy',
