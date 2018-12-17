@@ -30,6 +30,7 @@ import android.support.test.InstrumentationRegistry;
 import android.support.test.filters.SdkSuppress;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.MoreAsserts;
+import android.util.JsonReader;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -39,7 +40,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.Locale;
+
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -115,16 +119,14 @@ public class ScreenshotImplTest {
     while ((read = is.read(buffer)) != -1) {
       builder.append(new String(buffer, 0, read));
     }
+    JSONObject result = new JSONObject(builder.toString());
 
-    String expected =
-        "{"
-            + "  \"class\": \"android.widget.TextView\","
-            + "  \"left\": 0,"
-            + "  \"top\": 0,"
-            + "  \"width\": 200,"
-            + "  \"height\": 100"
-            + "}";
-    assertEquals(expected, builder.toString().replace("\n", ""));
+    assertEquals(5, result.length());
+    assertEquals("android.widget.TextView", result.getString("class"));
+    assertEquals(0, result.getInt("left"));
+    assertEquals(0, result.getInt("top"));
+    assertEquals(200, result.getInt("width"));
+    assertEquals(100, result.getInt("height"));
 
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
