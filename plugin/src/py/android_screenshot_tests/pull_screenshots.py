@@ -254,7 +254,7 @@ def write_view_hierarchy_tree_node(node, html, parent_id, with_overlay_target):
         html.write('<li><strong>%s:</strong> %s</li>' % (item, node[item]))
 
     html.write('</ul>')
-    if KEY_CHILDREN in node:
+    if KEY_CHILDREN in node and node[KEY_CHILDREN]:
         for child in node[KEY_CHILDREN]:
             write_view_hierarchy_tree_node(child, html, parent_id, with_overlay_target)
 
