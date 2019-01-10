@@ -33,6 +33,7 @@ open class PullScreenshotsTask : ScreenshotTask() {
   private lateinit var apkPath: File
   protected var verify = false
   protected var record = false
+  protected var referenceDir: String? = null
 
   init {
     description = "Pull screenshots from your device"
@@ -56,14 +57,26 @@ open class PullScreenshotsTask : ScreenshotTask() {
       it.executable = "python"
       it.environment("PYTHONPATH", jarFile)
 
+      val noPull = referenceDir != null
+
+      val tempDir = if (noPull) {
+        referenceDir
+      } else {
+        outputDir.absolutePath
+      }
+
       it.args = mutableListOf(
         "-m",
         "android_screenshot_tests.pull_screenshots",
         "--apk",
         apkPath.absolutePath,
         "--temp-dir",
-        outputDir.absolutePath
+        tempDir
       ).apply {
+        if (noPull) {
+          add("--no-pull")
+        }
+
         if (verify) {
           add("--verify")
         } else if (record) {
