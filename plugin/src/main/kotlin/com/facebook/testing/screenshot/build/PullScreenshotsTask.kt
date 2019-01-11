@@ -31,9 +31,12 @@ open class PullScreenshotsTask : ScreenshotTask() {
   }
 
   private lateinit var apkPath: File
+
+  private var referenceDir: String? = null
+  private var deviceName: String? = null
+
   protected var verify = false
   protected var record = false
-  protected var referenceDir: String? = null
 
   init {
     description = "Pull screenshots from your device"
@@ -43,6 +46,9 @@ open class PullScreenshotsTask : ScreenshotTask() {
   override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
     super.init(variant, extension)
     apkPath = variant.outputs.find { it is ApkVariantOutput }!!.outputFile
+
+    referenceDir = extension.referenceDir
+    deviceName = extension.deviceName
   }
 
   @TaskAction
@@ -75,6 +81,11 @@ open class PullScreenshotsTask : ScreenshotTask() {
       ).apply {
         if (noPull) {
           add("--no-pull")
+        }
+
+        if (!deviceName.isNullOrEmpty()) {
+          add("--device-name")
+          add(deviceName)
         }
 
         if (verify) {
