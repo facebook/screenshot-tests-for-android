@@ -10,7 +10,7 @@ ext {
       kotlin    : '1.2.71',
       targetSdk : 27,
       compileSdk: 27,
-      minSdk    : 9,
+      minSdk    : 14,
   ]
 
   plugs = [
