@@ -121,12 +121,14 @@ public class ScreenshotImplTest {
     }
     JSONObject result = new JSONObject(builder.toString());
 
-    assertEquals(5, result.length());
-    assertEquals("android.widget.TextView", result.getString("class"));
-    assertEquals(0, result.getInt("left"));
-    assertEquals(0, result.getInt("top"));
-    assertEquals(200, result.getInt("width"));
-    assertEquals(100, result.getInt("height"));
+    assertEquals(2, result.length());
+    JSONObject viewHierarchy = result.getJSONObject("viewHierarchy");
+    assertEquals(5, viewHierarchy.length());
+    assertEquals("android.widget.TextView", viewHierarchy.getString("class"));
+    assertEquals(0, viewHierarchy.getInt("left"));
+    assertEquals(0, viewHierarchy.getInt("top"));
+    assertEquals(200, viewHierarchy.getInt("width"));
+    assertEquals(100, viewHierarchy.getInt("height"));
 
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
