@@ -181,8 +181,14 @@ def generate_html(
             if error is not None:
                 html.write('<div class="screenshot_error">%s</div>' % error.text)
             else:
-                hierarchy = get_view_hierarchy(output_dir, screenshot)[KEY_VIEW_HIERARCHY]
-                ax_hierarchy = get_view_hierarchy(output_dir, screenshot)[KEY_AX_HIERARCHY]
+                hierarchy_data = get_view_hierarchy(output_dir, screenshot)
+                if hierarchy_data and KEY_VIEW_HIERARCHY in hierarchy_data:
+                    hierarchy = hierarchy_data[KEY_VIEW_HIERARCHY]
+                    ax_hierarchy = hierarchy_data[KEY_AX_HIERARCHY]
+                else:
+                    hierarchy = hierarchy_data
+                    ax_hierarchy = None
+
                 html.write('<div class="flex-wrapper">')
                 comparing = test_img_api is not None and old_imgs_data is not None
                 if comparing:
