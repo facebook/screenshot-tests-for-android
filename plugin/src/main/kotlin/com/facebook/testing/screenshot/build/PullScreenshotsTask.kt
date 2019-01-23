@@ -45,10 +45,12 @@ open class PullScreenshotsTask : ScreenshotTask() {
 
   override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
     super.init(variant, extension)
-    apkPath = variant.outputs.find { it is ApkVariantOutput }!!.outputFile
-
     referenceDir = extension.referenceDir
     deviceName = extension.deviceName
+    
+    if (referenceDir == null) {
+      apkPath = variant.outputs.find { it is ApkVariantOutput }!!.outputFile
+    }
   }
 
   @TaskAction
@@ -74,13 +76,14 @@ open class PullScreenshotsTask : ScreenshotTask() {
       it.args = mutableListOf(
         "-m",
         "android_screenshot_tests.pull_screenshots",
-        "--apk",
-        apkPath.absolutePath,
         "--temp-dir",
         tempDir
       ).apply {
         if (noPull) {
           add("--no-pull")
+        } else {
+          add("--apk")
+          add(apkPath.absolutePath)
         }
 
         if (!deviceName.isNullOrEmpty()) {

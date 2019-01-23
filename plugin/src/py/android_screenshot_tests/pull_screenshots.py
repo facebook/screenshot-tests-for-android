@@ -541,20 +541,21 @@ def main(argv):
     except getopt.GetoptError:
         usage()
         return 2
-
-    if len(rest_args) != 1:
-        usage()
-        return 2
-
-    process = rest_args[0]  # something like com.facebook.places.tests
-
+    
     opts = dict(opt_list)
+    
+    should_perform_pull = ("--no-pull" not in opts)
 
+    process = None
     if "--apk" in opts:
         # treat process as an apk instead
         process = aapt.get_package(process)
+    elif len(rest_args) == 1:
+        process = rest_args[0]  # something like com.facebook.places.tests
 
-    should_perform_pull = ("--no-pull" not in opts)
+    if process is None and should_perform_pull:
+        usage()
+        return 2    
 
     puller_args = []
     if "-e" in opts:
