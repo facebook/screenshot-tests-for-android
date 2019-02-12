@@ -84,34 +84,22 @@ def show_old_result(
     old_imgs_data['test'] = test_name
     encoded_data = urllib.urlencode(old_imgs_data)
     url = test_img_api + encoded_data
-    html.write('<div class="img-block">Current')
+
+
+
     try:
         response = json.loads(urllib.urlopen(url).read().decode('utf-8'))
         if 'error' in response:
-            raise Exception(response['error'], {'response': response})
+            raise Exception
+        html.write('<div class="img-block">Current')
         old_screenshot_url = response['url']
         html.write('<div class="img-wrapper">')
         html.write('<img src="%s"></img>' % old_screenshot_url)
         html.write('</div>')
+        html.write('</div>')
     except Exception as e:
-        error = e.args[0]
-        extra = e.args[1] if len(e.args) > 2 else {}
-        html.write('<details>')
-        html.write('<summary><i>Unable to query image from API with error "%s"</i></summary>' % error)
-
-        if 'response' in extra:
-            stacktrace = None
-            if 'stacktrace' in extra['response']:
-                stacktrace = extra['response']['stacktrace']
-                del extra['response']['stacktrace']
-            response = json.dumps(extra['response'], indent=4, sort_keys=True)
-            html.write('<pre>{}</pre>'.format(response))
-            if stacktrace:
-                html.write('<span style="white-space: pre-wrap;">{}</span>'.format(stacktrace))
-        html.write('</details>')
-
-    html.write('</div>')
-
+        # Do nothing
+        pass
 
 def generate_html(
     output_dir,
