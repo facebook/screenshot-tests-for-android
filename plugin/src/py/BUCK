@@ -5,3 +5,10 @@ fb_native.python_library(
     srcs = glob(["**/*.py"]),
     visibility = ["PUBLIC"],
 )
+
+fb_native.python_library(
+    name = "android_screenshot_tests",
+    srcs = glob(["android_screenshot_tests/**/*.py"]),
+    base_module = "",
+    visibility = ["PUBLIC"],
+)
