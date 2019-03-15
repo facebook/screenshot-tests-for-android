@@ -18,7 +18,7 @@ fb_core_android_library(
     srcs = glob(["**/*.java"]),
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
-        "//third-party/android/support-new:support-v4",
-        "//third-party/java/jsr-305:jsr-305",
+        "fbandroid//third-party/android/support-new:support-v4",
+        "fbandroid//third-party/java/jsr-305:jsr-305",
     ],
 )
