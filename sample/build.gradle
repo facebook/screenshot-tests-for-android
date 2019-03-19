@@ -64,4 +64,9 @@ dependencies {
 
 screenshots {
   multipleDevices true
+
+  if (project.hasProperty("with-reference")) {
+    referenceDir = "$projectDir/test-reference-dir"
+    deviceName = "API_25_GP_XHDPI_768x1280_x86"
+  }
 }

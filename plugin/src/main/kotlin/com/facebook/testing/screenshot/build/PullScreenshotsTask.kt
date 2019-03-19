@@ -31,6 +31,10 @@ open class PullScreenshotsTask : ScreenshotTask() {
   }
 
   private lateinit var apkPath: File
+
+  private var referenceDir: String? = null
+  private var deviceName: String? = null
+
   protected var verify = false
   protected var record = false
 
@@ -41,7 +45,12 @@ open class PullScreenshotsTask : ScreenshotTask() {
 
   override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
     super.init(variant, extension)
-    apkPath = variant.outputs.find { it is ApkVariantOutput }!!.outputFile
+    referenceDir = extension.referenceDir
+    deviceName = extension.deviceName
+    
+    if (referenceDir == null) {
+      apkPath = variant.outputs.find { it is ApkVariantOutput }!!.outputFile
+    }
   }
 
   @TaskAction
@@ -56,14 +65,32 @@ open class PullScreenshotsTask : ScreenshotTask() {
       it.executable = "python"
       it.environment("PYTHONPATH", jarFile)
 
+      val noPull = referenceDir != null
+
+      val tempDir = if (noPull) {
+        referenceDir
+      } else {
+        outputDir.absolutePath
+      }
+
       it.args = mutableListOf(
         "-m",
         "android_screenshot_tests.pull_screenshots",
-        "--apk",
-        apkPath.absolutePath,
         "--temp-dir",
-        outputDir.absolutePath
+        tempDir
       ).apply {
+        if (noPull) {
+          add("--no-pull")
+        } else {
+          add("--apk")
+          add(apkPath.absolutePath)
+        }
+
+        if (!deviceName.isNullOrEmpty()) {
+          add("--device-name")
+          add(deviceName)
+        }
+
         if (verify) {
           add("--verify")
         } else if (record) {

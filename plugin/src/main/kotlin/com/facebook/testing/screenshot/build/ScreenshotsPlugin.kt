@@ -32,6 +32,9 @@ open class ScreenshotsPluginExtension {
   var multipleDevices = false
   /** The python executable to use */
   var pythonExecutable = "python"
+
+  var referenceDir: String? = null
+  var deviceName: String? = null
 }
 
 class ScreenshotsPlugin : Plugin<Project> {
@@ -76,6 +79,7 @@ class ScreenshotsPlugin : Plugin<Project> {
             CleanScreenshotsTask.taskName(variant),
             variant,
             CleanScreenshotsTask::class.java)
+
         createTask(
             project,
             PullScreenshotsTask.taskName(variant),
@@ -99,7 +103,6 @@ class ScreenshotsPlugin : Plugin<Project> {
             VerifyScreenshotTestTask.taskName(variant),
             variant,
             VerifyScreenshotTestTask::class.java)
-
       }
     }
   }

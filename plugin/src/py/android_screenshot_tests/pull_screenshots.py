@@ -35,6 +35,7 @@ from . import common
 from . import metadata
 from .device_name_calculator import DeviceNameCalculator
 from .no_op_device_name_calculator import NoOpDeviceNameCalculator
+from .remote_device_name_calculator import RemoteDeviceNameCalculator
 from .simple_puller import SimplePuller
 
 from os.path import join
@@ -524,24 +525,25 @@ def main(argv):
             argv[1:],
             "eds:",
             ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=",
-             "no-pull", "multiple-devices="])
+             "no-pull", "device-name=", "multiple-devices="])
     except getopt.GetoptError:
         usage()
         return 2
-
-    if len(rest_args) != 1:
-        usage()
-        return 2
-
-    process = rest_args[0]  # something like com.facebook.places.tests
-
+    
     opts = dict(opt_list)
+    
+    should_perform_pull = ("--no-pull" not in opts)
 
+    process = None
     if "--apk" in opts:
         # treat process as an apk instead
         process = aapt.get_package(process)
+    elif len(rest_args) == 1:
+        process = rest_args[0]  # something like com.facebook.places.tests
 
-    should_perform_pull = ("--no-pull" not in opts)
+    if process is None and should_perform_pull:
+        usage()
+        return 2    
 
     puller_args = []
     if "-e" in opts:
@@ -554,7 +556,16 @@ def main(argv):
         puller_args += ["-s", opts["-s"]]
 
     multiple_devices = opts.get('--multiple-devices')
-    device_calculator = DeviceNameCalculator() if multiple_devices else NoOpDeviceNameCalculator()
+
+    device_calculator = None
+    if not should_perform_pull and multiple_devices:
+        device_name = opts.get('--device-name')
+        # TODO add validation that device_name is defined.
+        device_calculator = RemoteDeviceNameCalculator(device_name)
+    elif multiple_devices:
+        device_calculator = DeviceNameCalculator()
+    else:
+        device_calculator = NoOpDeviceNameCalculator()
 
     return pull_screenshots(process,
                             perform_pull=should_perform_pull,

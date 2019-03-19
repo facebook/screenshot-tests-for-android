@@ -85,6 +85,7 @@ The location of the screenshot artifacts can be configured in the project's buil
   screenshots {
       // Points to the directory containing all the files pulled from a device
       referenceDir = path/to/screenshots
+      deviceName = "YourTestDevice" 
   }
 ```
 
