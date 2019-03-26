@@ -558,7 +558,7 @@ def main(argv):
     elif "ANDROID_SERIAL" in os.environ:
         passed_serials = os.environ.get('ANDROID_SERIAL').split(",")
     else:
-        passed_serials = None
+        passed_serials = common.get_connected_devices()
 
     if passed_serials:
         puller_args_list = [base_puller_args + ["-s", serial] for serial in passed_serials]
