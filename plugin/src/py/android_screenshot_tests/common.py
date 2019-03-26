@@ -14,8 +14,9 @@
 # limitations under the License.
 
 import os
-import sys
+import re
 import subprocess
+import sys
 
 def get_image_file_name(name, x, y):
     image_file = name
@@ -46,3 +47,11 @@ def assertRegex(testcase, regex, string):
         testcase.assertRegex(regex, string)
     else:
         testcase.assertRegexpMatches(regex, string)
+
+def get_connected_devices():
+    try:
+        output = check_output([get_adb(), "devices"]).splitlines()
+        target_pattern = re.compile(r"\b(device|emulator)\b")
+        return [line.split()[0] for line in output if target_pattern.search(line) and "offline" not in line]
+    except subprocess.CalledProcessError:
+        return None

@@ -543,28 +543,38 @@ def main(argv):
 
     should_perform_pull = ("--no-pull" not in opts)
 
-    puller_args = []
-    if "-e" in opts:
-        puller_args.append("-e")
-
-    if "-d" in opts:
-        puller_args.append("-d")
-
-    if "-s" in opts:
-        puller_args += ["-s", opts["-s"]]
-
     multiple_devices = opts.get('--multiple-devices')
     device_calculator = DeviceNameCalculator() if multiple_devices else NoOpDeviceNameCalculator()
 
-    return pull_screenshots(process,
-                            perform_pull=should_perform_pull,
-                            temp_dir=opts.get('--temp-dir'),
-                            filter_name_regex=opts.get('--filter-name-regex'),
-                            opt_generate_png=opts.get('--generate-png'),
-                            record=opts.get('--record'),
-                            verify=opts.get('--verify'),
-                            adb_puller=SimplePuller(puller_args),
-                            device_name_calculator=device_calculator)
+    base_puller_args = []
+    if "-e" in opts:
+        base_puller_args.append("-e")
+
+    if "-d" in opts:
+        base_puller_args.append("-d")
+
+    if "-s" in opts:
+        passed_serials = [opts['-s']]
+    elif "ANDROID_SERIAL" in os.environ:
+        passed_serials = os.environ.get('ANDROID_SERIAL').split(",")
+    else:
+        passed_serials = common.get_connected_devices()
+
+    if passed_serials:
+        puller_args_list = [base_puller_args + ["-s", serial] for serial in passed_serials]
+    else:
+        puller_args_list = [base_puller_args]
+
+    for puller_args in puller_args_list:
+        pull_screenshots(process,
+                         perform_pull=should_perform_pull,
+                         temp_dir=opts.get('--temp-dir'),
+                         filter_name_regex=opts.get('--filter-name-regex'),
+                         opt_generate_png=opts.get('--generate-png'),
+                         record=opts.get('--record'),
+                         verify=opts.get('--verify'),
+                         adb_puller=SimplePuller(puller_args),
+                         device_name_calculator=device_calculator)
 
 
 if __name__ == '__main__':
