@@ -166,6 +166,8 @@ screenshots {
 
 Now recorded screenshots will be placed in individual directories based on a unique device identifier. This unique identifier combines the API level, screen density category, availability of Google Play Services, screen resolution and device architecture. For an example, you can take a look at the [sample app's screenshot directory](https://github.com/facebook/screenshot-tests-for-android/tree/master/sample/screenshots/).
 
+By default, screenshots from all connected devices and emulators are pulled. In order to pull screenshots only from some of them, set `ANDROID_SERIAL` environment variable to a comma-separated list of serials (as they appear in the first column of `adb devices` output) of the devices you want to use.
+
 ### Custom Test Runner
 
 By default, screenshot tests use a specialized
