@@ -1,3 +1,13 @@
+0.9.0 (Apr 1 2019)
+-----
+- Added a setMaxPixels method to the record builder interface to allow for really large images
+- Added an integration point to allow you to see a version of the given screenshot from a server provided service
+- Fixed an issue where onGlobalLayoutListener wasn'nt being triggered properly
+- Fixed an issue where a parcel file descriptor wasn't being closed
+- Added the ability to dump the accessibility hierarchy
+- Min SDK has been bumped to 14
+- Added the ability to run tests on all connected targets
+
 0.8.0 (Jul 30 2018)
 -----
 - Replaced androidTestApi with androidTestImplementation when adding in core dependency via the plugin
