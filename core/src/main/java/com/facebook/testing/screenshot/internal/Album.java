@@ -17,7 +17,6 @@ package com.facebook.testing.screenshot.internal;
 
 import android.graphics.Bitmap;
 import java.io.IOException;
-import java.io.OutputStream;
 
 /** Stores metadata about an album of screenshots during an instrumentation test run. */
 public interface Album {
@@ -40,7 +39,7 @@ public interface Album {
    *
    * <p>It is the callers responsibility to call {@code close()} on the returned stream.
    */
-  OutputStream openViewHierarchyFile(String name) throws IOException;
+  void writeViewHierarchyFile(String name, String data) throws IOException;
 
   /** This is called after every record is finally set up. */
   void addRecord(RecordBuilderImpl recordBuilder) throws IOException;

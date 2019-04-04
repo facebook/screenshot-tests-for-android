@@ -19,14 +19,21 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 import android.util.Xml;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.Deflater;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
 import javax.annotation.Nullable;
 import org.xmlpull.v1.XmlSerializer;
 
@@ -34,11 +41,14 @@ import org.xmlpull.v1.XmlSerializer;
 @SuppressWarnings("deprecation")
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
+  private static final int BUFFER_SIZE = 1 << 16; // 64k
+  private static final String SCREENSHOT_BUNDLE_FILE_NAME = "screenshot_bundle.zip";
 
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
+  private ZipOutputStream mZipOutputStream;
   private XmlSerializer mXmlSerializer;
-  private FileOutputStream mOutputStream;
+  private OutputStream mOutputStream;
 
   /* VisibleForTesting */
   AlbumImpl(ScreenshotDirectories screenshotDirectories, String name) {
@@ -50,10 +60,31 @@ public class AlbumImpl implements Album {
     return new AlbumImpl(new ScreenshotDirectories(context), name);
   }
 
+  @SuppressLint("SetWorldReadable")
+  private ZipOutputStream getOrCreateZipOutputStream() throws IOException {
+    if (mZipOutputStream == null) {
+      File file = new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME);
+      file.createNewFile();
+      file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
+      mZipOutputStream =
+          new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE));
+      mZipOutputStream.setLevel(Deflater.NO_COMPRESSION);
+    }
+    return mZipOutputStream;
+  }
+
   @Override
   public void flush() {
     if (mOutputStream != null) {
       endXml();
+    }
+    try {
+      if (mZipOutputStream != null) {
+        mZipOutputStream.closeEntry();
+        mZipOutputStream.close();
+      }
+    } catch (IOException e) {
+      Log.d(AlbumImpl.class.getName(), "Couldn't close zip file.", e);
     }
   }
 
@@ -63,7 +94,8 @@ public class AlbumImpl implements Album {
     }
 
     try {
-      mOutputStream = new FileOutputStream(getMetadataFile());
+      mOutputStream =
+          new BufferedOutputStream(new FileOutputStream(getMetadataFile()), BUFFER_SIZE);
       mXmlSerializer = Xml.newSerializer();
       mXmlSerializer.setOutput(mOutputStream, "utf-8");
       mXmlSerializer.startDocument("utf-8", null);
@@ -73,7 +105,6 @@ public class AlbumImpl implements Album {
     }
   }
 
-  @SuppressLint("SetWorldReadable")
   private void endXml() {
     try {
       mXmlSerializer.endTag(null, "screenshots");
@@ -92,7 +123,7 @@ public class AlbumImpl implements Album {
 
   /** Returns the stored screenshot in the album, or null if no such test case exists. */
   @Nullable
-  Bitmap getScreenshot(String name) {
+  Bitmap getScreenshot(String name) throws IOException {
     if (getScreenshotFile(name) == null) {
       return null;
     }
@@ -101,26 +132,54 @@ public class AlbumImpl implements Album {
 
   /**
    * Returns the file in which the screenshot is stored, or null if this is not a valid screenshot
+   *
+   * <p>TODO: Adjust tests to no longer use this method. It's quite sketchy and inefficient.
    */
   @Nullable
-  File getScreenshotFile(String name) {
-    File file = getScreenshotFileInternal(name);
-    if (!file.isFile()) {
-      return null;
+  File getScreenshotFile(String name) throws IOException {
+    if (mZipOutputStream != null) {
+      // This needs to be a valid file before we can read from it.
+      mZipOutputStream.close();
     }
-    return file;
+
+    ZipInputStream zipInputStream =
+        new ZipInputStream(new FileInputStream(new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME)));
+    try {
+      String filename = getScreenshotFilenameInternal(name);
+      byte[] buffer = new byte[BUFFER_SIZE];
+
+      ZipEntry entry;
+      while ((entry = zipInputStream.getNextEntry()) != null) {
+        if (!filename.equals(entry.getName())) {
+          continue;
+        }
+
+        File file = File.createTempFile(name, ".png");
+        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        try {
+          int len;
+          while ((len = zipInputStream.read(buffer)) > 0) {
+            fileOutputStream.write(buffer, 0, len);
+          }
+        } finally {
+          fileOutputStream.close();
+        }
+        return file;
+      }
+    } finally {
+      zipInputStream.close();
+    }
+    return null;
   }
 
-  @SuppressLint("SetWorldReadable")
   @Override
   public String writeBitmap(String name, int tilei, int tilej, Bitmap bitmap) throws IOException {
     String tileName = generateTileName(name, tilei, tilej);
-    File file = getScreenshotFileInternal(tileName);
-    FileOutputStream outputStream;
-    outputStream = new FileOutputStream(file);
-    bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, outputStream);
-    outputStream.close();
-    file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
+    String filename = getScreenshotFilenameInternal(tileName);
+    ZipOutputStream zipOutputStream = getOrCreateZipOutputStream();
+    ZipEntry entry = new ZipEntry(filename);
+    zipOutputStream.putNextEntry(entry);
+    bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, zipOutputStream);
     return tileName;
   }
 
@@ -140,20 +199,22 @@ public class AlbumImpl implements Album {
    * Same as the public getScreenshotFile() except it returns the File even if the screenshot
    * doesn't exist.
    */
-  private File getScreenshotFileInternal(String name) {
-    return new File(mDir, name + ".png");
+  private static String getScreenshotFilenameInternal(String name) {
+    return name + ".png";
   }
 
-  private File getViewHierarchyFile(String name) {
-    return new File(mDir, name + "_dump.json");
+  private static String getViewHierarchyFilename(String name) {
+    return name + "_dump.json";
   }
 
   @Override
-  public OutputStream openViewHierarchyFile(String name) throws IOException {
-    File file = getViewHierarchyFile(name);
-    OutputStream os = new FileOutputStream(file);
-    os.flush();
-    return os;
+  public void writeViewHierarchyFile(String name, String data) throws IOException {
+    byte[] out = data.getBytes();
+
+    ZipEntry zipEntry = new ZipEntry(getViewHierarchyFilename(name));
+    ZipOutputStream zipOutputStream = getOrCreateZipOutputStream();
+    zipOutputStream.putNextEntry(zipEntry);
+    zipOutputStream.write(out);
   }
 
   /**
@@ -184,13 +245,7 @@ public class AlbumImpl implements Album {
     addTextNode("test_name", recordBuilder.getTestName());
     addTextNode("tile_width", String.valueOf(tiling.getWidth()));
     addTextNode("tile_height", String.valueOf(tiling.getHeight()));
-
-    File viewHierarchy = getViewHierarchyFile(recordBuilder.getName());
-
-    if (viewHierarchy.exists()) {
-      addTextNode("view_hierarchy", getRelativePath(viewHierarchy, mDir));
-      viewHierarchy.setReadable(/* readable = */ true, /* ownerOnly = */ false);
-    }
+    addTextNode("view_hierarchy", getViewHierarchyFilename(recordBuilder.getName()));
 
     mXmlSerializer.startTag(null, "extras");
     for (Map.Entry<String, String> entry : recordBuilder.getExtras().entrySet()) {
@@ -211,18 +266,13 @@ public class AlbumImpl implements Album {
     mAllNames.add(recordBuilder.getName());
 
     mXmlSerializer.endTag(null, "screenshot");
-    mXmlSerializer.flush();
   }
 
   private void saveTiling(RecordBuilderImpl recordBuilder) throws IOException {
     Tiling tiling = recordBuilder.getTiling();
     for (int i = 0; i < tiling.getWidth(); i++) {
       for (int j = 0; j < tiling.getHeight(); j++) {
-        File file = getScreenshotFileInternal(tiling.getAt(i, j));
-
-        if (!file.isFile()) {
-          throw new RuntimeException("The tile file doesn't exist");
-        }
+        File file = new File(mDir, generateTileName(recordBuilder.getName(), i, j));
 
         addTextNode("absolute_file_name", file.getAbsolutePath());
         addTextNode("relative_file_name", getRelativePath(file, mDir));

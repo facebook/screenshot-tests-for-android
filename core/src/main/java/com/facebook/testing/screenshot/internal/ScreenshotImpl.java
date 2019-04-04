@@ -26,7 +26,6 @@ import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 import com.facebook.testing.screenshot.WindowAttachment;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityHierarchyDumper;
@@ -263,25 +262,15 @@ public class ScreenshotImpl {
     storeBitmap(recordBuilder);
     OutputStream viewHierarchyDump = null;
     try {
-      viewHierarchyDump = mAlbum.openViewHierarchyFile(recordBuilder.getName());
       JSONObject dump = new JSONObject();
       JSONObject viewDump = LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView());
       JSONObject axDump = AccessibilityHierarchyDumper.dumpHierarchy(recordBuilder.getView());
       dump.put("viewHierarchy", viewDump);
       dump.put("axHierarchy", axDump);
-      viewHierarchyDump.write(dump.toString(2).getBytes());
-      viewHierarchyDump.flush();
+      mAlbum.writeViewHierarchyFile(recordBuilder.getName(), dump.toString(2));
       mAlbum.addRecord(recordBuilder);
     } catch (IOException | JSONException e) {
       throw new RuntimeException(e);
-    } finally {
-      if (viewHierarchyDump != null) {
-        try {
-          viewHierarchyDump.close();
-        } catch (IOException e) {
-          Log.e("ScreenshotImpl", "Exception closing viewHierarchyDump", e);
-        }
-      }
     }
   }
 
