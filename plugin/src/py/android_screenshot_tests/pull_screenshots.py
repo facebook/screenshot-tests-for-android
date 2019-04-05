@@ -432,6 +432,8 @@ def pull_images(dir, device_dir, adb_puller):
         # Now unzip, to maintain normal behavior
         with zipfile.ZipFile(bundle_name_local_file, 'r') as zipObj:
             zipObj.extractall(dir)
+        names = zipObj.namelist()
+        print("Pulled %d files from device" % len(names))
         # and clean up
         os.remove(bundle_name_local_file)
     else:
