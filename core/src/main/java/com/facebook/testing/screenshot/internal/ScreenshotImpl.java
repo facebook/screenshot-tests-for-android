@@ -49,7 +49,6 @@ public class ScreenshotImpl {
   private static ScreenshotImpl sInstance;
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
-
   private int mTileSize = 512;
   private Bitmap mBitmap = null;
   private Canvas mCanvas = null;
@@ -329,5 +328,10 @@ public class ScreenshotImpl {
       throw new RuntimeException(e[0]);
     }
     return ret[0];
+  }
+
+  /** @return The largest amount of pixels we'll capture, otherwise an exception will be thrown. */
+  public static long getMaxPixels() {
+    return RecordBuilderImpl.DEFAULT_MAX_PIXELS;
   }
 }

@@ -47,4 +47,9 @@ public class Screenshot {
   public static RecordBuilder snapActivity(Activity activity) {
     return ScreenshotImpl.getInstance().snapActivity(activity);
   }
+
+  /** @return The largest amount of pixels we'll capture, otherwise an exception will be thrown. */
+  public static long getMaxPixels() {
+    return ScreenshotImpl.getMaxPixels();
+  }
 }

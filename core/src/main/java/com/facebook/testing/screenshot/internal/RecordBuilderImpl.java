@@ -31,6 +31,7 @@ import java.util.Map;
  * record with #record().
  */
 public class RecordBuilderImpl implements RecordBuilder {
+  public static final long DEFAULT_MAX_PIXELS = 10000000L;
   private final ScreenshotImpl mScreenshotImpl;
   private final Map<String, String> mExtras = new HashMap<>();
   private String mDescription;
@@ -41,7 +42,7 @@ public class RecordBuilderImpl implements RecordBuilder {
   private String mGroup;
   private Tiling mTiling = new Tiling(1, 1);
   private View mView;
-  private long mMaxPixels = 10000000L;
+  private long mMaxPixels = DEFAULT_MAX_PIXELS;
 
   /* package */ RecordBuilderImpl(ScreenshotImpl screenshotImpl) {
     mScreenshotImpl = screenshotImpl;
