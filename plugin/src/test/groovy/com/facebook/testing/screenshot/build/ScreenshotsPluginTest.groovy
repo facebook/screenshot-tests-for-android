@@ -53,12 +53,12 @@ class ScreenshotsPluginTest {
         applicationId appId
       }
     }
-
-    project.evaluate()
   }
 
   @Test
   void "Ensure core dependency added"() {
+    project.evaluate()
+
     def depSet = project.getConfigurations().getByName('androidTestImplementation').getAllDependencies()
     for (dep in depSet) {
       if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
@@ -69,7 +69,24 @@ class ScreenshotsPluginTest {
   }
 
   @Test
+  void "Ensure core dependency not added when requested"() {
+    project.screenshots {
+      addDeps = false
+    }
+    project.evaluate()
+
+    def depSet = project.getConfigurations().getByName('androidTestImplementation').getAllDependencies()
+    for (dep in depSet) {
+      if (dep.name == "core" && dep.group == 'com.facebook.testing.screenshot') {
+        fail()
+      }
+    }
+  }
+
+  @Test
   void "Ensure tasks added"() {
+    project.evaluate()
+
     assertTrue(project.tasks.pullDebugAndroidTestScreenshots instanceof Task)
     assertTrue(project.tasks.runDebugAndroidTestScreenshotTest instanceof Task)
     assertTrue(project.tasks.recordDebugAndroidTestScreenshotTest instanceof Task)

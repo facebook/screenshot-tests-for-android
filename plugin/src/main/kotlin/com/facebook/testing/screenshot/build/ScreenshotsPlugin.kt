@@ -48,8 +48,10 @@ class ScreenshotsPlugin : Plugin<Project> {
     val plugins = project.plugins
     screenshotExtensions = extensions.create("screenshots", ScreenshotsPluginExtension::class.java)
 
-    if (screenshotExtensions.addDeps) {
-      project.dependencies.add("androidTestImplementation", "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
+    project.afterEvaluate {
+      if (screenshotExtensions.addDeps) {
+        it.dependencies.add("androidTestImplementation", "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
+      }
     }
 
     val variants = when {
@@ -99,7 +101,6 @@ class ScreenshotsPlugin : Plugin<Project> {
             VerifyScreenshotTestTask.taskName(variant),
             variant,
             VerifyScreenshotTestTask::class.java)
-
       }
     }
   }
