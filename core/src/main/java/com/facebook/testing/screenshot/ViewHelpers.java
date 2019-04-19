@@ -144,6 +144,30 @@ public class ViewHelpers {
     return this;
   }
 
+  /** Configure the height in pixels */
+  public ViewHelpers setMaxHeightPx(int px) {
+    mHeightMeasureSpec = makeMeasureSpec(px, MeasureSpec.AT_MOST);
+    return this;
+  }
+
+  /** Configure the height in dip */
+  public ViewHelpers setMaxHeightDp(int dp) {
+    setMaxHeightPx(dpToPx(dp));
+    return this;
+  }
+
+  /** Configure the with in pixels */
+  public ViewHelpers setMaxWidthPx(int px) {
+    mWidthMeasureSpec = makeMeasureSpec(px, MeasureSpec.AT_MOST);
+    return this;
+  }
+
+  /** Configure the width in dip */
+  public ViewHelpers setMaxWidthDp(int dp) {
+    setMaxWidthPx(dpToPx(dp));
+    return this;
+  }
+
   /**
    * Some views (e.g. SimpleVariableTextLayoutView) in FB4A rely on the predraw. Actually I don't
    * know why, ideally it shouldn't.

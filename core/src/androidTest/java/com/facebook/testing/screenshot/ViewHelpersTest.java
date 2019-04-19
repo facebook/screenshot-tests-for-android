@@ -90,4 +90,14 @@ public class ViewHelpersTest extends InstrumentationTestCase {
     int oneHeight = view.getChildAt(0).getMeasuredHeight();
     assertThat(view.getMeasuredHeight(), equalTo(oneHeight * 20));
   }
+
+  public void testMaxHeightLessThanHeight() throws Throwable {
+    ViewHelpers.setupView(mTextView).setMaxHeightPx(100).layout();
+    assertThat(mTextView.getMeasuredHeight(), lessThan(100));
+  }
+
+  public void testMaxHeightUsesFullHeight() throws Throwable {
+    ViewHelpers.setupView(mTextView).setMaxHeightPx(1).layout();
+    assertThat(mTextView.getMeasuredHeight(), equalTo(1));
+  }
 }
