@@ -29,6 +29,11 @@ open class RunScreenshotTestTask : PullScreenshotsTask() {
 
   override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
     super.init(variant, extension)
+
+    if (verify && extension.referenceDir != null) {
+      return
+    }
+
     dependsOn(variant.connectedInstrumentTest)
     mustRunAfter(variant.connectedInstrumentTest)
   }

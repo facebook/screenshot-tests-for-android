@@ -48,9 +48,15 @@ open class PullScreenshotsTask : ScreenshotTask() {
   fun pullScreenshots() {
     val codeSource = ScreenshotsPlugin::class.java.protectionDomain.codeSource
     val jarFile = File(codeSource.location.toURI().path)
-    val outputDir = getReportDir(project, variant)
+    val isVerifyOnly = verify && extension.referenceDir != null
 
-    assert(!outputDir.exists())
+    val outputDir = if (isVerifyOnly) {
+      File(extension.referenceDir)
+    } else {
+      getReportDir(project, variant)
+    }
+
+    assert(if (isVerifyOnly) outputDir.exists() else !outputDir.exists())
 
     project.exec {
       it.executable = "python"
@@ -77,6 +83,10 @@ open class PullScreenshotsTask : ScreenshotTask() {
         if (extension.multipleDevices) {
           add("--multiple-devices")
           add("${extension.multipleDevices}")
+        }
+
+        if (isVerifyOnly) {
+          add("--no-pull")
         }
       }
 

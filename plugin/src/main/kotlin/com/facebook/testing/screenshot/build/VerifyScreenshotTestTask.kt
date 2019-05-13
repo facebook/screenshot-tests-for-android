@@ -25,10 +25,6 @@ open class VerifyScreenshotTestTask : RunScreenshotTestTask() {
   init {
     description = "Installs and runs screenshot tests, then verifies their output against previously recorded screenshots"
     group = ScreenshotsPlugin.GROUP
-  }
-
-  override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
-    super.init(variant, extension)
     verify = true
   }
 }
