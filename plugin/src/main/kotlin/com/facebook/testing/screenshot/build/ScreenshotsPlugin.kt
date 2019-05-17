@@ -32,7 +32,7 @@ open class ScreenshotsPluginExtension {
   var multipleDevices = false
   /** The python executable to use */
   var pythonExecutable = "python"
-  /** The directory to pull screenshots from in verify only mode */
+  /** The directory to compare screenshots from in verify only mode */
   var referenceDir: String? = null
 }
 
