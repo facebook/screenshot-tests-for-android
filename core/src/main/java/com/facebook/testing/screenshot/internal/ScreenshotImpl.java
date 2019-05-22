@@ -31,7 +31,6 @@ import com.facebook.testing.screenshot.WindowAttachment;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityHierarchyDumper;
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.Locale;
 import java.util.concurrent.Callable;
 import org.json.JSONException;
@@ -46,6 +45,13 @@ import org.json.JSONObject;
  * <p>This is public only for implementation convenient for using UiThreadHelper.
  */
 public class ScreenshotImpl {
+  /**
+   * The version of the metadata file generated. This should be bumped whenever the structure of the
+   * metadata file changes in such a way that would cause a comparison between old and new files to
+   * be invalid or not useful.
+   */
+  private static final int METADATA_VERSION = 0;
+
   private static ScreenshotImpl sInstance;
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
@@ -259,13 +265,13 @@ public class ScreenshotImpl {
   /** Records the RecordBuilderImpl, and verifies if required */
   public void record(RecordBuilderImpl recordBuilder) {
     storeBitmap(recordBuilder);
-    OutputStream viewHierarchyDump = null;
     try {
       JSONObject dump = new JSONObject();
       JSONObject viewDump = LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView());
       JSONObject axDump = AccessibilityHierarchyDumper.dumpHierarchy(recordBuilder.getView());
       dump.put("viewHierarchy", viewDump);
       dump.put("axHierarchy", axDump);
+      dump.put("version", METADATA_VERSION);
       mAlbum.writeViewHierarchyFile(recordBuilder.getName(), dump.toString(2));
       mAlbum.addRecord(recordBuilder);
     } catch (IOException | JSONException e) {
