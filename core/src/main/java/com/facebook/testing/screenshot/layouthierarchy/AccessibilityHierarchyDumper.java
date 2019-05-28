@@ -17,14 +17,12 @@ package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.graphics.Rect;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.CollectionInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.CollectionItemInfoCompat;
 import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat.RangeInfoCompat;
 import android.view.View;
-import android.view.ViewGroup;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,22 +32,12 @@ public final class AccessibilityHierarchyDumper {
 
   AccessibilityHierarchyDumper() {}
 
-  public static JSONObject dumpHierarchy(View view) throws JSONException {
+  public static JSONObject dumpHierarchy(AccessibilityUtil.AXTreeNode axTree) throws JSONException {
+    View view = axTree.getView();
+    AccessibilityNodeInfoCompat nodeInfo = axTree.getNodeInfo();
+
     JSONObject root = new JSONObject();
     root.put("class", view.getClass().getName());
-
-    AccessibilityNodeInfoCompat nodeInfo = AccessibilityNodeInfoCompat.obtain();
-
-    // For some unknown reason, older versions of Android occasionally throw a NPE from
-    // onInitializeAccessibilityNodeInfo.
-    try {
-      ViewCompat.onInitializeAccessibilityNodeInfo(view, nodeInfo);
-    } catch (NullPointerException e) {
-      if (nodeInfo != null) {
-        nodeInfo.recycle();
-      }
-      nodeInfo = null;
-    }
 
     if (nodeInfo != null) {
       if (nodeInfo.getActionList().size() == 0) {
@@ -156,10 +144,10 @@ public final class AccessibilityHierarchyDumper {
       nodeInfo.recycle();
     }
 
-    if (view instanceof ViewGroup) {
+    if (axTree.getChildCount() > 0) {
       JSONArray children = new JSONArray();
-      for (int i = 0; i < ((ViewGroup) view).getChildCount(); i++) {
-        JSONObject childSerialization = dumpHierarchy(((ViewGroup) view).getChildAt(i));
+      for (AccessibilityUtil.AXTreeNode child : axTree.getChildren()) {
+        JSONObject childSerialization = dumpHierarchy(child);
         children.put(childSerialization);
       }
       root.put("children", children);
@@ -168,6 +156,10 @@ public final class AccessibilityHierarchyDumper {
     }
 
     return root;
+  }
+
+  public static JSONObject dumpHierarchy(View view) throws JSONException {
+    return dumpHierarchy(AccessibilityUtil.generateAccessibilityTree(view, null));
   }
 
   private static Object jsonNullOr(Object obj) {
