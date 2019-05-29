@@ -17,7 +17,7 @@ package com.facebook.testing.screenshot.internal;
 
 import static org.junit.Assert.assertEquals;
 
-import android.test.UiThreadTest;
+import androidx.test.annotation.UiThreadTest;
 import org.junit.Test;
 
 /** Tests {@link TestNameDetector} */

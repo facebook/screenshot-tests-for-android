@@ -17,16 +17,14 @@ package com.facebook.testing.screenshot.internal;
 
 import static org.mockito.Mockito.*;
 
-import android.test.AndroidTestCase;
-import android.test.MoreAsserts;
+import org.junit.Before;
 
 /** Tests {@link RecordBuilderImpl} */
-public class RecordBuilderImplTest extends AndroidTestCase {
+public class RecordBuilderImplTest {
   private ScreenshotImpl mScreenshotImpl;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
     mScreenshotImpl = mock(ScreenshotImpl.class);
   }
 
@@ -36,9 +34,9 @@ public class RecordBuilderImplTest extends AndroidTestCase {
 
     try {
       recordBuilder.record();
-      fail("expected exception");
+      throw new IllegalStateException("expected exception");
     } catch (IllegalStateException e) {
-      MoreAsserts.assertMatchesRegex(".*tiles.*", e.getMessage());
+      OldApiBandaid.assertMatchesRegex(".*tiles.*", e.getMessage());
     }
   }
 

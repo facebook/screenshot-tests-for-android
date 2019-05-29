@@ -19,8 +19,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import android.graphics.Bitmap;
-import android.support.test.InstrumentationRegistry;
-import android.test.MoreAsserts;
+import androidx.test.InstrumentationRegistry;
 import java.io.File;
 import java.util.Arrays;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -89,19 +88,6 @@ public class AlbumImplTest {
   }
 
   @Test
-  public void testCleanupWorksAcrossInstances() throws Throwable {
-    mAlbumImpl.addRecord(
-        new RecordBuilderImpl(null).setName("foo").setTiling(Tiling.singleTile(mFooFile)));
-
-    AlbumImpl anotherAlbumImpl =
-        AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
-
-    assertNotNull(anotherAlbumImpl.getScreenshot("foo"));
-    anotherAlbumImpl.cleanup();
-    assertEquals(null, anotherAlbumImpl.getScreenshot("foo"));
-  }
-
-  @Test
   public void testMetadataSaving() throws Throwable {
     mAlbumImpl.addRecord(
         new RecordBuilderImpl(null).setTiling(Tiling.singleTile(mFooFile)).setName("foo"));
@@ -125,7 +111,7 @@ public class AlbumImplTest {
 
   @Test
   public void testSavesViewHierachy() throws Throwable {
-    mAlbumImpl.openViewHierarchyFile("foo").close();
+    mAlbumImpl.writeViewHierarchyFile("foo", "");
     mAlbumImpl.addRecord(
         new RecordBuilderImpl(null).setName("foo").setTiling(Tiling.singleTile(mFooFile)));
 
@@ -252,7 +238,7 @@ public class AlbumImplTest {
       mAlbumImpl.addRecord(
           new RecordBuilderImpl(null).setName("foo").setTiling(Tiling.singleTile(mFooFile)));
     } catch (AssertionError e) {
-      MoreAsserts.assertMatchesRegex(".*same name.*", e.getMessage());
+      OldApiBandaid.assertMatchesRegex(".*same name.*", e.getMessage());
       return;
     }
     fail("expected to see an exception");
@@ -264,11 +250,11 @@ public class AlbumImplTest {
     final int HEIGHT = 4;
 
     RecordBuilderImpl builder =
-        new RecordBuilderImpl(null).setName("foo").setTiling(new Tiling(WIDTH, HEIGHT));
+        new RecordBuilderImpl(null).setName("baz").setTiling(new Tiling(WIDTH, HEIGHT));
 
     for (int i = 0; i < WIDTH; i++) {
       for (int j = 0; j < HEIGHT; j++) {
-        String tempName = mAlbumImpl.writeBitmap("foo", i, j, mSomeBitmap);
+        String tempName = mAlbumImpl.writeBitmap("baz", i, j, mSomeBitmap);
         builder.getTiling().setAt(i, j, tempName);
       }
     }
@@ -291,17 +277,17 @@ public class AlbumImplTest {
 
     assertEquals(12, fileNames.getLength());
     String fourthFile = fileNames.item(4).getTextContent();
-    MoreAsserts.assertMatchesRegex(
+    OldApiBandaid.assertMatchesRegex(
         "The x coordinate should be before y coordinate",
-        ".*foo_2_3.png",
+        ".*baz_2_3",
         fileNames.item(11).getTextContent());
 
-    MoreAsserts.assertMatchesRegex(".*foo_1_0.png", fourthFile);
+    OldApiBandaid.assertMatchesRegex(".*baz_1_0", fourthFile);
 
     NodeList relativeFileNames = screenshot.getElementsByTagName("relative_file_name");
 
     assertEquals(12, relativeFileNames.getLength());
     String relativeFourthFile = relativeFileNames.item(4).getTextContent();
-    assertEquals("foo_1_0.png", relativeFourthFile);
+    assertEquals("baz_1_0", relativeFourthFile);
   }
 }

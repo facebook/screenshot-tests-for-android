@@ -17,7 +17,7 @@
 package com.facebook.testing.screenshot;
 
 import android.os.Bundle;
-import android.support.test.runner.AndroidJUnitRunner;
+import androidx.test.runner.AndroidJUnitRunner;
 
 public class CustomScreenshotTestRunner extends AndroidJUnitRunner {
   @Override

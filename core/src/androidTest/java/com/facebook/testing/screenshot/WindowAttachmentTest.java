@@ -15,43 +15,42 @@
  */
 package com.facebook.testing.screenshot;
 
-import static android.support.test.espresso.action.ViewActions.*;
-import static android.support.test.espresso.matcher.ViewMatchers.*;
+import static androidx.test.espresso.action.ViewActions.*;
+import static androidx.test.espresso.matcher.ViewMatchers.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import android.app.KeyguardManager;
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.espresso.Espresso;
-import android.support.test.runner.AndroidJUnit4;
-import android.test.ActivityInstrumentationTestCase2;
+import android.os.Looper;
 import android.view.View;
 import android.widget.LinearLayout;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.espresso.Espresso;
+import androidx.test.rule.ActivityTestRule;
+import androidx.test.runner.AndroidJUnit4;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /** Tests {@link WindowAttachment} */
 @RunWith(AndroidJUnit4.class)
-public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyActivity> {
-
-  public WindowAttachmentTest() {
-    super(MyActivity.class);
-  }
+public class WindowAttachmentTest {
 
   private Context mContext;
   private int mAttachedCalled = 0;
   private int mDetachedCalled = 0;
   private KeyguardManager.KeyguardLock mLock;
 
+  @Rule
+  public ActivityTestRule<MyActivity> activityTestRule = new ActivityTestRule<>(MyActivity.class);
+
   @Before
   public void setUp() throws Exception {
     mContext = InstrumentationRegistry.getTargetContext();
-    injectInstrumentation(InstrumentationRegistry.getInstrumentation());
-    super.setUp();
-    KeyguardManager km =
-        (KeyguardManager)
-            getInstrumentation().getTargetContext().getSystemService(Context.KEYGUARD_SERVICE);
+    KeyguardManager km = (KeyguardManager) mContext.getSystemService(Context.KEYGUARD_SERVICE);
     mLock = km.newKeyguardLock("SelectAtTagActivityTest");
     mLock.disableKeyguard();
   }
@@ -59,7 +58,6 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
   @After
   public void tearDown() throws Exception {
     mLock.reenableKeyguard();
-    super.tearDown();
   }
 
   @Test
@@ -102,14 +100,14 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
   public void testAReallyAttachedViewIsntAttacedAgain() throws Throwable {
     final View[] view = new View[1];
 
-    getActivity();
+    activityTestRule.getActivity();
     InstrumentationRegistry.getInstrumentation()
         .runOnMainSync(
             new Runnable() {
               @Override
               public void run() {
-                view[0] = new MyView(getActivity());
-                getActivity().setContentView(view[0]);
+                view[0] = new MyView(activityTestRule.getActivity());
+                activityTestRule.getActivity().setContentView(view[0]);
               }
             });
 
@@ -146,6 +144,11 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
   public class MyView extends View {
     public MyView(Context context) {
       super(context);
+      try {
+        Looper.prepare();
+      } catch (Throwable t) {
+
+      }
     }
 
     @Override
@@ -164,6 +167,11 @@ public class WindowAttachmentTest extends ActivityInstrumentationTestCase2<MyAct
   public class Parent extends LinearLayout {
     public Parent(Context context) {
       super(context);
+      try {
+        Looper.prepare();
+      } catch (Throwable t) {
+
+      }
     }
 
     @Override

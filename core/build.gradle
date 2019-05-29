@@ -51,6 +51,7 @@ dependencies {
   androidTestImplementation deps.dexmaker
   androidTestImplementation deps.dexmakerDx
 
+  androidTestImplementation deps.androidTestRules
   androidTestImplementation deps.espresso
   androidTestImplementation deps.mockito
   androidTestImplementation deps.dexmakerMockito

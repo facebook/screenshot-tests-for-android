@@ -18,7 +18,7 @@ package com.facebook.testing.screenshot.internal;
 import static org.junit.Assert.*;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 import java.io.File;
 import org.junit.After;
 import org.junit.Test;

@@ -17,21 +17,25 @@ package com.facebook.testing.screenshot;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.assertEquals;
 
-import android.test.InstrumentationTestCase;
+import android.content.Context;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import androidx.test.InstrumentationRegistry;
 import com.facebook.testing.screenshot.test.R;
+import org.junit.Before;
 
 /** Tests {@link ViewHelpers} */
-public class ViewHelpersTest extends InstrumentationTestCase {
+public class ViewHelpersTest {
   private TextView mTextView;
+  private Context targetContext;
 
-  @Override
+  @Before
   public void setUp() throws Exception {
-    super.setUp();
-    mTextView = new TextView(getInstrumentation().getTargetContext());
+    targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    mTextView = new TextView(targetContext);
     mTextView.setText("foobar");
   }
 
@@ -72,11 +76,10 @@ public class ViewHelpersTest extends InstrumentationTestCase {
   }
 
   public void testListViewHeight() throws Throwable {
-    ListView view = new ListView(getInstrumentation().getTargetContext());
+    ListView view = new ListView(targetContext);
     view.setDividerHeight(0);
     ArrayAdapter<String> adapter =
-        new ArrayAdapter<String>(
-            getInstrumentation().getTargetContext(), R.layout.testing_simple_textview);
+        new ArrayAdapter<String>(targetContext, R.layout.testing_simple_textview);
     view.setAdapter(adapter);
 
     for (int i = 0; i < 20; i++) {

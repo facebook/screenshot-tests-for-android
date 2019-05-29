@@ -78,7 +78,7 @@ public class TestNameDetector {
 
   private static boolean isTestClass(Class<?> clazz) {
     return clazz != null
-        && (clazz.getCanonicalName().equals(JUNIT_TEST_CASE)
+        && (JUNIT_TEST_CASE.equals(clazz.getCanonicalName())
             || hasAnnotation(clazz.getAnnotations(), JUNIT_RUN_WITH)
             || isTestClass(clazz.getSuperclass()));
   }

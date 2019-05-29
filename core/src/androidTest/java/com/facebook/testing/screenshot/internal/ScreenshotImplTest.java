@@ -26,23 +26,22 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.filters.SdkSuppress;
-import android.support.test.runner.AndroidJUnit4;
-import android.test.MoreAsserts;
-import android.util.JsonReader;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SdkSuppress;
+import androidx.test.runner.AndroidJUnit4;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.HashSet;
+import java.util.Enumeration;
 import java.util.Locale;
-
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -108,10 +107,24 @@ public class ScreenshotImplTest {
     rb.record();
     mScreenshot.flush();
 
-    String fileName =
-        new File(mScreenshotDirectories.get("verify-in-test"), "blahblah_dump.json")
-            .getAbsolutePath();
-    InputStream is = new FileInputStream(fileName);
+    ZipFile bundle =
+        new ZipFile(
+            new File(mScreenshotDirectories.get("verify-in-test"), "screenshot_bundle.zip"));
+    Enumeration<? extends ZipEntry> entries = bundle.entries();
+    ZipEntry hierarchyEntry = null;
+    while (entries.hasMoreElements()) {
+      ZipEntry entry = entries.nextElement();
+      if (entry.getName().equals("blahblah_dump.json")) {
+        hierarchyEntry = entry;
+        break;
+      }
+    }
+
+    if (hierarchyEntry == null) {
+      throw new IllegalStateException("No hierarchy file found");
+    }
+
+    InputStream is = bundle.getInputStream(hierarchyEntry);
 
     StringBuilder builder = new StringBuilder();
     byte[] buffer = new byte[8 * 1024];
@@ -121,7 +134,7 @@ public class ScreenshotImplTest {
     }
     JSONObject result = new JSONObject(builder.toString());
 
-    assertEquals(2, result.length());
+    assertEquals(3, result.length());
     JSONObject viewHierarchy = result.getJSONObject("viewHierarchy");
     assertEquals(5, viewHierarchy.length());
     assertEquals("android.widget.TextView", viewHierarchy.getString("class"));
@@ -133,7 +146,7 @@ public class ScreenshotImplTest {
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
 
-    MoreAsserts.assertContainsRegex("blahblah.*.json", metadataContents);
+    OldApiBandaid.assertContainsRegex("blahblah.*.json", metadataContents);
   }
 
   @Test
@@ -146,7 +159,7 @@ public class ScreenshotImplTest {
       mScreenshot.snap(mTextView).setName("largeView").record();
       fail("expected exception");
     } catch (RuntimeException e) {
-      MoreAsserts.assertContainsRegex(".*View too large.*", e.getMessage());
+      OldApiBandaid.assertContainsRegex(".*View too large.*", e.getMessage());
     }
   }
 
@@ -280,7 +293,7 @@ public class ScreenshotImplTest {
       rb.getBitmap();
       fail("expected exception");
     } catch (IllegalArgumentException e) {
-      MoreAsserts.assertMatchesRegex(".*after.*record.*", e.getMessage());
+      OldApiBandaid.assertMatchesRegex(".*after.*record.*", e.getMessage());
     }
   }
 
