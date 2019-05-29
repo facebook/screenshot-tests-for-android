@@ -33,6 +33,10 @@ android {
   }
 }
 
+afterEvaluate {
+  generateReleaseBuildConfig.enabled = false
+}
+
 dependencies {
   implementation project(':core')
   implementation deps.lithoCore
@@ -48,4 +52,4 @@ uploadArchives {
   }
 }
 
-apply from: rootProject.file("release.gradle")
+apply from: rootProject.file("gradle/gradle-mvn-push.gradle")

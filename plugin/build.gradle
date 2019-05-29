@@ -102,4 +102,4 @@ task py3Tests(type: Exec) {
 }
 
 
-apply from: rootProject.file("release.gradle")
+apply from: rootProject.file("gradle/gradle-mvn-push.gradle")
