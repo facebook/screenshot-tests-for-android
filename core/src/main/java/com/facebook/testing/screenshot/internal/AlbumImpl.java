@@ -142,8 +142,12 @@ public class AlbumImpl implements Album {
       mZipOutputStream.close();
     }
 
-    ZipInputStream zipInputStream =
-        new ZipInputStream(new FileInputStream(new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME)));
+    File bundle = new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME);
+    if (!bundle.isFile()) {
+      return null;
+    }
+
+    ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(bundle));
     try {
       String filename = getScreenshotFilenameInternal(name);
       byte[] buffer = new byte[BUFFER_SIZE];

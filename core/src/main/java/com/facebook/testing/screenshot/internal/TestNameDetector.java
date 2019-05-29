@@ -18,10 +18,10 @@ package com.facebook.testing.screenshot.internal;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import javax.annotation.Nullable;
-import junit.framework.TestCase;
 
 /** Detect the test name and class that is being run currently. */
 public class TestNameDetector {
+  private static final String JUNIT_TEST_CASE = "junit.framework.TestCase";
   private static final String JUNIT_RUN_WITH = "org.junit.runner.RunWith";
   private static final String JUNIT_TEST = "org.junit.Test";
   private static final String UNKNOWN = "unknown";
@@ -78,7 +78,7 @@ public class TestNameDetector {
 
   private static boolean isTestClass(Class<?> clazz) {
     return clazz != null
-        && (clazz.equals(TestCase.class)
+        && (clazz.getCanonicalName().equals(JUNIT_TEST_CASE)
             || hasAnnotation(clazz.getAnnotations(), JUNIT_RUN_WITH)
             || isTestClass(clazz.getSuperclass()));
   }
