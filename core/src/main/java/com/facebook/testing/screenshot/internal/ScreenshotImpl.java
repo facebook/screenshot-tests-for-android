@@ -50,7 +50,7 @@ public class ScreenshotImpl {
    * metadata file changes in such a way that would cause a comparison between old and new files to
    * be invalid or not useful.
    */
-  private static final int METADATA_VERSION = 0;
+  private static final int METADATA_VERSION = 1;
 
   private static ScreenshotImpl sInstance;
   /** The album of all the screenshots taken in this run. */
