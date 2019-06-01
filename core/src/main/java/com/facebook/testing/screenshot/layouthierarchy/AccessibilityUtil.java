@@ -39,6 +39,8 @@ import javax.annotation.Nullable;
  */
 public class AccessibilityUtil {
 
+  private static final int NODE_INFO_CREATION_RETRY_COUNT = 3;
+
   private AccessibilityUtil() {}
 
   /**
@@ -148,15 +150,22 @@ public class AccessibilityUtil {
     return role;
   }
 
+  @Nullable
+  private static AccessibilityNodeInfoCompat createNodeInfoFromView(@Nullable View view) {
+    return createNodeInfoFromView(view, NODE_INFO_CREATION_RETRY_COUNT);
+  }
+
   /**
    * Creates and returns an {@link AccessibilityNodeInfoCompat} from the the provided {@link View}.
    * Note: This does not handle recycling of the {@link AccessibilityNodeInfoCompat}.
    *
    * @param view The {@link View} to create the {@link AccessibilityNodeInfoCompat} from.
+   * @param retryCount The number of times to retry creating the AccessibilityNodeInfoCompat.
    * @return {@link AccessibilityNodeInfoCompat}
    */
   @Nullable
-  private static AccessibilityNodeInfoCompat createNodeInfoFromView(@Nullable View view) {
+  private static AccessibilityNodeInfoCompat createNodeInfoFromView(
+      @Nullable View view, int retryCount) {
     if (view == null) {
       return null;
     }
@@ -171,6 +180,18 @@ public class AccessibilityUtil {
       if (nodeInfo != null) {
         nodeInfo.recycle();
       }
+      return null;
+    } catch (IndexOutOfBoundsException e) {
+      if (nodeInfo != null) {
+        nodeInfo.recycle();
+      }
+      // For some unknown reason, Android seems to occasionally throw a IndexOutOfBoundsException
+      // from onInitializeAccessibilityNodeInfoInternal in ViewGroup.  This seems to be
+      // nondeterministic, so lets retry if this happens.
+      if (retryCount > 0) {
+        return createNodeInfoFromView(view, retryCount - 1);
+      }
+
       return null;
     }
 
