@@ -41,6 +41,14 @@ public interface Album {
    */
   void writeViewHierarchyFile(String name, String data) throws IOException;
 
+  /**
+   * Opens a stream to dump the accessibility issues into. This should be called before addRecord()
+   * is called for the given name.
+   *
+   * <p>It is the callers responsibility to call {@code close()} on the returned stream.
+   */
+  void writeAxIssuesFile(String name, String data) throws IOException;
+
   /** This is called after every record is finally set up. */
   void addRecord(RecordBuilderImpl recordBuilder) throws IOException;
 }
