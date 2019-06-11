@@ -1,3 +1,13 @@
+0.10.0 (Jun 11 2019)
+------
+- Added batch downloading of screenshot images instead of pulling individual files
+- Added Accessibility hierarchy information
+- Added ability to specify max sizes for images
+- Fixed addDeps functionality parameter in the plugin
+- Fixed referenceDir functionality in the plugin
+- Fixed an issue on Samsung devices where a crash would occur when faking a WindowAttachment
+- Migrated to AndroidX
+
 0.9.0 (Apr 1 2019)
 -----
 - Added a setMaxPixels method to the record builder interface to allow for really large images
