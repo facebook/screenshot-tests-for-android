@@ -7,8 +7,8 @@
 package com.facebook.testing.screenshot.sample;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
 import android.view.LayoutInflater;
+import androidx.test.platform.app.InstrumentationRegistry;
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.Screenshot;
 import com.facebook.testing.screenshot.ViewHelpers;

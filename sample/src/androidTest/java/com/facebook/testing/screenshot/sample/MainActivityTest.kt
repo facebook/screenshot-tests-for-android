@@ -8,13 +8,14 @@
 
 package com.facebook.testing.screenshot.sample
 
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.rule.ActivityTestRule
+
 import android.view.View
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.rule.ActivityTestRule
 import com.facebook.testing.screenshot.Screenshot
 import org.hamcrest.core.AllOf.allOf
 import org.junit.Rule

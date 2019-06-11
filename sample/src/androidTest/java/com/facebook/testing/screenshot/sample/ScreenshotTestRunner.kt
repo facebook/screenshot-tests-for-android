@@ -9,7 +9,7 @@
 package com.facebook.testing.screenshot.sample
 
 import android.os.Bundle
-import android.support.test.runner.AndroidJUnitRunner
+import androidx.test.runner.AndroidJUnitRunner
 import com.facebook.litho.config.ComponentsConfiguration
 import com.facebook.testing.screenshot.ScreenshotRunner
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper

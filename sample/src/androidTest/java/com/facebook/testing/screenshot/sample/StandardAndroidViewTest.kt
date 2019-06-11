@@ -8,10 +8,10 @@
 
 package com.facebook.testing.screenshot.sample
 
-import android.support.test.InstrumentationRegistry
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
+import androidx.test.platform.app.InstrumentationRegistry
 import com.facebook.testing.screenshot.Screenshot
 import com.facebook.testing.screenshot.ViewHelpers
 import org.junit.Test

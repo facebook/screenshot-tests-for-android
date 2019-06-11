@@ -8,11 +8,11 @@
 
 package com.facebook.testing.screenshot.sample
 
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
 
-import android.support.test.espresso.UiController
-import android.support.test.espresso.ViewAction
 import android.view.View
+import androidx.test.espresso.UiController
+import androidx.test.espresso.ViewAction
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import com.facebook.testing.screenshot.Screenshot
 import org.hamcrest.Matcher
 
