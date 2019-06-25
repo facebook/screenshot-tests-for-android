@@ -33,10 +33,11 @@ class VerifyError(Exception):
     pass
 
 class Recorder:
-    def __init__(self, input, output):
+    def __init__(self, input, output, failure_output):
         self._input = input
         self._output = output
         self._realoutput = output
+        self._failure_output = failure_output
 
     def _get_image_size(self, file_name):
         with Image.open(file_name) as im:
@@ -104,11 +105,23 @@ class Recorder:
         self._record()
 
         root = self._get_metadata_root()
+        failures = []
         for screenshot in root.iter("screenshot"):
             name = screenshot.find('name').text + ".png"
             actual = join(self._output, name)
             expected = join(self._realoutput, name)
             if not self._is_image_same(expected, actual):
-                raise VerifyError("Image %s is not same as %s" % (actual, expected))
+                if self._failure_output:
+                    failed = join(self._failure_output, name)
+                    shutil.copy(actual, failed)
+                    failures.append((expected, failed))  
+                else:
+                  raise VerifyError("Image %s is not same as %s" % (expected, actual))
+
+        if failures:
+            reason = ''
+            for expected, failed in failures:
+                reason = reason + "\nImage %s is not same as %s" % (expected, failed)
+            raise VerifyError(reason)
 
         shutil.rmtree(self._output)

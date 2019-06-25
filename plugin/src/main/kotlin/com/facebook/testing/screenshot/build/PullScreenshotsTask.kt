@@ -80,6 +80,11 @@ open class PullScreenshotsTask : ScreenshotTask() {
           add(extension.recordDir)
         }
 
+        if (verify && extension.failureDir != null) {
+            add("--failure-dir")
+            add("${extension.failureDir}")
+        }
+
         if (extension.multipleDevices) {
           add("--multiple-devices")
           add("${extension.multipleDevices}")

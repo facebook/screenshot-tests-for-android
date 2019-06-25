@@ -486,7 +486,8 @@ def pull_screenshots(process,
                      verify=None,
                      opt_generate_png=None,
                      test_img_api=None,
-                     old_imgs_data=None):
+                     old_imgs_data=None,
+                     failure_dir=None):
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
 
@@ -508,10 +509,19 @@ def pull_screenshots(process,
     record_dir = join(record, device_name) if record and device_name else record
     verify_dir = join(verify, device_name) if verify and device_name else verify
 
+    if failure_dir:
+        failure_dir = join(failure_dir, device_name) if device_name else failure_dir
+        if not os.path.exists(failure_dir):
+            os.makedirs(failure_dir)
+
+    print('RecordDir: %s' % record_dir)
+    print('VerifyDir: %s' % verify_dir)
+    # print('FailureDir: %s' % failure_dir)
+    
     if record or verify:
         # don't import this early, since we need PIL to import this
         from .recorder import Recorder
-        recorder = Recorder(temp_dir, record_dir or verify_dir)
+        recorder = Recorder(temp_dir, record_dir or verify_dir, failure_dir)
         if verify:
             recorder.verify()
         else:
@@ -539,7 +549,7 @@ def main(argv):
         opt_list, rest_args = getopt.gnu_getopt(
             argv[1:],
             "eds:",
-            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "temp-dir=",
+            ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "failure-dir=", "temp-dir=",
              "no-pull", "multiple-devices="])
     except getopt.GetoptError:
         usage()
@@ -590,7 +600,8 @@ def main(argv):
                          record=opts.get('--record'),
                          verify=opts.get('--verify'),
                          adb_puller=SimplePuller(puller_args),
-                         device_name_calculator=device_calculator)
+                         device_name_calculator=device_calculator,
+                         failure_dir=opts.get("--failure-dir"))
 
 
 if __name__ == '__main__':
