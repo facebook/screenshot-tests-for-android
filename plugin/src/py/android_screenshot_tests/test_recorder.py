@@ -26,8 +26,9 @@ class TestRecorder(unittest.TestCase):
     def setUp(self):
         self.outputdir = tempfile.mkdtemp()
         self.inputdir = tempfile.mkdtemp()
+        self.failureDir = tempfile.mkdtemp()
         self.tmpimages = []
-        self.recorder = Recorder(self.inputdir, self.outputdir)
+        self.recorder = Recorder(self.inputdir, self.outputdir, self.failureDir)
 
     def create_temp_image(self, name, dimens, color):
         im = Image.new("RGBA", dimens, color)
@@ -188,13 +189,29 @@ class TestRecorder(unittest.TestCase):
 
         self.recorder.record()
         os.unlink(join(self.inputdir, "foobar.png"))
-        self.create_temp_image("foobar.png", (10, 10), "red")
+        self.create_temp_image("foobar.png", (11, 11), "green")
 
         try:
             self.recorder.verify()
             self.fail("expected exception")
         except VerifyError:
             pass  # expected
+
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_actual.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_expected.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_diff.png")))
+
+        # check colored diff
+        with Image.open(join(self.failureDir, "foobar_diff.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(11, w)
+            self.assertEqual(11, h)
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 1)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 1)))
+            
+            self.assertEqual((0, 128, 0, 255), im.getpixel((1, 1)))
+            self.assertEqual((0, 128, 0, 255), im.getpixel((9, 1)))
 
 if __name__ == '__main__':
     unittest.main()
