@@ -513,10 +513,6 @@ def pull_screenshots(process,
         failure_dir = join(failure_dir, device_name) if device_name else failure_dir
         if not os.path.exists(failure_dir):
             os.makedirs(failure_dir)
-
-    print('RecordDir: %s' % record_dir)
-    print('VerifyDir: %s' % verify_dir)
-    # print('FailureDir: %s' % failure_dir)
     
     if record or verify:
         # don't import this early, since we need PIL to import this
