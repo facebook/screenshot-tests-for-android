@@ -88,7 +88,7 @@ class Recorder:
             shutil.rmtree(self._output)
         os.makedirs(self._output)
 
-    def _is_image_same(self, file1, file2, file3):
+    def _is_image_same(self, file1, file2, failure_file):
         with Image.open(file1) as im1, Image.open(file2) as im2:
             diff_image = ImageChops.difference(im1, im2)
             try:
@@ -96,11 +96,11 @@ class Recorder:
                 if diff is None:
                     return True
                 else:
-                    if file3:
+                    if failure_file:
                         diff_list = list(diff) if diff else []
                         draw = ImageDraw.Draw(im2)
                         draw.rectangle(diff_list, outline = (255,0,0))
-                        im2.save(file3)
+                        im2.save(failure_file)
                     return False
             finally:
                 diff_image.close()
