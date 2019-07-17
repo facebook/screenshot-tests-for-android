@@ -23,7 +23,7 @@ import os
 import sys
 
 from os.path import join
-from PIL import Image, ImageChops
+from PIL import Image, ImageChops, ImageDraw
 
 from . import common
 import shutil
@@ -33,10 +33,11 @@ class VerifyError(Exception):
     pass
 
 class Recorder:
-    def __init__(self, input, output):
+    def __init__(self, input, output, failure_output):
         self._input = input
         self._output = output
         self._realoutput = output
+        self._failure_output = failure_output
 
     def _get_image_size(self, file_name):
         with Image.open(file_name) as im:
@@ -87,11 +88,20 @@ class Recorder:
             shutil.rmtree(self._output)
         os.makedirs(self._output)
 
-    def _is_image_same(self, file1, file2):
+    def _is_image_same(self, file1, file2, failure_file):
         with Image.open(file1) as im1, Image.open(file2) as im2:
             diff_image = ImageChops.difference(im1, im2)
             try:
-                return diff_image.getbbox() is None
+                diff = diff_image.getbbox()
+                if diff is None:
+                    return True
+                else:
+                    if failure_file:
+                        diff_list = list(diff) if diff else []
+                        draw = ImageDraw.Draw(im2)
+                        draw.rectangle(diff_list, outline = (255,0,0))
+                        im2.save(failure_file)
+                    return False
             finally:
                 diff_image.close()
 
@@ -104,11 +114,31 @@ class Recorder:
         self._record()
 
         root = self._get_metadata_root()
+        failures = []
         for screenshot in root.iter("screenshot"):
             name = screenshot.find('name').text + ".png"
             actual = join(self._output, name)
             expected = join(self._realoutput, name)
-            if not self._is_image_same(expected, actual):
-                raise VerifyError("Image %s is not same as %s" % (actual, expected))
+            if self._failure_output:
+                diff_name = screenshot.find('name').text + "_diff.png"
+                diff = join(self._failure_output, diff_name)
+                
+                if not self._is_image_same(expected, actual, diff):
+                    expected_name = screenshot.find('name').text + "_expected.png"
+                    actual_name = screenshot.find('name').text + "_actual.png"
+
+                    shutil.copy(actual, join(self._failure_output, actual_name))
+                    shutil.copy(expected, join(self._failure_output, expected_name))
+                    
+                    failures.append((expected, actual))
+            else:
+                if not self._is_image_same(expected, actual, None):
+                    raise VerifyError("Image %s is not same as %s" % (expected, actual))                  
+
+        if failures:
+            reason = ''
+            for expected, actual in failures:
+                reason = reason + "\nImage %s is not same as %s" % (expected, actual)
+            raise VerifyError(reason)
 
         shutil.rmtree(self._output)
