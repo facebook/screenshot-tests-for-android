@@ -58,6 +58,7 @@ public class ScreenshotImpl {
   private static ScreenshotImpl sInstance;
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
+
   private int mTileSize = 512;
   private Bitmap mBitmap = null;
   private Canvas mCanvas = null;

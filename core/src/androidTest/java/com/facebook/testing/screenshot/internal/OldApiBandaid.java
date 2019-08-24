@@ -20,8 +20,7 @@ import java.util.regex.Pattern;
 
 /** This exists to help alleviate some API transition pain */
 public class OldApiBandaid {
-  private OldApiBandaid() {
-  }
+  private OldApiBandaid() {}
 
   public static void assertMatchesRegex(String expected, String actual) {
     assertMatchesRegex(null, expected, actual);
