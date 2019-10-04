@@ -34,7 +34,7 @@ open class RunScreenshotTestTask : PullScreenshotsTask() {
       return
     }
 
-    dependsOn(variant.connectedInstrumentTest)
-    mustRunAfter(variant.connectedInstrumentTest)
+    dependsOn(variant.connectedInstrumentTestProvider)
+    mustRunAfter(variant.connectedInstrumentTestProvider)
   }
 }
