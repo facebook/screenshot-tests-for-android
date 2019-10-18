@@ -15,7 +15,6 @@
  */
 
 apply plugin: 'com.android.library'
-apply plugin: 'com.github.dcendents.android-maven'
 
 group = 'com.facebook.testing.screenshot'
 
@@ -56,13 +55,6 @@ dependencies {
   androidTestImplementation deps.mockito
   androidTestImplementation deps.dexmakerMockito
   androidTestImplementation deps.hamcrest
-}
-
-uploadArchives {
-  repositories {
-    mavenInstaller {
-    }
-  }
 }
 
 apply from: rootProject.file("gradle/gradle-mvn-push.gradle")

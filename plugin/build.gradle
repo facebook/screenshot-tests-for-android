@@ -14,7 +14,6 @@ buildscript {
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: "java-gradle-plugin"
-apply plugin: 'maven'
 
 repositories {
   jcenter()
@@ -57,13 +56,6 @@ dependencies {
 }
 
 group = 'com.facebook.testing.screenshot'
-
-uploadArchives {
-  repositories {
-    mavenInstaller {
-    }
-  }
-}
 
 compileKotlin {
   dependsOn generateBuildConfig
