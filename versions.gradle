@@ -7,17 +7,17 @@ ext {
   final lithoVersion = "0.31.0"
 
   versions = [
-      kotlin    : '1.2.71',
+      kotlin    : '1.3.50',
       targetSdk : 28,
       compileSdk: 28,
       minSdk    : 14,
   ]
 
   plugs = [
-      "agp"        : "com.android.tools.build:gradle:3.2.1",
-      "screenshot" : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
-      "kotlin"     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
-      "versions"   : 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
+      agp        : "com.android.tools.build:gradle:3.5.1",
+      screenshot : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
+      kotlin     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+      versions   : 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
   ]
 
   deps = [
@@ -25,7 +25,7 @@ ext {
       supportDesign       : "com.google.android.material:material:1.0.0-rc01",
       supportMultidex     : "androidx.multidex:multidex:2.0.0",
 
-      kotlinStdlib        : "org.jetbrains.kotlin:kotlin-stdlib-jre7:${versions.kotlin}",
+      kotlinStdlib        : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
 
       lithoCore           : "com.facebook.litho:litho-core:$lithoVersion",
       lithoWidget         : "com.facebook.litho:litho-widget:$lithoVersion",
@@ -39,14 +39,14 @@ ext {
       screenshotTestCommon: "com.facebook.testing.screenshot:layout-hierarchy-common:$screenshotTestVersion",
       screenshotTestLitho : "com.facebook.testing.screenshot:layout-hierarchy-litho:$screenshotTestVersion",
 
-      "dexmaker"          : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
-      "dexmakerDx"        : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
-      "dexmakerMockito"   : "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion",
+      dexmaker            : "com.crittercism.dexmaker:dexmaker:$dexmakerVersion",
+      dexmakerDx          : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
+      dexmakerMockito     : "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion",
 
-      "espresso"          : "androidx.test.espresso:espresso-core:3.1.0",
-      "androidTestRules"  : "androidx.test:rules:1.1.0",
-      "junit"             : "junit:junit:4.12",
-      "mockito"           : "org.mockito:mockito-core:1.10.19",
-      "hamcrest"          : "org.hamcrest:hamcrest-core:1.3",
+      espresso            : "androidx.test.espresso:espresso-core:3.1.0",
+      androidTestRules    : "androidx.test:rules:1.1.0",
+      junit               : "junit:junit:4.12",
+      mockito             : "org.mockito:mockito-core:1.10.19",
+      hamcrest            : "org.hamcrest:hamcrest-core:1.3",
   ]
 }
