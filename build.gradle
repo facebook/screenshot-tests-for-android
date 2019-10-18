@@ -50,20 +50,6 @@ task cleanAll(dependsOn: [
     ':layout-hierarchy-litho:clean',
 ])
 
-task installAll(dependsOn: [
-    ':core:install',
-    ':plugin:install',
-    ':layout-hierarchy-common:install',
-    ':layout-hierarchy-litho:install',
-])
-
-task uploadAllArchives(dependsOn: [
-    ':plugin:uploadArchives',
-    ':core:uploadArchives',
-    ':layout-hierarchy-common:install',
-    ':layout-hierarchy-litho:install',
-])
-
 task integrationTest(dependsOn: ':sample:runDebugAndroidTestScreenshotTest') {
   doLast {
     assert taskLogOutput.toString().contains('Found 11 screenshots')
