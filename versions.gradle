@@ -4,7 +4,7 @@ ext {
   final screenshotTestVersion = VERSION_NAME
   final supportLibraryVersion = '27.1.1'
   final dexmakerVersion = "1.4"
-  final lithoVersion = "0.26.1"
+  final lithoVersion = "0.31.0"
 
   versions = [
       kotlin    : '1.2.71',
@@ -31,6 +31,8 @@ ext {
       lithoWidget         : "com.facebook.litho:litho-widget:$lithoVersion",
       lithoAnnotations    : "com.facebook.litho:litho-annotations:$lithoVersion",
       lithoProcessor      : "com.facebook.litho:litho-processor:$lithoVersion",
+
+      soLoader            : "com.facebook.soloader:soloader:0.6.0",
 
       jsr305              : "com.google.code.findbugs:jsr305:3.0.2",
 

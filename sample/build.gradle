@@ -52,6 +52,8 @@ dependencies {
   implementation deps.lithoAnnotations
   kapt deps.lithoProcessor
 
+  implementation deps.soLoader
+
   androidTestImplementation deps.screenshotTestCommon
   androidTestImplementation deps.screenshotTestLitho
   androidTestImplementation deps.junit
