@@ -41,7 +41,12 @@ open class PullScreenshotsTask : ScreenshotTask() {
 
   override fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
     super.init(variant, extension)
-    apkPath = variant.outputs.find { it is ApkVariantOutput }!!.outputFile
+    val output = variant.outputs.find { it is ApkVariantOutput } as? ApkVariantOutput
+        ?: throw IllegalArgumentException("Can't find APK output")
+    val packageTask = variant.packageApplicationProvider.orNull
+        ?: throw IllegalArgumentException("Can't find package application provider")
+    
+    apkPath = File(packageTask.outputDirectory, output.outputFileName)
   }
 
   @TaskAction
