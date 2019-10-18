@@ -1,3 +1,9 @@
+0.11.0 (Oct 17 2019)
+------
+- Replaced direct usages of deprecated Gradle APIs
+- Adopted the Contributor Covenant
+- Added `failureDir` which saves the expected, actual and diff images of each failing test when verification fails.
+
 0.10.0 (Jun 11 2019)
 ------
 - Added batch downloading of screenshot images instead of pulling individual files
