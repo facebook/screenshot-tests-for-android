@@ -71,7 +71,7 @@ and `pip install Pillow`.
 You can install all the artifacts to your local maven repository using
 
 ```bash
-  $ gradle installAll
+  $ gradle installArchives
 ```
 
 ## Running With a Remote Service
