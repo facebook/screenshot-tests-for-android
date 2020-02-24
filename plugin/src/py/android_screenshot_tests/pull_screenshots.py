@@ -81,30 +81,33 @@ def show_old_result(
     test_img_api,
     old_imgs_data,
 ):
-    old_imgs_data['test'] = test_name
-    encoded_data = urllib.urlencode(old_imgs_data)
-    url = test_img_api + encoded_data
-
-
-
     try:
-        response = json.loads(urllib.urlopen(url).read().decode('utf-8'))
-        if 'error' in response:
-            raise Exception
+        old_screenshot_url = get_old_screenshot_url(test_name, test_img_api, old_imgs_data)
         html.write('<div class="img-block">Current')
-        old_screenshot_url = response['url']
         html.write('<div class="img-wrapper">')
         html.write('<img src="%s"></img>' % old_screenshot_url)
         html.write('</div>')
         html.write('</div>')
-    except Exception as e:
+    except Exception:
         # Do nothing
         pass
+
+
+def get_old_screenshot_url(test_name, test_img_api, old_imgs_data):
+    old_imgs_data['test'] = test_name
+    encoded_data = urllib.urlencode(old_imgs_data)
+    url = test_img_api + encoded_data
+    response = json.loads(urllib.urlopen(url).read().decode('utf-8'))
+    if 'error' in response:
+        raise Exception
+    return response['url']
+
 
 def generate_html(
     output_dir,
     test_img_api=None,
     old_imgs_data=None,
+    diff=False,
 ):
     # Take in:
     # output_dir a directory with imgs and data outputted by the just-run test,
@@ -195,6 +198,18 @@ def generate_html(
                     screenshot_num,
                     comparing,
                 )
+                if comparing and diff:
+                    try:
+                        old_screenshot_url = get_old_screenshot_url(canonical_name, test_img_api, old_imgs_data)
+                        write_image_diff(
+                            old_screenshot_url,
+                            output_dir,
+                            html,
+                            screenshot
+                        )
+                    except Exception:
+                        # Do nothing
+                        pass
                 html.write('<div class="command-wrapper">')
                 write_commands(html)
                 write_view_hierarchy(hierarchy, html, screenshot_num)
@@ -319,6 +334,38 @@ def write_image(hierarchy, dir, html, screenshot, parent_id, comparing):
     html.write('<div class="hierarchy-overlay">')
     write_view_hierarchy_overlay_nodes(hierarchy, html, parent_id)
     html.write('</div></div></div>')
+
+
+def write_image_diff(old_screenshot_url, dir, html, screenshot):
+    from PIL import Image, ImageChops, ImageOps
+
+    html.write('<div class="img-block">')
+    html.write('Diff')
+    html.write('<div class="img-wrapper">')
+
+    old_image = Image.open(urllib.urlopen(old_screenshot_url))
+    new_image = Image.new(old_image.mode, (old_image.size[0], old_image.size[1]))
+
+    # combine all tiles back into one image to ease the comparison
+    x_offset = y_offset = height = 0
+    for y in range(int(screenshot.find('tile_height').text)):
+        for x in range(int(screenshot.find('tile_width').text)):
+            image_file = join(dir, "./" + common.get_image_file_name(screenshot.find('name').text, x, y))
+            if os.path.exists(image_file):
+                img = Image.open(image_file)
+                new_image.paste(img, (x_offset, y_offset))
+                x_offset += img.size[0]
+                height = img.size[1]
+        x_offset = 0
+        y_offset += height
+
+    difference = ImageChops.difference(old_image, new_image).convert('RGB')
+    difference = ImageOps.invert(difference)
+
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as fp:
+        difference.save(fp)
+        html.write('<img src="%s" />' % fp.name)
+    html.write('</div></div>')
 
 
 def test_for_wkhtmltoimage():
@@ -487,7 +534,8 @@ def pull_screenshots(process,
                      opt_generate_png=None,
                      test_img_api=None,
                      old_imgs_data=None,
-                     failure_dir=None):
+                     failure_dir=None,
+                     diff=False):
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
 
@@ -504,7 +552,7 @@ def pull_screenshots(process,
 
     _validate_metadata(temp_dir)
 
-    path_to_html = generate_html(temp_dir, test_img_api, old_imgs_data)
+    path_to_html = generate_html(temp_dir, test_img_api, old_imgs_data, diff)
     device_name = device_name_calculator.name() if device_name_calculator else None
     record_dir = join(record, device_name) if record and device_name else record
     verify_dir = join(verify, device_name) if verify and device_name else verify
@@ -513,7 +561,7 @@ def pull_screenshots(process,
         failure_dir = join(failure_dir, device_name) if device_name else failure_dir
         if not os.path.exists(failure_dir):
             os.makedirs(failure_dir)
-    
+
     if record or verify:
         # don't import this early, since we need PIL to import this
         from .recorder import Recorder
