@@ -16,7 +16,6 @@
 
 ext {
   final screenshotTestVersion = VERSION_NAME
-  final supportLibraryVersion = '27.1.1'
   final dexmakerVersion = "1.4"
   final lithoVersion = "0.31.0"
 
