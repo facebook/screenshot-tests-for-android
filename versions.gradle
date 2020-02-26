@@ -27,7 +27,7 @@ ext {
   ]
 
   plugs = [
-      agp        : "com.android.tools.build:gradle:3.5.1",
+      agp        : "com.android.tools.build:gradle:3.6.0",
       screenshot : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
       kotlin     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
       versions   : 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
