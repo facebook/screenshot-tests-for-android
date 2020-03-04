@@ -1,3 +1,8 @@
+0.12.0 (Mar 4 2020)
+------
+- Added the ability to generate a diff between the old version of a screenshot and the new output in the html report. Currently only works with a configured test image API
+- Added support for AGP 3.6 + Gradle 6.2.x
+
 0.11.0 (Oct 17 2019)
 ------
 - Replaced direct usages of deprecated Gradle APIs
