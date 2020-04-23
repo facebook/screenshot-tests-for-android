@@ -182,11 +182,12 @@ public class AccessibilityUtil {
         nodeInfo.recycle();
       }
       return null;
-    } catch (IndexOutOfBoundsException e) {
+    } catch (RuntimeException e) {
       if (nodeInfo != null) {
         nodeInfo.recycle();
       }
       // For some unknown reason, Android seems to occasionally throw a IndexOutOfBoundsException
+      // and also random RuntimeExceptions because the handler seems not to be initialized
       // from onInitializeAccessibilityNodeInfoInternal in ViewGroup.  This seems to be
       // nondeterministic, so lets retry if this happens.
       if (retryCount > 0) {
