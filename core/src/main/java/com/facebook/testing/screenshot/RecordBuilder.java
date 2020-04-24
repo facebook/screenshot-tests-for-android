@@ -47,6 +47,14 @@ public interface RecordBuilder {
   RecordBuilder setGroup(String groupName);
 
   /**
+   * Enables or disables extra information attached to the metadata generated related to
+   * accessibility information.
+   *
+   * @param includeAccessibilityInfo
+   */
+  RecordBuilder setIncludeAccessibilityInfo(boolean includeAccessibilityInfo);
+
+  /**
    * Stops the recording and returns the generated bitmap, possibly compressed.
    *
    * <p>You cannot call this after record(), nor can you call record() after this call.

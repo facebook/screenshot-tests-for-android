@@ -41,6 +41,7 @@ public class RecordBuilderImpl implements RecordBuilder {
   private String mTestName;
   private String mError;
   private String mGroup;
+  private boolean mIncludeAccessibilityInfo = true;
   private Tiling mTiling = new Tiling(1, 1);
   private View mView;
   private long mMaxPixels = DEFAULT_MAX_PIXELS;
@@ -204,5 +205,16 @@ public class RecordBuilderImpl implements RecordBuilder {
   public RecordBuilderImpl setGroup(String groupName) {
     mGroup = groupName;
     return this;
+  }
+
+  /** @inherit */
+  @Override
+  public RecordBuilderImpl setIncludeAccessibilityInfo(boolean includeAccessibilityInfo) {
+    mIncludeAccessibilityInfo = includeAccessibilityInfo;
+    return this;
+  }
+
+  public boolean getIncludeAccessibilityInfo() {
+    return mIncludeAccessibilityInfo;
   }
 }

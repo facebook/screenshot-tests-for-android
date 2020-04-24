@@ -78,4 +78,10 @@ class MainActivityTest {
 
     Screenshot.snapActivity(activity).record()
   }
+
+  @Test
+  fun testScreenshotEntireActivityWithoutAccessibilityMetadata() {
+    val activity = activityTestRule.launchActivity(null)
+    Screenshot.snapActivity(activity).setIncludeAccessibilityInfo(false).record()
+  }
 }
