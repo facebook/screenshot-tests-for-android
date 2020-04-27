@@ -273,19 +273,20 @@ public class ScreenshotImpl {
     try {
       JSONObject dump = new JSONObject();
       JSONObject viewDump = LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView());
-      AccessibilityUtil.AXTreeNode axTree =
-          AccessibilityUtil.generateAccessibilityTree(recordBuilder.getView(), null);
-      JSONObject axHierarchyDump = AccessibilityHierarchyDumper.dumpHierarchy(axTree);
       dump.put("viewHierarchy", viewDump);
-      dump.put("axHierarchy", axHierarchyDump);
+
       dump.put("version", METADATA_VERSION);
       mAlbum.writeViewHierarchyFile(recordBuilder.getName(), dump.toString(2));
-
-      JSONObject issues = new JSONObject();
-      JSONArray axIssuesDump = AccessibilityIssuesDumper.dumpIssues(axTree);
-      issues.put("axIssues", axIssuesDump);
-      mAlbum.writeAxIssuesFile(recordBuilder.getName(), issues.toString(2));
-
+      if (recordBuilder.getIncludeAccessibilityInfo()) {
+        AccessibilityUtil.AXTreeNode axTree =
+            AccessibilityUtil.generateAccessibilityTree(recordBuilder.getView(), null);
+        JSONObject axHierarchyDump = AccessibilityHierarchyDumper.dumpHierarchy(axTree);
+        dump.put("axHierarchy", axHierarchyDump);
+        JSONObject issues = new JSONObject();
+        JSONArray axIssuesDump = AccessibilityIssuesDumper.dumpIssues(axTree);
+        issues.put("axIssues", axIssuesDump);
+        mAlbum.writeAxIssuesFile(recordBuilder.getName(), issues.toString(2));
+      }
       mAlbum.addRecord(recordBuilder);
     } catch (IOException | JSONException e) {
       throw new RuntimeException(e);
