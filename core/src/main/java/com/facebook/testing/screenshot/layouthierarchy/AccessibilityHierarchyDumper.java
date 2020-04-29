@@ -34,10 +34,14 @@ public final class AccessibilityHierarchyDumper {
   AccessibilityHierarchyDumper() {}
 
   public static JSONObject dumpHierarchy(AccessibilityUtil.AXTreeNode axTree) throws JSONException {
+    JSONObject root = new JSONObject();
+    if (axTree == null) {
+      return root;
+    }
+
     View view = axTree.getView();
     AccessibilityNodeInfoCompat nodeInfo = axTree.getNodeInfo();
 
-    JSONObject root = new JSONObject();
     root.put("class", view.getClass().getName());
 
     if (nodeInfo != null) {

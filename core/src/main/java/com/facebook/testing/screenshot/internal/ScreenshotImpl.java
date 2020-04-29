@@ -36,7 +36,6 @@ import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -274,19 +273,21 @@ public class ScreenshotImpl {
       JSONObject dump = new JSONObject();
       JSONObject viewDump = LayoutHierarchyDumper.create().dumpHierarchy(recordBuilder.getView());
       dump.put("viewHierarchy", viewDump);
-
       dump.put("version", METADATA_VERSION);
+
+      AccessibilityUtil.AXTreeNode axTree =
+          recordBuilder.getIncludeAccessibilityInfo()
+              ? AccessibilityUtil.generateAccessibilityTree(recordBuilder.getView(), null)
+              : null;
+      dump.put("axHierarchy", AccessibilityHierarchyDumper.dumpHierarchy(axTree));
       mAlbum.writeViewHierarchyFile(recordBuilder.getName(), dump.toString(2));
-      if (recordBuilder.getIncludeAccessibilityInfo()) {
-        AccessibilityUtil.AXTreeNode axTree =
-            AccessibilityUtil.generateAccessibilityTree(recordBuilder.getView(), null);
-        JSONObject axHierarchyDump = AccessibilityHierarchyDumper.dumpHierarchy(axTree);
-        dump.put("axHierarchy", axHierarchyDump);
+
+      if (axTree != null) {
         JSONObject issues = new JSONObject();
-        JSONArray axIssuesDump = AccessibilityIssuesDumper.dumpIssues(axTree);
-        issues.put("axIssues", axIssuesDump);
+        issues.put("axIssues", AccessibilityIssuesDumper.dumpIssues(axTree));
         mAlbum.writeAxIssuesFile(recordBuilder.getName(), issues.toString(2));
       }
+
       mAlbum.addRecord(recordBuilder);
     } catch (IOException | JSONException e) {
       throw new RuntimeException(e);
