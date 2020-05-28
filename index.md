@@ -200,6 +200,10 @@ You should make your build.gradle point to your new test runner using `android.t
 ### Contributions
 Use [Github issues](https://github.com/facebook/screenshot-tests-for-android/issues) for requests. We actively welcome pull requests; learn how to [contribute](https://github.com/facebook/screenshot-tests-for-android/blob/master/.github/CONTRIBUTING.md).
 
-### License
+### License & Legal
 
 *screenshot-tests-for-android* is [Apache 2 licensed](https://github.com/facebook/screenshot-tests-for-android/blob/master/LICENSE).
+
+[Terms of Service](https://opensource.facebook.com/legal/terms) 
+
+[Privacy Policy](https://opensource.facebook.com/legal/privacy)
