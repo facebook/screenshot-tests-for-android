@@ -23,9 +23,12 @@ import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashSet;
@@ -38,22 +41,29 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.Nullable;
 import org.xmlpull.v1.XmlSerializer;
 
+import static com.facebook.testing.screenshot.ScreenshotRunner.SCREENSHOT_TESTS_RUN_ID;
+
 /** A "local" implementation of Album. */
 @SuppressWarnings("deprecation")
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
   private static final int BUFFER_SIZE = 1 << 16; // 64k
   private static final String SCREENSHOT_BUNDLE_FILE_NAME = "screenshot_bundle.zip";
+  private static final String SCREENSHOT_TESTS_RUN_ID_FILE_NAME = "tests_run_id";
 
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
   private ZipOutputStream mZipOutputStream;
   private XmlSerializer mXmlSerializer;
   private OutputStream mOutputStream;
+  private String mPreviousTestRunId;
+  private String mCurrentTestRunId;
 
   /* VisibleForTesting */
   AlbumImpl(ScreenshotDirectories screenshotDirectories, String name) {
     mDir = screenshotDirectories.get(name);
+    mPreviousTestRunId = readPreviousTestRunId();
+    mCurrentTestRunId = getCurrentTestRunId();
   }
 
   /** Creates a "local" album that stores all the images on device. */
@@ -87,6 +97,30 @@ public class AlbumImpl implements Album {
     } catch (IOException e) {
       Log.d(AlbumImpl.class.getName(), "Couldn't close zip file.", e);
     }
+    writePreviousTestRunId();
+  }
+
+  private String readPreviousTestRunId() {
+    try {
+      BufferedReader reader = new BufferedReader(new FileReader(new File(mDir, SCREENSHOT_TESTS_RUN_ID_FILE_NAME)));
+      return reader.readLine();
+    } catch (IOException e) {
+      return null;
+    }
+  }
+
+  private void writePreviousTestRunId() {
+    try {
+      FileWriter writer = new FileWriter(new File(mDir, SCREENSHOT_TESTS_RUN_ID_FILE_NAME));
+      writer.write(mCurrentTestRunId);
+
+    } catch (IOException e) {
+      Log.e(AlbumImpl.class.getName(), "Couldn't write previous test run id.", e);
+    }
+  }
+
+  private String getCurrentTestRunId() {
+    return Registry.getRegistry().arguments.getString(SCREENSHOT_TESTS_RUN_ID);
   }
 
   private void initXml() {
@@ -191,6 +225,10 @@ public class AlbumImpl implements Album {
   /** Delete all screenshots associated with this album */
   @Override
   public void cleanup() {
+    if (mCurrentTestRunId.equals(mPreviousTestRunId)) {
+      // AlbumImpl instance was recreated because of ORCHESTRATOR
+      return;
+    }
     if (!mDir.exists()) {
       // We probably failed to even create it, so nothing to clean up
       return;
