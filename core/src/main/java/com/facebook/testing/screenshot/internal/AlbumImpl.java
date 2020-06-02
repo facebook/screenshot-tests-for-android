@@ -113,7 +113,7 @@ public class AlbumImpl implements Album {
     try {
       FileWriter writer = new FileWriter(new File(mDir, SCREENSHOT_TESTS_RUN_ID_FILE_NAME));
       writer.write(mCurrentTestRunId);
-
+      writer.close();
     } catch (IOException e) {
       Log.e(AlbumImpl.class.getName(), "Couldn't write previous test run id.", e);
     }
