@@ -78,7 +78,7 @@ public class AlbumImpl implements Album {
       file.createNewFile();
       file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
       mZipOutputStream =
-          new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file), BUFFER_SIZE));
+          new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file,/* append = */true), BUFFER_SIZE));
       mZipOutputStream.setLevel(Deflater.NO_COMPRESSION);
     }
     return mZipOutputStream;
@@ -130,7 +130,7 @@ public class AlbumImpl implements Album {
 
     try {
       mOutputStream =
-          new BufferedOutputStream(new FileOutputStream(getMetadataFile()), BUFFER_SIZE);
+          new BufferedOutputStream(new FileOutputStream(getMetadataFile(),/* append = */ true), BUFFER_SIZE);
       mXmlSerializer = Xml.newSerializer();
       mXmlSerializer.setOutput(mOutputStream, "utf-8");
       mXmlSerializer.startDocument("utf-8", null);
