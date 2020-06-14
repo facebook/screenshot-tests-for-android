@@ -127,6 +127,29 @@ public class AlbumImplTest {
   }
 
   @Test
+  public void testMetadataSavingAfterInstanceRecreation() throws Throwable {
+    mAlbumImpl.addRecord(
+        new RecordBuilderImpl(null).setTiling(Tiling.singleTile(mFooFile)).setName("foo"));
+    mAlbumImpl.flush();
+    mAlbumImpl = createAlbumImplForTests();
+    mAlbumImpl.addRecord(
+        new RecordBuilderImpl(null).setTiling(Tiling.singleTile(mBarFile)).setName("bar"));
+    mAlbumImpl.flush();
+
+    Document document = parseMetadata();
+    assertEquals(
+        "bar",
+        ((Element)
+            ((Element)
+                ((Element) document.getElementsByTagName("screenshots").item(0))
+                    .getElementsByTagName("screenshot")
+                    .item(1))
+                .getElementsByTagName("name")
+                .item(0))
+            .getTextContent());
+  }
+
+  @Test
   public void testSavesViewHierachy() throws Throwable {
     mAlbumImpl.writeViewHierarchyFile("foo", "");
     mAlbumImpl.addRecord(
