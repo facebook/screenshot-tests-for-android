@@ -22,6 +22,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import android.util.Xml;
+
+import org.xmlpull.v1.XmlSerializer;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,8 +41,8 @@ import java.util.zip.Deflater;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
+
 import javax.annotation.Nullable;
-import org.xmlpull.v1.XmlSerializer;
 
 import static com.facebook.testing.screenshot.ScreenshotRunner.SCREENSHOT_TESTS_RUN_ID;
 
@@ -120,7 +123,7 @@ public class AlbumImpl implements Album {
   }
 
   private String getCurrentTestRunId() {
-    return Registry.getRegistry().arguments.getString(SCREENSHOT_TESTS_RUN_ID);
+    return Registry.getRegistry().arguments.getString(SCREENSHOT_TESTS_RUN_ID, "");
   }
 
   private void initXml() {

@@ -43,12 +43,16 @@ public class AlbumImplTest {
   @Before
   public void setUp() throws Exception {
     mScreenshotDirectories = new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
-    mAlbumImpl = AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
+    mAlbumImpl = createAlbumImplForTests();
     mSomeBitmap = Bitmap.createBitmap(BITMAP_DIMENSION, BITMAP_DIMENSION, Bitmap.Config.ARGB_8888);
     mSomeBitmap.setPixel(1, 1, 0xff0000ff);
 
     mFooFile = mAlbumImpl.writeBitmap("foo", 0, 0, mSomeBitmap);
     mBarFile = mAlbumImpl.writeBitmap("bar", 0, 0, mSomeBitmap);
+  }
+
+  private AlbumImpl createAlbumImplForTests() {
+    return AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
   }
 
   @After
@@ -59,6 +63,18 @@ public class AlbumImplTest {
   @Test
   public void testWriteTempBitmap() throws Throwable {
     Bitmap output = mAlbumImpl.getScreenshot(mAlbumImpl.writeBitmap("sfdf", 0, 0, mSomeBitmap));
+
+    int actualBlueness = output.getPixel(1, 1) & 0xff;
+    assertTrue("The pixel should be same accounting for compression", actualBlueness > 0xf0);
+  }
+
+  @Test
+  public void testBitmapAvailableAfterAlbumRecreation() throws Throwable {
+    String screenshotName = mAlbumImpl.writeBitmap("sfdf", 0, 0, mSomeBitmap);
+    mAlbumImpl.flush();
+
+    AlbumImpl newInstance = createAlbumImplForTests();
+    Bitmap output = newInstance.getScreenshot(screenshotName);
 
     int actualBlueness = output.getPixel(1, 1) & 0xff;
     assertTrue("The pixel should be same accounting for compression", actualBlueness > 0xf0);
