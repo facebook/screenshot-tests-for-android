@@ -21,9 +21,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
-import android.util.Xml;
-
-import org.xmlpull.v1.XmlSerializer;
 
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
@@ -33,7 +30,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -43,6 +39,8 @@ import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Nullable;
+
+import androidx.annotation.VisibleForTesting;
 
 import static com.facebook.testing.screenshot.ScreenshotRunner.SCREENSHOT_TESTS_RUN_ID;
 
@@ -57,8 +55,7 @@ public class AlbumImpl implements Album {
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
   private ZipOutputStream mZipOutputStream;
-  private XmlSerializer mXmlSerializer;
-  private OutputStream mOutputStream;
+  private final MetadataRecorder mMetadataRecorder;
   private String mPreviousTestRunId;
   private String mCurrentTestRunId;
 
@@ -67,6 +64,7 @@ public class AlbumImpl implements Album {
     mDir = screenshotDirectories.get(name);
     mPreviousTestRunId = readPreviousTestRunId();
     mCurrentTestRunId = getCurrentTestRunId();
+    mMetadataRecorder = new MetadataRecorder(mDir);
   }
 
   /** Creates a "local" album that stores all the images on device. */
@@ -89,9 +87,7 @@ public class AlbumImpl implements Album {
 
   @Override
   public void flush() {
-    if (mOutputStream != null) {
-      endXml();
-    }
+    mMetadataRecorder.flush();
     try {
       if (mZipOutputStream != null) {
         mZipOutputStream.closeEntry();
@@ -124,39 +120,6 @@ public class AlbumImpl implements Album {
 
   private String getCurrentTestRunId() {
     return Registry.getRegistry().arguments.getString(SCREENSHOT_TESTS_RUN_ID, "");
-  }
-
-  private void initXml() {
-    if (mOutputStream != null) {
-      return;
-    }
-
-    try {
-      mOutputStream =
-          new BufferedOutputStream(new FileOutputStream(getMetadataFile(),/* append = */ true), BUFFER_SIZE);
-      mXmlSerializer = Xml.newSerializer();
-      mXmlSerializer.setOutput(mOutputStream, "utf-8");
-      mXmlSerializer.startDocument("utf-8", null);
-      mXmlSerializer.startTag(null, "screenshots");
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private void endXml() {
-    try {
-      mXmlSerializer.endTag(null, "screenshots");
-      mXmlSerializer.endDocument();
-      mXmlSerializer.flush();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-
-    try {
-      mOutputStream.close();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /** Returns the stored screenshot in the album, or null if no such test case exists. */
@@ -283,7 +246,6 @@ public class AlbumImpl implements Album {
   @SuppressLint("SetWorldReadable")
   @Override
   public void addRecord(RecordBuilderImpl recordBuilder) throws IOException {
-    initXml();
     recordBuilder.checkState();
     if (mAllNames.contains(recordBuilder.getName())) {
       if (recordBuilder.hasExplicitName()) {
@@ -296,46 +258,52 @@ public class AlbumImpl implements Album {
               + "use .setName() to name each screenshot differently");
     }
 
-    mXmlSerializer.startTag(null, "screenshot");
     Tiling tiling = recordBuilder.getTiling();
-    addTextNode("description", recordBuilder.getDescription());
-    addTextNode("name", recordBuilder.getName());
-    addTextNode("test_class", recordBuilder.getTestClass());
-    addTextNode("test_name", recordBuilder.getTestName());
-    addTextNode("tile_width", String.valueOf(tiling.getWidth()));
-    addTextNode("tile_height", String.valueOf(tiling.getHeight()));
-    addTextNode("view_hierarchy", getViewHierarchyFilename(recordBuilder.getName()));
-    addTextNode("ax_issues", getAxIssuesFilename(recordBuilder.getName()));
 
-    mXmlSerializer.startTag(null, "extras");
+    MetadataRecorder.ScreenshotPropertiesRecorder screenshotNode = mMetadataRecorder.startProperty("screenshot")
+        .addProperty("description", recordBuilder.getDescription())
+        .addProperty("name", recordBuilder.getName())
+        .addProperty("test_class", recordBuilder.getTestClass())
+        .addProperty("test_name", recordBuilder.getTestName())
+        .addProperty("tile_width", String.valueOf(tiling.getWidth()))
+        .addProperty("tile_height", String.valueOf(tiling.getHeight()))
+        .addProperty("view_hierarchy", getViewHierarchyFilename(recordBuilder.getName()))
+        .addProperty("ax_issues", getAxIssuesFilename(recordBuilder.getName()));
+
+    MetadataRecorder.ScreenshotPropertiesRecorder extrasNode = screenshotNode.startProperty("extras");
     for (Map.Entry<String, String> entry : recordBuilder.getExtras().entrySet()) {
-      addTextNode(entry.getKey(), entry.getValue());
+      extrasNode.addProperty(entry.getKey(), entry.getValue());
     }
-    mXmlSerializer.endTag(null, "extras");
+    extrasNode.endProperty();
 
     if (recordBuilder.getError() != null) {
-      addTextNode("error", recordBuilder.getError());
+      screenshotNode.addProperty("error", recordBuilder.getError());
     } else {
-      saveTiling(recordBuilder);
+      saveTiling(screenshotNode, recordBuilder);
     }
 
     if (recordBuilder.getGroup() != null) {
-      addTextNode("group", recordBuilder.getGroup());
+      screenshotNode.addProperty("group", recordBuilder.getGroup());
     }
 
     mAllNames.add(recordBuilder.getName());
 
-    mXmlSerializer.endTag(null, "screenshot");
+    screenshotNode.endProperty();
   }
 
-  private void saveTiling(RecordBuilderImpl recordBuilder) throws IOException {
+  @VisibleForTesting
+  File getMetadataFile() {
+    return mMetadataRecorder.getMetadataFile();
+  }
+
+  private void saveTiling(MetadataRecorder.ScreenshotPropertiesRecorder recorder, RecordBuilderImpl recordBuilder) throws IOException{
     Tiling tiling = recordBuilder.getTiling();
     for (int i = 0; i < tiling.getWidth(); i++) {
       for (int j = 0; j < tiling.getHeight(); j++) {
         File file = new File(mDir, generateTileName(recordBuilder.getName(), i, j));
 
-        addTextNode("absolute_file_name", file.getAbsolutePath());
-        addTextNode("relative_file_name", getRelativePath(file, mDir));
+        recorder.addProperty("absolute_file_name", file.getAbsolutePath());
+        recorder.addProperty("relative_file_name", getRelativePath(file, mDir));
       }
     }
   }
@@ -354,18 +322,6 @@ public class AlbumImpl implements Album {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private void addTextNode(String name, String value) throws IOException {
-    mXmlSerializer.startTag(null, name);
-    if (value != null) {
-      mXmlSerializer.text(value);
-    }
-    mXmlSerializer.endTag(null, name);
-  }
-
-  public File getMetadataFile() {
-    return new File(mDir, "metadata.xml");
   }
 
   /**
