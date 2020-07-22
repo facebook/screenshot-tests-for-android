@@ -554,6 +554,7 @@ def pull_screenshots(process,
 
     path_to_html = generate_html(temp_dir, test_img_api, old_imgs_data, diff)
     device_name = device_name_calculator.name() if device_name_calculator else None
+
     record_dir = join(record, device_name) if record and device_name else record
     verify_dir = join(verify, device_name) if verify and device_name else verify
 
@@ -614,7 +615,6 @@ def main(argv):
     should_perform_pull = ("--no-pull" not in opts)
 
     multiple_devices = opts.get('--multiple-devices')
-    device_calculator = DeviceNameCalculator() if multiple_devices else NoOpDeviceNameCalculator()
 
     base_puller_args = []
     if "-e" in opts:
@@ -630,12 +630,16 @@ def main(argv):
     else:
         passed_serials = common.get_connected_devices()
 
-    if passed_serials:
-        puller_args_list = [base_puller_args + ["-s", serial] for serial in passed_serials]
-    else:
-        puller_args_list = [base_puller_args]
+    puller_args_list = []
+    device_calculator_list = []
+    for serial in (passed_serials or []):
+        puller_args_list.append(base_puller_args + ["-s", serial])
+        device_calculator_list.append(DeviceNameCalculator(args=["-s", serial]) if multiple_devices else NoOpDeviceNameCalculator())
+    if not len(puller_args_list):
+        puller_args_list.append(base_puller_args)
+        device_calculator_list.append(NoOpDeviceNameCalculator())
 
-    for puller_args in puller_args_list:
+    for index, puller_args in enumerate(puller_args_list):
         pull_screenshots(process,
                          perform_pull=should_perform_pull,
                          temp_dir=opts.get('--temp-dir'),
@@ -644,7 +648,7 @@ def main(argv):
                          record=opts.get('--record'),
                          verify=opts.get('--verify'),
                          adb_puller=SimplePuller(puller_args),
-                         device_name_calculator=device_calculator,
+                         device_name_calculator=device_calculator_list[index],
                          failure_dir=opts.get("--failure-dir"))
 
 
