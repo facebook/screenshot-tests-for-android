@@ -69,15 +69,22 @@ public class AlbumImplTest {
   }
 
   @Test
-  public void testBitmapAvailableAfterAlbumRecreation() throws Throwable {
-    String screenshotName = mAlbumImpl.writeBitmap("sfdf", 0, 0, mSomeBitmap);
+  public void testMultipleBitmapsAreAvailableAfterAlbumRecreation() throws Throwable {
+    String firstScreenshotName = mAlbumImpl.writeBitmap("first", 0, 0, mSomeBitmap);
+    mAlbumImpl.flush();
+    mAlbumImpl = createAlbumImplForTests();
+    String secondScreenshotnName = mAlbumImpl.writeBitmap("second", 0, 0, mSomeBitmap);
     mAlbumImpl.flush();
 
     AlbumImpl newInstance = createAlbumImplForTests();
-    Bitmap output = newInstance.getScreenshot(screenshotName);
+    Bitmap firstOutput = newInstance.getScreenshot(firstScreenshotName);
+    Bitmap secondOutput = newInstance.getScreenshot(secondScreenshotnName);
 
-    int actualBlueness = output.getPixel(1, 1) & 0xff;
-    assertTrue("The pixel should be same accounting for compression", actualBlueness > 0xf0);
+    int firstActualBlueness = firstOutput.getPixel(1, 1) & 0xff;
+    assertTrue("The pixel should be same accounting for compression", firstActualBlueness > 0xf0);
+
+    int secondActualBlueness = secondOutput.getPixel(1, 1) & 0xff;
+    assertTrue("The pixel should be same accounting for compression", secondActualBlueness > 0xf0);
   }
 
   @Test
