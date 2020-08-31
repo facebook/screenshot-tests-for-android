@@ -29,6 +29,7 @@ import tempfile
 import urllib
 import xml.etree.ElementTree as ET
 import zipfile
+import subprocess, os, platform
 
 from . import aapt
 from . import common
@@ -535,7 +536,8 @@ def pull_screenshots(process,
                      test_img_api=None,
                      old_imgs_data=None,
                      failure_dir=None,
-                     diff=False):
+                     diff=False,
+                     open_html=False):
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
 
@@ -578,8 +580,14 @@ def pull_screenshots(process,
         print("\n\n")
         _summary(temp_dir)
         print('Open the following url in a browser to view the results: ')
-        print('  file://%s' % path_to_html)
+        full_path = 'file://' + path_to_html
+        print('  %s' % full_path)
         print("\n\n")
+        if open_html:
+            if platform.system() == 'Darwin':       # macOS
+                subprocess.call(('open', full_path))
+            elif platform.system() == 'Windows':    # Windows
+                os.startfile(full_path)
 
 
 def setup_paths():
@@ -645,7 +653,8 @@ def main(argv):
                          verify=opts.get('--verify'),
                          adb_puller=SimplePuller(puller_args),
                          device_name_calculator=device_calculator,
-                         failure_dir=opts.get("--failure-dir"))
+                         failure_dir=opts.get("--failure-dir"),
+                         open_html=opts.get('--open-html'))
 
 
 if __name__ == '__main__':
