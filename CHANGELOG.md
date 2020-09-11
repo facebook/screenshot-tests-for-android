@@ -1,3 +1,8 @@
+0.13.0 (Jul 8 2020)
+------
+- Made accessibility node information optional
+- Bugfixes surrounding obtaining accessibility node information
+
 0.12.0 (Mar 4 2020)
 ------
 - Added the ability to generate a diff between the old version of a screenshot and the new output in the html report. Currently only works with a configured test image API

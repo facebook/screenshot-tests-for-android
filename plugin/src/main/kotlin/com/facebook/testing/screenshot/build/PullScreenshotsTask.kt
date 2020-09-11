@@ -65,7 +65,7 @@ open class PullScreenshotsTask : ScreenshotTask() {
     assert(if (isVerifyOnly) outputDir.exists() else !outputDir.exists())
 
     project.exec {
-      it.executable = "python"
+      it.executable = extension.pythonExecutable
       it.environment("PYTHONPATH", jarFile)
 
       it.args = mutableListOf(
