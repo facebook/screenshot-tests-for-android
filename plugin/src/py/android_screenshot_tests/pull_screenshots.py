@@ -29,6 +29,7 @@ import tempfile
 import urllib
 import xml.etree.ElementTree as ET
 import zipfile
+import tarfile
 
 from . import aapt
 from . import common
@@ -468,7 +469,7 @@ def create_empty_metadata_file(dir):
 
 
 def pull_images(dir, device_dir, adb_puller):
-    bundle_name = 'screenshot_bundle.zip'
+    bundle_name = 'screenshot_bundle.tar'
     if adb_puller.remote_file_exists(android_path_join(device_dir, bundle_name)):
         bundle_name_local_file = join(dir, os.path.basename(bundle_name))
 
@@ -477,10 +478,10 @@ def pull_images(dir, device_dir, adb_puller):
         adb_puller.pull(android_path_join(device_dir, bundle_name),
                                 bundle_name_local_file)
         # Now unzip, to maintain normal behavior
-        with zipfile.ZipFile(bundle_name_local_file, 'r') as zipObj:
-            zipObj.extractall(dir)
-        names = zipObj.namelist()
-        print("Pulled %d files from device" % len(names))
+        with tarfile.open(bundle_name_local_file, 'r') as tarObj:
+            tarObj.extractall(path=dir)
+        ##names = tarObj.getnames()
+        ##print("Pulled %d files from device" % len(names))
         # and clean up
         os.remove(bundle_name_local_file)
     else:
