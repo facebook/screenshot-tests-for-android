@@ -46,6 +46,7 @@ dependencies {
   compileOnly deps.jsr305
   
   implementation deps.supportAppCompat
+  implementation group: 'org.apache.commons', name: 'commons-compress', version: '1.20'
 
   androidTestImplementation deps.dexmaker
   androidTestImplementation deps.dexmakerDx

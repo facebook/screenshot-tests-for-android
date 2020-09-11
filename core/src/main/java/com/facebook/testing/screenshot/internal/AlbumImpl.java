@@ -22,21 +22,23 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
+import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
+import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
+
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
 
 import javax.annotation.Nullable;
 
@@ -49,12 +51,13 @@ import static com.facebook.testing.screenshot.ScreenshotRunner.SCREENSHOT_TESTS_
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
   private static final int BUFFER_SIZE = 1 << 16; // 64k
-  private static final String SCREENSHOT_BUNDLE_FILE_NAME = "screenshot_bundle.zip";
+  private static final String SCREENSHOT_BUNDLE_FILE_NAME = "screenshot_bundle.tar";
   private static final String SCREENSHOT_TESTS_RUN_ID_FILE_NAME = "tests_run_id";
+  private static final int TAR_EOF_RECORD_SIZE = 1024;
 
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
-  private ZipOutputStream mZipOutputStream;
+  private TarArchiveOutputStream mTarOutputStream;
   private final MetadataRecorder mMetadataRecorder;
   private String mPreviousTestRunId;
   private String mCurrentTestRunId;
@@ -73,25 +76,32 @@ public class AlbumImpl implements Album {
   }
 
   @SuppressLint("SetWorldReadable")
-  private ZipOutputStream getOrCreateZipOutputStream() throws IOException {
-    if (mZipOutputStream == null) {
+  private TarArchiveOutputStream getOrCreateTarOutputStream() throws IOException {
+    if (mTarOutputStream == null) {
       File file = new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME);
       file.createNewFile();
-      file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
-      mZipOutputStream =
-          new ZipOutputStream(new BufferedOutputStream(new FileOutputStream(file,/* append = */true), BUFFER_SIZE));
-      mZipOutputStream.setLevel(Deflater.NO_COMPRESSION);
+      //file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
+      RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
+      long length = randomAccessFile.length();
+      if (length > TAR_EOF_RECORD_SIZE) {
+        randomAccessFile.seek(length - TAR_EOF_RECORD_SIZE);
+      }
+      mTarOutputStream = new TarArchiveOutputStream(
+          new BufferedOutputStream(
+              new RandomAccessFileOutputStream(randomAccessFile),
+              BUFFER_SIZE
+          )
+      );
     }
-    return mZipOutputStream;
+    return mTarOutputStream;
   }
 
   @Override
   public void flush() {
     mMetadataRecorder.flush();
     try {
-      if (mZipOutputStream != null) {
-        mZipOutputStream.closeEntry();
-        mZipOutputStream.close();
+      if (mTarOutputStream != null) {
+        mTarOutputStream.close();
       }
     } catch (IOException e) {
       Log.d(AlbumImpl.class.getName(), "Couldn't close zip file.", e);
@@ -138,9 +148,9 @@ public class AlbumImpl implements Album {
    */
   @Nullable
   File getScreenshotFile(String name) throws IOException {
-    if (mZipOutputStream != null) {
+    if (mTarOutputStream != null) {
       // This needs to be a valid file before we can read from it.
-      mZipOutputStream.close();
+      mTarOutputStream.close();
     }
 
     File bundle = new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME);
@@ -148,13 +158,13 @@ public class AlbumImpl implements Album {
       return null;
     }
 
-    ZipInputStream zipInputStream = new ZipInputStream(new FileInputStream(bundle));
+    TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new FileInputStream(bundle));
     try {
       String filename = getScreenshotFilenameInternal(name);
       byte[] buffer = new byte[BUFFER_SIZE];
 
-      ZipEntry entry;
-      while ((entry = zipInputStream.getNextEntry()) != null) {
+      TarArchiveEntry entry;
+      while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
         if (!filename.equals(entry.getName())) {
           continue;
         }
@@ -163,7 +173,7 @@ public class AlbumImpl implements Album {
         FileOutputStream fileOutputStream = new FileOutputStream(file);
         try {
           int len;
-          while ((len = zipInputStream.read(buffer)) > 0) {
+          while ((len = tarArchiveInputStream.read(buffer)) > 0) {
             fileOutputStream.write(buffer, 0, len);
           }
         } finally {
@@ -172,7 +182,7 @@ public class AlbumImpl implements Album {
         return file;
       }
     } finally {
-      zipInputStream.close();
+      tarArchiveInputStream.close();
     }
     return null;
   }
@@ -181,10 +191,14 @@ public class AlbumImpl implements Album {
   public String writeBitmap(String name, int tilei, int tilej, Bitmap bitmap) throws IOException {
     String tileName = generateTileName(name, tilei, tilej);
     String filename = getScreenshotFilenameInternal(tileName);
-    ZipOutputStream zipOutputStream = getOrCreateZipOutputStream();
-    ZipEntry entry = new ZipEntry(filename);
-    zipOutputStream.putNextEntry(entry);
-    bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, zipOutputStream);
+    TarArchiveOutputStream tarOutputStream = getOrCreateTarOutputStream();
+    ByteArrayOutputStream os = new ByteArrayOutputStream(bitmap.getHeight() * bitmap.getWidth() * 2);
+    bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, os);
+    TarArchiveEntry entry = new TarArchiveEntry(filename);
+    entry.setSize(os.size());
+    tarOutputStream.putArchiveEntry(entry);
+    tarOutputStream.write(os.toByteArray());
+    tarOutputStream.closeArchiveEntry();
     return tileName;
   }
 
@@ -233,10 +247,12 @@ public class AlbumImpl implements Album {
   public void writeMetadataFile(String name, String data) throws IOException {
     byte[] out = data.getBytes();
 
-    ZipEntry zipEntry = new ZipEntry(name);
-    ZipOutputStream zipOutputStream = getOrCreateZipOutputStream();
-    zipOutputStream.putNextEntry(zipEntry);
-    zipOutputStream.write(out);
+    TarArchiveEntry archiveEntry = new TarArchiveEntry(name);
+    TarArchiveOutputStream tarOutputStream = getOrCreateTarOutputStream();
+    archiveEntry.setSize(out.length);
+    tarOutputStream.putArchiveEntry(archiveEntry);
+    tarOutputStream.write(out);
+    tarOutputStream.closeArchiveEntry();
   }
 
   /**

@@ -117,18 +117,4 @@ class MetadataRecorder {
   File getMetadataFile() {
     return new File(mDir, "metadata.xml");
   }
-
-  private static class RandomAccessFileOutputStream extends OutputStream {
-
-    private RandomAccessFile mFile;
-
-    RandomAccessFileOutputStream(RandomAccessFile file) {
-      mFile = file;
-    }
-
-    @Override
-    public void write(int b) throws IOException {
-      mFile.write(b);
-    }
-  }
 }
