@@ -22,20 +22,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 
-import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
-import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.archivers.tar.TarArchiveOutputStream;
-
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -50,15 +42,14 @@ import static com.facebook.testing.screenshot.ScreenshotRunner.SCREENSHOT_TESTS_
 @SuppressWarnings("deprecation")
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
-  private static final int BUFFER_SIZE = 1 << 16; // 64k
   private static final String SCREENSHOT_BUNDLE_FILE_NAME = "screenshot_bundle.tar";
   private static final String SCREENSHOT_TESTS_RUN_ID_FILE_NAME = "tests_run_id";
-  private static final int TAR_EOF_RECORD_SIZE = 1024;
 
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
-  private TarArchiveOutputStream mTarOutputStream;
   private final MetadataRecorder mMetadataRecorder;
+  private final TarBundleRecorder mTarBundleRecorder;
+  private final TarBundleReader mTarBundleReader;
   private String mPreviousTestRunId;
   private String mCurrentTestRunId;
 
@@ -68,6 +59,8 @@ public class AlbumImpl implements Album {
     mPreviousTestRunId = readPreviousTestRunId();
     mCurrentTestRunId = getCurrentTestRunId();
     mMetadataRecorder = new MetadataRecorder(mDir);
+    mTarBundleRecorder = new TarBundleRecorder(SCREENSHOT_BUNDLE_FILE_NAME, mDir);
+    mTarBundleReader = new TarBundleReader(SCREENSHOT_BUNDLE_FILE_NAME, mDir);
   }
 
   /** Creates a "local" album that stores all the images on device. */
@@ -75,37 +68,10 @@ public class AlbumImpl implements Album {
     return new AlbumImpl(new ScreenshotDirectories(context), name);
   }
 
-  @SuppressLint("SetWorldReadable")
-  private TarArchiveOutputStream getOrCreateTarOutputStream() throws IOException {
-    if (mTarOutputStream == null) {
-      File file = new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME);
-      file.createNewFile();
-      //file.setReadable(/* readable = */ true, /* ownerOnly = */ false);
-      RandomAccessFile randomAccessFile = new RandomAccessFile(file, "rw");
-      long length = randomAccessFile.length();
-      if (length > TAR_EOF_RECORD_SIZE) {
-        randomAccessFile.seek(length - TAR_EOF_RECORD_SIZE);
-      }
-      mTarOutputStream = new TarArchiveOutputStream(
-          new BufferedOutputStream(
-              new RandomAccessFileOutputStream(randomAccessFile),
-              BUFFER_SIZE
-          )
-      );
-    }
-    return mTarOutputStream;
-  }
-
   @Override
   public void flush() {
     mMetadataRecorder.flush();
-    try {
-      if (mTarOutputStream != null) {
-        mTarOutputStream.close();
-      }
-    } catch (IOException e) {
-      Log.d(AlbumImpl.class.getName(), "Couldn't close zip file.", e);
-    }
+    mTarBundleRecorder.flush();
     writePreviousTestRunId();
   }
 
@@ -148,57 +114,19 @@ public class AlbumImpl implements Album {
    */
   @Nullable
   File getScreenshotFile(String name) throws IOException {
-    if (mTarOutputStream != null) {
-      // This needs to be a valid file before we can read from it.
-      mTarOutputStream.close();
-    }
+    // This needs to be a valid file before we can read from it.
+    mTarBundleRecorder.flush();
 
-    File bundle = new File(mDir, SCREENSHOT_BUNDLE_FILE_NAME);
-    if (!bundle.isFile()) {
-      return null;
-    }
-
-    TarArchiveInputStream tarArchiveInputStream = new TarArchiveInputStream(new FileInputStream(bundle));
-    try {
-      String filename = getScreenshotFilenameInternal(name);
-      byte[] buffer = new byte[BUFFER_SIZE];
-
-      TarArchiveEntry entry;
-      while ((entry = tarArchiveInputStream.getNextTarEntry()) != null) {
-        if (!filename.equals(entry.getName())) {
-          continue;
-        }
-
-        File file = File.createTempFile(name, ".png");
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-        try {
-          int len;
-          while ((len = tarArchiveInputStream.read(buffer)) > 0) {
-            fileOutputStream.write(buffer, 0, len);
-          }
-        } finally {
-          fileOutputStream.close();
-        }
-        return file;
-      }
-    } finally {
-      tarArchiveInputStream.close();
-    }
-    return null;
+    return mTarBundleReader.readFileFromBundle(getScreenshotFilenameInternal(name));
   }
 
   @Override
   public String writeBitmap(String name, int tilei, int tilej, Bitmap bitmap) throws IOException {
     String tileName = generateTileName(name, tilei, tilej);
     String filename = getScreenshotFilenameInternal(tileName);
-    TarArchiveOutputStream tarOutputStream = getOrCreateTarOutputStream();
-    ByteArrayOutputStream os = new ByteArrayOutputStream(bitmap.getHeight() * bitmap.getWidth() * 2);
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
     bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, os);
-    TarArchiveEntry entry = new TarArchiveEntry(filename);
-    entry.setSize(os.size());
-    tarOutputStream.putArchiveEntry(entry);
-    tarOutputStream.write(os.toByteArray());
-    tarOutputStream.closeArchiveEntry();
+    mTarBundleRecorder.recordFile(filename, os.toByteArray());
     return tileName;
   }
 
@@ -246,13 +174,7 @@ public class AlbumImpl implements Album {
 
   public void writeMetadataFile(String name, String data) throws IOException {
     byte[] out = data.getBytes();
-
-    TarArchiveEntry archiveEntry = new TarArchiveEntry(name);
-    TarArchiveOutputStream tarOutputStream = getOrCreateTarOutputStream();
-    archiveEntry.setSize(out.length);
-    tarOutputStream.putArchiveEntry(archiveEntry);
-    tarOutputStream.write(out);
-    tarOutputStream.closeArchiveEntry();
+    mTarBundleRecorder.recordFile(name, out);
   }
 
   /**
