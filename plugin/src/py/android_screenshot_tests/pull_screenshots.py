@@ -480,9 +480,8 @@ def pull_images(dir, device_dir, adb_puller):
                                 bundle_name_local_file)
         # Now unzip, to maintain normal behavior
         with tarfile.open(bundle_name_local_file, 'r') as tarObj:
+            print("Pulled %d files from device" % len(tarObj.getnames()))
             tarObj.extractall(path=dir)
-        ##names = tarObj.getnames()
-        ##print("Pulled %d files from device" % len(names))
         # and clean up
         os.remove(bundle_name_local_file)
     else:
