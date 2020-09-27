@@ -26,6 +26,7 @@ class TarBundleRecorder {
 
   public void recordFile(String fileName, byte[] content) throws IOException {
     TarArchiveOutputStream tarOutputStream = getOrCreateTarOutputStream();
+    tarOutputStream.setLongFileMode(TarArchiveOutputStream.LONGFILE_GNU);
     TarArchiveEntry entry = new TarArchiveEntry(fileName);
     entry.setSize(content.length);
     tarOutputStream.putArchiveEntry(entry);
