@@ -39,6 +39,8 @@ open class ScreenshotsPluginExtension {
   var referenceDir: String? = null
   /** The directory to save failed screenshots */
   var failureDir: String? = null
+
+  var testRunId: String = UUID.randomUUID().toString()
 }
 
 class ScreenshotsPlugin : Plugin<Project> {
@@ -60,10 +62,9 @@ class ScreenshotsPlugin : Plugin<Project> {
         it.dependencies.add("androidTestImplementation", "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
       }
     }
-
     val androidExtension = getProjectExtension(project)
     androidExtension.testVariants.all { generateTasksFor(project, it) }
-    androidExtension.defaultConfig.testInstrumentationRunnerArguments["SCREENSHOT_TESTS_RUN_ID"] = UUID.randomUUID().toString()
+    androidExtension.defaultConfig.testInstrumentationRunnerArguments["SCREENSHOT_TESTS_RUN_ID"] = screenshotExtensions.testRunId
   }
 
   private fun getProjectExtension(project: Project): TestedExtension {

@@ -469,21 +469,18 @@ def create_empty_metadata_file(dir):
         </screenshots>""")
 
 
-def pull_images(dir, device_dir, adb_puller):
-    bundle_name = 'screenshot_bundle.tar'
-    if adb_puller.remote_file_exists(android_path_join(device_dir, bundle_name)):
-        bundle_name_local_file = join(dir, os.path.basename(bundle_name))
+def pull_images(dir, device_dir, testRunId, adb_puller):
+    if adb_puller.remote_file_exists(android_path_join(device_dir, testRunId)):
+        bundle_name_local_file = join(dir, os.path.basename(testRunId))
 
         # Optimization to pull down all the screenshots in a single pull.
         # If this file exists, we assume all of the screenshots are inside it.
-        adb_puller.pull(android_path_join(device_dir, bundle_name),
+        adb_puller.pull(android_path_join(device_dir, testRunId),
                                 bundle_name_local_file)
-        # Now unzip, to maintain normal behavior
-        with tarfile.open(bundle_name_local_file, 'r') as tarObj:
-            print("Pulled %d files from device" % len(tarObj.getnames()))
-            tarObj.extractall(path=dir)
-        # and clean up
-        os.remove(bundle_name_local_file)
+
+        move_all_files_to_different_directory(bundle_name_local_file, dir)
+        # clean up
+        shutil.rmtree(bundle_name_local_file)
     else:
         root = ET.parse(join(dir, 'metadata.xml')).getroot()
         for s in root.iter('screenshot'):
@@ -503,12 +500,17 @@ def pull_all(package, dir, adb_puller):
     pull_images(dir, device_dir, adb_puller=adb_puller)
 
 
-def pull_filtered(package, dir, adb_puller, filter_name_regex=None):
+def pull_filtered(package, dir, adb_puller, testRunId, filter_name_regex=None):
     device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
     _validate_metadata(dir)
     metadata.filter_screenshots(join(dir, 'metadata.xml'), name_regex=filter_name_regex)
-    pull_images(dir, device_dir, adb_puller=adb_puller)
+    pull_images(dir, device_dir, testRunId, adb_puller=adb_puller)
 
+
+def move_all_files_to_different_directory(source_dir, target_dir):
+    file_names = os.listdir(source_dir)
+    for file_name in file_names:
+        shutil.move(os.path.join(source_dir, file_name), os.path.join(target_dir, file_name))
 
 def _summary(dir):
     root = ET.parse(join(dir, 'metadata.xml')).getroot()
@@ -532,6 +534,7 @@ def pull_screenshots(process,
                      filter_name_regex=None,
                      record=None,
                      verify=None,
+                     testRunId=None,
                      opt_generate_png=None,
                      test_img_api=None,
                      old_imgs_data=None,
@@ -540,6 +543,8 @@ def pull_screenshots(process,
                      open_html=False):
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
+    if not perform_pull and testRunId is None:
+        raise RuntimeError("""You must supply a directory for testRunId if --no-pull is present""")
 
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
 
@@ -549,7 +554,7 @@ def pull_screenshots(process,
     copy_assets(temp_dir)
 
     if perform_pull is True:
-        pull_filtered(process, adb_puller=adb_puller, dir=temp_dir,
+        pull_filtered(process, adb_puller=adb_puller, dir=temp_dir, testRunId=testRunId,
                       filter_name_regex=filter_name_regex)
 
     _validate_metadata(temp_dir)
@@ -602,7 +607,7 @@ def main(argv):
             argv[1:],
             "eds:",
             ["generate-png=", "filter-name-regex=", "apk", "record=", "verify=", "failure-dir=", "temp-dir=",
-             "no-pull", "multiple-devices="])
+             "no-pull", "multiple-devices=", "test-run-id="])
     except getopt.GetoptError:
         usage()
         return 2
@@ -649,6 +654,7 @@ def main(argv):
                          temp_dir=opts.get('--temp-dir'),
                          filter_name_regex=opts.get('--filter-name-regex'),
                          opt_generate_png=opts.get('--generate-png'),
+                         testRunId=opts.get("--test-run-id"),
                          record=opts.get('--record'),
                          verify=opts.get('--verify'),
                          adb_puller=SimplePuller(puller_args),

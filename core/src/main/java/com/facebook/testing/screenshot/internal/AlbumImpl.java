@@ -48,8 +48,7 @@ public class AlbumImpl implements Album {
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
   private final MetadataRecorder mMetadataRecorder;
-  private final TarBundleRecorder mTarBundleRecorder;
-  private final TarBundleReader mTarBundleReader;
+  private final SingleTestRunArtifactsManager mSingleTestRunArtifactsManager;
   private String mPreviousTestRunId;
   private String mCurrentTestRunId;
 
@@ -59,8 +58,7 @@ public class AlbumImpl implements Album {
     mPreviousTestRunId = readPreviousTestRunId();
     mCurrentTestRunId = getCurrentTestRunId();
     mMetadataRecorder = new MetadataRecorder(mDir);
-    mTarBundleRecorder = new TarBundleRecorder(SCREENSHOT_BUNDLE_FILE_NAME, mDir);
-    mTarBundleReader = new TarBundleReader(SCREENSHOT_BUNDLE_FILE_NAME, mDir);
+    mSingleTestRunArtifactsManager = new SingleTestRunArtifactsManager(mCurrentTestRunId, mDir);
   }
 
   /** Creates a "local" album that stores all the images on device. */
@@ -71,7 +69,6 @@ public class AlbumImpl implements Album {
   @Override
   public void flush() {
     mMetadataRecorder.flush();
-    mTarBundleRecorder.flush();
     writePreviousTestRunId();
   }
 
@@ -113,11 +110,8 @@ public class AlbumImpl implements Album {
    * <p>TODO: Adjust tests to no longer use this method. It's quite sketchy and inefficient.
    */
   @Nullable
-  File getScreenshotFile(String name) throws IOException {
-    // This needs to be a valid file before we can read from it.
-    mTarBundleRecorder.flush();
-
-    return mTarBundleReader.readFileFromBundle(getScreenshotFilenameInternal(name));
+  File getScreenshotFile(String name) {
+    return mSingleTestRunArtifactsManager.readFile(getScreenshotFilenameInternal(name));
   }
 
   @Override
@@ -126,7 +120,7 @@ public class AlbumImpl implements Album {
     String filename = getScreenshotFilenameInternal(tileName);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, os);
-    mTarBundleRecorder.recordFile(filename, os.toByteArray());
+    mSingleTestRunArtifactsManager.recordFile(filename, os.toByteArray());
     return tileName;
   }
 
@@ -174,7 +168,7 @@ public class AlbumImpl implements Album {
 
   public void writeMetadataFile(String name, String data) throws IOException {
     byte[] out = data.getBytes();
-    mTarBundleRecorder.recordFile(name, out);
+    mSingleTestRunArtifactsManager.recordFile(name, out);
   }
 
   /**

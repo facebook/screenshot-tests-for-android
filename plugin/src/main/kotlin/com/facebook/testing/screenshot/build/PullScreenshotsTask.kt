@@ -35,6 +35,8 @@ open class PullScreenshotsTask : ScreenshotTask() {
   protected var verify = false
   protected var record = false
 
+  protected lateinit var testRunId: String
+
   init {
     description = "Pull screenshots from your device"
     group = ScreenshotsPlugin.GROUP
@@ -48,6 +50,7 @@ open class PullScreenshotsTask : ScreenshotTask() {
         ?: throw IllegalArgumentException("Can't find package application provider")
     
     apkPath = File(packageTask.outputDirectory.asFile.get(), output.outputFileName)
+    testRunId = extension.testRunId
   }
 
   @TaskAction
@@ -73,6 +76,8 @@ open class PullScreenshotsTask : ScreenshotTask() {
         "android_screenshot_tests.pull_screenshots",
         "--apk",
         apkPath.absolutePath,
+        "--test-run-id",
+        testRunId,
         "--temp-dir",
         outputDir.absolutePath
       ).apply {
