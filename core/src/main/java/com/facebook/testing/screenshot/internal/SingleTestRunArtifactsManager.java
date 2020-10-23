@@ -19,9 +19,9 @@ class SingleTestRunArtifactsManager {
 
   public void recordFile(String fileName, byte[] content) throws IOException {
     File reportsDirectory = getOrCreateCurrentTestRunReportsDirectory();
-    FileOutputStream recordedFile = new FileOutputStream(new File(reportsDirectory, fileName));
-    recordedFile.write(content);
-    recordedFile.close();
+    try (FileOutputStream recordedFile = new FileOutputStream(new File(reportsDirectory, fileName))) {
+      recordedFile.write(content);
+    }
   }
 
   @Nullable
