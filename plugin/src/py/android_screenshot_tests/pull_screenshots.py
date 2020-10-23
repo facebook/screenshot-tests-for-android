@@ -544,7 +544,7 @@ def pull_screenshots(process,
     if not perform_pull and temp_dir is None:
         raise RuntimeError("""You must supply a directory for temp_dir if --no-pull is present""")
     if not perform_pull and testRunId is None:
-        raise RuntimeError("""You must supply a directory for testRunId if --no-pull is present""")
+        raise RuntimeError("""You must supply a test run id if --no-pull is present""")
 
     temp_dir = temp_dir or tempfile.mkdtemp(prefix='screenshots')
 
