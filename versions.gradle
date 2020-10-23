@@ -45,6 +45,8 @@ ext {
       lithoAnnotations    : "com.facebook.litho:litho-annotations:$lithoVersion",
       lithoProcessor      : "com.facebook.litho:litho-processor:$lithoVersion",
 
+      gson                : "com.google.code.gson:gson:2.8.6",
+
       soLoader            : "com.facebook.soloader:soloader:0.6.0",
 
       jsr305              : "com.google.code.findbugs:jsr305:3.0.2",

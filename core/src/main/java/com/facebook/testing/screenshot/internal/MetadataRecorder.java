@@ -117,4 +117,15 @@ class MetadataRecorder {
   File getMetadataFile() {
     return new File(mDir, "metadata.xml");
   }
+
+  private static class ScreenshotsMetadata {
+    String description;
+    String name;
+    String testClass;
+    String testName;
+    int tileWidth;
+    int tileHeight;
+    String viewHierarchy;
+    String axIssues;
+  }
 }
