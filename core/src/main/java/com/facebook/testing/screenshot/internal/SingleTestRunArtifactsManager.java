@@ -27,7 +27,7 @@ class SingleTestRunArtifactsManager {
   @Nullable
   public File readFile(String fileName) {
     File requestedFile = new File(getOrCreateCurrentTestRunReportsDirectory(), fileName);
-    if (requestedFile.exists()) {
+    if (requestedFile.isFile()) {
       return requestedFile;
     } else {
       return null;
