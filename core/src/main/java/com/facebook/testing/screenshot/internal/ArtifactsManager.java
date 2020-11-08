@@ -6,13 +6,13 @@ import java.io.IOException;
 
 import javax.annotation.Nullable;
 
-class SingleTestRunArtifactsManager {
+class ArtifactsManager {
 
   private final String mTestRunId;
   private final File mRootDir;
   private File mCurrentTestRunReportsDirectory;
 
-  public SingleTestRunArtifactsManager(String testRunId, File rootDir) {
+  public ArtifactsManager(String testRunId, File rootDir) {
     mTestRunId = testRunId;
     mRootDir = rootDir;
   }
