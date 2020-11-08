@@ -16,6 +16,7 @@
 import xml.etree.ElementTree as ET
 import os
 import sys
+import json
 
 from os.path import join
 from PIL import Image, ImageChops, ImageDraw
@@ -68,15 +69,16 @@ class Recorder:
         im.save(join(self._output, name + ".png"))
         im.close()
 
-    def _get_metadata_root(self):
-        return ET.parse(join(self._input, "metadata.xml")).getroot()
+    def _get_metadata_json(self):
+        file = open(join(self._input, "metadata.json"), "r")
+        return json.load(file)
 
     def _record(self):
-        root = self._get_metadata_root()
-        for screenshot in root.iter("screenshot"):
-            self._copy(screenshot.find('name').text,
-                       int(screenshot.find('tile_width').text),
-                       int(screenshot.find('tile_height').text))
+        metadata = self._get_metadata_json()
+        for screenshot in metadata:
+            self._copy(screenshot['name'],
+                       int(screenshot['tileWidth']),
+                       int(screenshot['tileHeight']))
 
     def _clean(self):
         if os.path.exists(self._output):
@@ -108,19 +110,19 @@ class Recorder:
         self._output = tempfile.mkdtemp()
         self._record()
 
-        root = self._get_metadata_root()
+        screenshots = self._get_metadata_json()
         failures = []
-        for screenshot in root.iter("screenshot"):
-            name = screenshot.find('name').text + ".png"
+        for screenshot in screenshots:
+            name = screenshot['name'].text + ".png"
             actual = join(self._output, name)
             expected = join(self._realoutput, name)
             if self._failure_output:
-                diff_name = screenshot.find('name').text + "_diff.png"
+                diff_name = screenshot['name'] + "_diff.png"
                 diff = join(self._failure_output, diff_name)
                 
                 if not self._is_image_same(expected, actual, diff):
-                    expected_name = screenshot.find('name').text + "_expected.png"
-                    actual_name = screenshot.find('name').text + "_actual.png"
+                    expected_name = screenshot['name'] + "_expected.png"
+                    actual_name = screenshot['name'] + "_actual.png"
 
                     shutil.copy(actual, join(self._failure_output, actual_name))
                     shutil.copy(expected, join(self._failure_output, expected_name))
