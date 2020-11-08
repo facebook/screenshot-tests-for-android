@@ -24,7 +24,7 @@ import com.android.build.gradle.api.TestVariant
 import com.facebook.testing.screenshot.generated.ScreenshotTestBuildConfig
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import java.util.*
+import java.util.UUID
 
 open class ScreenshotsPluginExtension {
   /** The directory to store recorded screenshots in */
