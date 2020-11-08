@@ -47,7 +47,7 @@ public class AlbumImpl implements Album {
   private final File mDir;
   private final Set<String> mAllNames = new HashSet<>();
   private final MetadataRecorder mMetadataRecorder;
-  private final ArtifactsManager mArtifactsManager;
+  private final ReportArtifactsManager mReportArtifactsManager;
   private String mPreviousTestRunId;
   private String mCurrentTestRunId;
 
@@ -57,7 +57,7 @@ public class AlbumImpl implements Album {
     mPreviousTestRunId = readPreviousTestRunId();
     mCurrentTestRunId = getCurrentTestRunId();
     mMetadataRecorder = new MetadataRecorder(mDir);
-    mArtifactsManager = new ArtifactsManager(mCurrentTestRunId, mDir);
+    mReportArtifactsManager = new ReportArtifactsManager(mCurrentTestRunId, mDir);
   }
 
   /** Creates a "local" album that stores all the images on device. */
@@ -110,7 +110,7 @@ public class AlbumImpl implements Album {
    */
   @Nullable
   File getScreenshotFile(String name) {
-    return mArtifactsManager.readFile(getScreenshotFilenameInternal(name));
+    return mReportArtifactsManager.readFile(getScreenshotFilenameInternal(name));
   }
 
   @Override
@@ -119,7 +119,7 @@ public class AlbumImpl implements Album {
     String filename = getScreenshotFilenameInternal(tileName);
     ByteArrayOutputStream os = new ByteArrayOutputStream();
     bitmap.compress(Bitmap.CompressFormat.PNG, COMPRESSION_QUALITY, os);
-    mArtifactsManager.recordFile(filename, os.toByteArray());
+    mReportArtifactsManager.recordFile(filename, os.toByteArray());
     return tileName;
   }
 
@@ -167,7 +167,7 @@ public class AlbumImpl implements Album {
 
   public void writeMetadataFile(String name, String data) throws IOException {
     byte[] out = data.getBytes();
-    mArtifactsManager.recordFile(name, out);
+    mReportArtifactsManager.recordFile(name, out);
   }
 
   /**
