@@ -37,7 +37,7 @@ class SingleTestRunArtifactsManager {
   private File getOrCreateCurrentTestRunReportsDirectory() {
     if (mCurrentTestRunReportsDirectory == null) {
       mCurrentTestRunReportsDirectory = new File(mRootDir, mTestRunId);
-      if (!mCurrentTestRunReportsDirectory.mkdir() || !mCurrentTestRunReportsDirectory.isDirectory()) {
+      if (!mCurrentTestRunReportsDirectory.mkdir() && !mCurrentTestRunReportsDirectory.isDirectory()) {
         throw new IllegalStateException("Unable to create a directory to store reports.");
       }
     }

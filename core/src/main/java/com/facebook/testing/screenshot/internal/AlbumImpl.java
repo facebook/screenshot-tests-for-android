@@ -29,7 +29,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.Nullable;
@@ -192,35 +191,30 @@ public class AlbumImpl implements Album {
 
     Tiling tiling = recordBuilder.getTiling();
 
-    MetadataRecorder.ScreenshotPropertiesRecorder screenshotNode = mMetadataRecorder.startProperty("screenshot")
-        .addProperty("description", recordBuilder.getDescription())
-        .addProperty("name", recordBuilder.getName())
-        .addProperty("test_class", recordBuilder.getTestClass())
-        .addProperty("test_name", recordBuilder.getTestName())
-        .addProperty("tile_width", String.valueOf(tiling.getWidth()))
-        .addProperty("tile_height", String.valueOf(tiling.getHeight()))
-        .addProperty("view_hierarchy", getViewHierarchyFilename(recordBuilder.getName()))
-        .addProperty("ax_issues", getAxIssuesFilename(recordBuilder.getName()));
-
-    MetadataRecorder.ScreenshotPropertiesRecorder extrasNode = screenshotNode.startProperty("extras");
-    for (Map.Entry<String, String> entry : recordBuilder.getExtras().entrySet()) {
-      extrasNode.addProperty(entry.getKey(), entry.getValue());
-    }
-    extrasNode.endProperty();
+    MetadataRecorder.ScreenshotMetadataRecorder screenshotNode = mMetadataRecorder.addNewScreenshot()
+        .withDescription(recordBuilder.getDescription())
+        .withName(recordBuilder.getName())
+        .withTestClass(recordBuilder.getTestClass())
+        .withTestName(recordBuilder.getTestName())
+        .withTileWidth(tiling.getWidth())
+        .withTileHeight(tiling.getHeight())
+        .withViewHierarchy(getViewHierarchyFilename(recordBuilder.getName()))
+        .withAxIssues(getAxIssuesFilename(recordBuilder.getName()))
+        .withExtras(recordBuilder.getExtras());
 
     if (recordBuilder.getError() != null) {
-      screenshotNode.addProperty("error", recordBuilder.getError());
+      screenshotNode.withError(recordBuilder.getError());
     } else {
       saveTiling(screenshotNode, recordBuilder);
     }
 
     if (recordBuilder.getGroup() != null) {
-      screenshotNode.addProperty("group", recordBuilder.getGroup());
+      screenshotNode.withGroup(recordBuilder.getGroup());
     }
 
     mAllNames.add(recordBuilder.getName());
 
-    screenshotNode.endProperty();
+    screenshotNode.save();
   }
 
   @VisibleForTesting
@@ -228,14 +222,15 @@ public class AlbumImpl implements Album {
     return mMetadataRecorder.getMetadataFile();
   }
 
-  private void saveTiling(MetadataRecorder.ScreenshotPropertiesRecorder recorder, RecordBuilderImpl recordBuilder) throws IOException{
+  private void saveTiling(MetadataRecorder.ScreenshotMetadataRecorder recorder, RecordBuilderImpl recordBuilder) throws IOException{
     Tiling tiling = recordBuilder.getTiling();
     for (int i = 0; i < tiling.getWidth(); i++) {
       for (int j = 0; j < tiling.getHeight(); j++) {
         File file = new File(mDir, generateTileName(recordBuilder.getName(), i, j));
 
-        recorder.addProperty("absolute_file_name", file.getAbsolutePath());
-        recorder.addProperty("relative_file_name", getRelativePath(file, mDir));
+        recorder
+            .withAbsoluteFileName(file.getAbsolutePath())
+            .withRelativeFileName(getRelativePath(file, mDir));
       }
     }
   }
