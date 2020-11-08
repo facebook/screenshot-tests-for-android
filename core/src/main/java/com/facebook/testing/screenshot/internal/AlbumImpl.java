@@ -41,7 +41,6 @@ import static com.facebook.testing.screenshot.ScreenshotRunner.SCREENSHOT_TESTS_
 @SuppressWarnings("deprecation")
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
-  private static final String SCREENSHOT_BUNDLE_FILE_NAME = "screenshot_bundle.tar";
   private static final String SCREENSHOT_TESTS_RUN_ID_FILE_NAME = "tests_run_id";
 
   private final File mDir;
