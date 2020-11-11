@@ -43,4 +43,3 @@ class ScreenshotTestRunner : AndroidJUnitRunner() {
     super.finish(resultCode, results)
   }
 }
-

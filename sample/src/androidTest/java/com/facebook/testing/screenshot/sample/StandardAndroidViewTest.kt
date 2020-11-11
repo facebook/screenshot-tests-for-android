@@ -69,4 +69,3 @@ class StandardAndroidViewTest {
     Screenshot.snap(view).record()
   }
 }
-

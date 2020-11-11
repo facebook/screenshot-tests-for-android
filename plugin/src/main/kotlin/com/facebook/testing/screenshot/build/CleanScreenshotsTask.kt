@@ -16,11 +16,8 @@
 
 package com.facebook.testing.screenshot.build
 
-import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
 import org.gradle.api.tasks.TaskAction
-import java.io.File
-
 
 open class CleanScreenshotsTask : ScreenshotTask() {
   companion object {

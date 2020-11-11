@@ -16,7 +16,6 @@
 
 package com.facebook.testing.screenshot.sample
 
-
 import android.view.View
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction

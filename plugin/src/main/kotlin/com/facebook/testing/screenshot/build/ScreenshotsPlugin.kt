@@ -16,11 +16,11 @@
 
 package com.facebook.testing.screenshot.build
 
-import com.facebook.testing.screenshot.generated.ScreenshotTestBuildConfig
 import com.android.build.gradle.AppExtension
 import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
+import com.facebook.testing.screenshot.generated.ScreenshotTestBuildConfig
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
@@ -55,39 +55,45 @@ class ScreenshotsPlugin : Plugin<Project> {
 
     project.afterEvaluate {
       if (screenshotExtensions.addDeps) {
-        it.dependencies.add("androidTestImplementation", "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
+        it.dependencies.add(
+            "androidTestImplementation",
+            "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
       }
     }
 
-    val variants = when {
-      plugins.hasPlugin("com.android.application") ->
-        extensions.findByType(AppExtension::class.java)!!.testVariants
-      plugins.hasPlugin("com.android.library") ->
-        extensions.findByType(LibraryExtension::class.java)!!.testVariants
-      else -> throw IllegalArgumentException("Screenshot Test plugin requires Android's plugin")
-    }
+    val variants =
+        when {
+          plugins.hasPlugin("com.android.application") ->
+              extensions.findByType(AppExtension::class.java)!!.testVariants
+          plugins.hasPlugin("com.android.library") ->
+              extensions.findByType(LibraryExtension::class.java)!!.testVariants
+          else -> throw IllegalArgumentException("Screenshot Test plugin requires Android's plugin")
+        }
 
     variants.all { generateTasksFor(project, it) }
   }
 
   private fun <T : ScreenshotTask> createTask(
-      project: Project, name: String, variant: TestVariant, clazz: Class<T>): T {
+      project: Project, name: String, variant: TestVariant, clazz: Class<T>
+  ): T {
     return project.tasks.create(name, clazz).apply { init(variant, screenshotExtensions) }
   }
 
   private fun generateTasksFor(project: Project, variant: TestVariant) {
     variant.outputs.all {
       if (it is ApkVariantOutput) {
-        val cleanScreenshots = createTask(
-            project,
-            CleanScreenshotsTask.taskName(variant),
-            variant,
-            CleanScreenshotsTask::class.java)
+        val cleanScreenshots =
+            createTask(
+                project,
+                CleanScreenshotsTask.taskName(variant),
+                variant,
+                CleanScreenshotsTask::class.java)
         createTask(
-            project,
-            PullScreenshotsTask.taskName(variant),
-            variant,
-            PullScreenshotsTask::class.java).dependsOn(cleanScreenshots)
+                project,
+                PullScreenshotsTask.taskName(variant),
+                variant,
+                PullScreenshotsTask::class.java)
+            .dependsOn(cleanScreenshots)
 
         createTask(
             project,

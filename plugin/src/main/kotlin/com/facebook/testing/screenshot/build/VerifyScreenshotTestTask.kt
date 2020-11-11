@@ -24,7 +24,8 @@ open class VerifyScreenshotTestTask : RunScreenshotTestTask() {
   }
 
   init {
-    description = "Installs and runs screenshot tests, then verifies their output against previously recorded screenshots"
+    description =
+        "Installs and runs screenshot tests, then verifies their output against previously recorded screenshots"
     group = ScreenshotsPlugin.GROUP
     verify = true
   }

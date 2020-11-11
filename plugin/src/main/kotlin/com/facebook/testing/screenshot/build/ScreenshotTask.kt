@@ -24,7 +24,7 @@ open class ScreenshotTask : DefaultTask() {
   protected lateinit var variant: TestVariant
 
   open fun init(variant: TestVariant, extension: ScreenshotsPluginExtension) {
-      this.extension = extension
-      this.variant = variant
+    this.extension = extension
+    this.variant = variant
   }
 }

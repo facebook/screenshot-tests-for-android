@@ -19,24 +19,19 @@ package com.facebook.testing.screenshot.sample
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.widget.TextView
 import androidx.annotation.ColorRes
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
-import androidx.core.content.ContextCompat
-import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
-import android.view.Menu
-import android.view.View
-import android.widget.TextView
-import com.facebook.litho.LithoView
 
 class MainActivity : AppCompatActivity() {
   companion object {
     private const val STATUS = "status"
 
-    fun intent(status: Status) = Intent().apply {
-      putExtra(STATUS, status.name)
-    }
+    fun intent(status: Status) = Intent().apply { putExtra(STATUS, status.name) }
   }
 
   enum class Status {
@@ -53,18 +48,21 @@ class MainActivity : AppCompatActivity() {
     val textView = findViewById<TextView>(R.id.text_view)
     val status = Status.valueOf(intent.string(STATUS, Status.OK.name))
     when (status) {
-      Status.OK -> textView.run {
-        setTextColor(context.color(R.color.ok))
-        text = "Status is OK"
-      }
-      Status.WARNING -> textView.run {
-        setTextColor(context.color(R.color.warning))
-        text = "Status is WARNING"
-      }
-      Status.ERROR -> textView.run {
-        setTextColor(context.color(R.color.error))
-        text = "Status is ERROR"
-      }
+      Status.OK ->
+          textView.run {
+            setTextColor(context.color(R.color.ok))
+            text = "Status is OK"
+          }
+      Status.WARNING ->
+          textView.run {
+            setTextColor(context.color(R.color.warning))
+            text = "Status is WARNING"
+          }
+      Status.ERROR ->
+          textView.run {
+            setTextColor(context.color(R.color.error))
+            text = "Status is ERROR"
+          }
     }
 
     findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
