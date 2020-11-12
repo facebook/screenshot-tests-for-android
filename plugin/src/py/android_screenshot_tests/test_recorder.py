@@ -13,14 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import shutil
 import tempfile
 import unittest
-import shutil
-import os
 from os.path import join, exists
-from .recorder import Recorder, VerifyError
 
 from PIL import Image
+
+from .recorder import Recorder, VerifyError
+
 
 class TestRecorder(unittest.TestCase):
     def setUp(self):
@@ -61,13 +63,15 @@ class TestRecorder(unittest.TestCase):
 
     def test_single_input(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foobar</name>
    <tile_width>1</tile_width>
    <tile_height>1</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
         self.assertTrue(exists(join(self.outputdir, "foobar.png")))
@@ -75,7 +79,8 @@ class TestRecorder(unittest.TestCase):
     def test_two_files(self):
         self.create_temp_image("foo.png", (10, 10), "blue")
         self.create_temp_image("bar.png", (10, 10), "red")
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foo</name>
    <tile_width>1</tile_width>
@@ -86,7 +91,8 @@ class TestRecorder(unittest.TestCase):
    <tile_width>1</tile_width>
    <tile_height>1</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
         self.assertTrue(exists(join(self.outputdir, "foo.png")))
@@ -96,13 +102,15 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foobar.png", (10, 10), "blue")
         self.create_temp_image("foobar_0_1.png", (10, 10), "red")
 
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foobar</name>
     <tile_width>1</tile_width>
     <tile_height>2</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
 
@@ -119,13 +127,15 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foobar.png", (10, 10), "blue")
         self.create_temp_image("foobar_1_0.png", (10, 10), "red")
 
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foobar</name>
     <tile_width>2</tile_width>
     <tile_height>1</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
 
@@ -143,13 +153,15 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foobar_0_1.png", (10, 8), "red")
         self.create_temp_image("foobar_1_1.png", (9, 8), "blue")
 
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foobar</name>
     <tile_width>2</tile_width>
     <tile_height>2</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
 
@@ -166,26 +178,30 @@ class TestRecorder(unittest.TestCase):
 
     def test_verify_success(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foobar</name>
     <tile_width>1</tile_width>
     <tile_height>1</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
         self.recorder.verify()
 
     def test_verify_failure(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
-        self.make_metadata("""<screenshots>
+        self.make_metadata(
+            """<screenshots>
 <screenshot>
    <name>foobar</name>
     <tile_width>1</tile_width>
     <tile_height>1</tile_height>
 </screenshot>
-</screenshots>""")
+</screenshots>"""
+        )
 
         self.recorder.record()
         os.unlink(join(self.inputdir, "foobar.png"))
@@ -209,9 +225,10 @@ class TestRecorder(unittest.TestCase):
 
             self.assertEqual((255, 0, 0, 255), im.getpixel((0, 1)))
             self.assertEqual((255, 0, 0, 255), im.getpixel((10, 1)))
-            
+
             self.assertEqual((0, 128, 0, 255), im.getpixel((1, 1)))
             self.assertEqual((0, 128, 0, 255), im.getpixel((9, 1)))
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

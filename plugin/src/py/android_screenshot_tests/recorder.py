@@ -13,19 +13,21 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import xml.etree.ElementTree as ET
 import os
+import shutil
 import sys
-
+import tempfile
+import xml.etree.ElementTree as ET
 from os.path import join
+
 from PIL import Image, ImageChops, ImageDraw
 
 from . import common
-import shutil
-import tempfile
+
 
 class VerifyError(Exception):
     pass
+
 
 class Recorder:
     def __init__(self, input, output, failure_output):
@@ -40,15 +42,14 @@ class Recorder:
 
     def _copy(self, name, w, h):
         tilewidth, tileheight = self._get_image_size(
-            join(self._input,
-                 common.get_image_file_name(name, 0, 0)))
+            join(self._input, common.get_image_file_name(name, 0, 0))
+        )
 
         canvaswidth = 0
 
-        for i  in range(w):
+        for i in range(w):
             input_file = common.get_image_file_name(name, i, 0)
             canvaswidth += self._get_image_size(join(self._input, input_file))[0]
-
 
         canvasheight = 0
 
@@ -74,9 +75,11 @@ class Recorder:
     def _record(self):
         root = self._get_metadata_root()
         for screenshot in root.iter("screenshot"):
-            self._copy(screenshot.find('name').text,
-                       int(screenshot.find('tile_width').text),
-                       int(screenshot.find('tile_height').text))
+            self._copy(
+                screenshot.find("name").text,
+                int(screenshot.find("tile_width").text),
+                int(screenshot.find("tile_height").text),
+            )
 
     def _clean(self):
         if os.path.exists(self._output):
@@ -94,7 +97,7 @@ class Recorder:
                     if failure_file:
                         diff_list = list(diff) if diff else []
                         draw = ImageDraw.Draw(im2)
-                        draw.rectangle(diff_list, outline = (255,0,0))
+                        draw.rectangle(diff_list, outline=(255, 0, 0))
                         im2.save(failure_file)
                     return False
             finally:
@@ -111,27 +114,27 @@ class Recorder:
         root = self._get_metadata_root()
         failures = []
         for screenshot in root.iter("screenshot"):
-            name = screenshot.find('name').text + ".png"
+            name = screenshot.find("name").text + ".png"
             actual = join(self._output, name)
             expected = join(self._realoutput, name)
             if self._failure_output:
-                diff_name = screenshot.find('name').text + "_diff.png"
+                diff_name = screenshot.find("name").text + "_diff.png"
                 diff = join(self._failure_output, diff_name)
-                
+
                 if not self._is_image_same(expected, actual, diff):
-                    expected_name = screenshot.find('name').text + "_expected.png"
-                    actual_name = screenshot.find('name').text + "_actual.png"
+                    expected_name = screenshot.find("name").text + "_expected.png"
+                    actual_name = screenshot.find("name").text + "_actual.png"
 
                     shutil.copy(actual, join(self._failure_output, actual_name))
                     shutil.copy(expected, join(self._failure_output, expected_name))
-                    
+
                     failures.append((expected, actual))
             else:
                 if not self._is_image_same(expected, actual, None):
-                    raise VerifyError("Image %s is not same as %s" % (expected, actual))                  
+                    raise VerifyError("Image %s is not same as %s" % (expected, actual))
 
         if failures:
-            reason = ''
+            reason = ""
             for expected, actual in failures:
                 reason = reason + "\nImage %s is not same as %s" % (expected, actual)
             raise VerifyError(reason)
