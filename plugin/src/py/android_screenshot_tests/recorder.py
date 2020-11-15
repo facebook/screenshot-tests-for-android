@@ -113,7 +113,7 @@ class Recorder:
         screenshots = self._get_metadata_json()
         failures = []
         for screenshot in screenshots:
-            name = screenshot['name'].text + ".png"
+            name = screenshot['name'] + ".png"
             actual = join(self._output, name)
             expected = join(self._realoutput, name)
             if self._failure_output:
