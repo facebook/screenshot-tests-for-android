@@ -129,7 +129,7 @@ class MetadataRecorder {
       if (metadataFile.exists()) {
         Gson gson = new Gson();
         JsonReader jsonReader = new JsonReader(new FileReader(getMetadataFile()));
-        mMetadata = gson.fromJson(jsonReader, new TypeToken<List<Map<String, Object>>>() {
+        mMetadata = gson.fromJson(jsonReader, new TypeToken<List<ScreenshotMetadata>>() {
         }.getType());
         if (mMetadata == null) {
           mMetadata = new ArrayList<>();
