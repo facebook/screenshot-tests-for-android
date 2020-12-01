@@ -74,7 +74,10 @@ class ScreenshotsPlugin : Plugin<Project> {
   }
 
   private fun <T : ScreenshotTask> createTask(
-      project: Project, name: String, variant: TestVariant, clazz: Class<T>
+      project: Project,
+      name: String,
+      variant: TestVariant,
+      clazz: Class<T>
   ): T {
     return project.tasks.create(name, clazz).apply { init(variant, screenshotExtensions) }
   }
