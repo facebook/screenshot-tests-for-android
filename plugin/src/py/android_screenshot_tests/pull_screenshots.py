@@ -21,9 +21,7 @@ from __future__ import unicode_literals
 import codecs
 import getopt
 import json
-import os
 import shutil
-import subprocess
 import subprocess, os, platform
 import sys
 import tempfile
@@ -68,13 +66,13 @@ def usage():
 
 def sort_screenshots(screenshots):
     def sort_key(screenshot):
-        group = screenshot.find("group")
+        group = screenshot.get("group")
 
-        group = group.text if group is not None else ""
+        group = group if group is not None else ""
 
-        return (group, screenshot.find("name").text)
+        return (group, screenshot["name"])
 
-    return sorted(list(screenshots), key=sort_key)
+    return sorted(screenshots, key=sort_key)
 
 
 def show_old_result(
@@ -120,7 +118,7 @@ def generate_html(
     #   and returns a url to an image from a previous run of the test,
     # old_imgs_data a dict that will be used in the test_img_api url.
     # Creates the html for showing a before and after comparison of the images.
-    output_root = ET.parse(join(output_dir, "metadata.xml")).getroot()
+    screenshots = json.load(open(join(output_dir, "metadata.json")))
     alternate = False
     index_html = abspath(join(output_dir, "index.html"))
     with codecs.open(index_html, mode="w", encoding="utf-8") as html:
@@ -142,10 +140,10 @@ def generate_html(
         html.write("<body>")
 
         screenshot_num = 0
-        for screenshot in sort_screenshots(output_root.iter("screenshot")):
+        for screenshot in sort_screenshots(screenshots):
             screenshot_num += 1
             alternate = not alternate
-            canonical_name = screenshot.find("name").text
+            canonical_name = screenshot["name"]
             package = ""
             name = canonical_name
             if "." in canonical_name:
@@ -160,38 +158,29 @@ def generate_html(
             html.write('<span class="demphasize">%s</span>%s' % (package, name))
             html.write("</div>")
 
-            group = screenshot.find("group")
+            group = screenshot.get("group")
             if group:
-                html.write('<div class="screenshot_group">%s</div>' % group.text)
+                html.write('<div class="screenshot_group">%s</div>' % group)
 
-            extras = screenshot.find("extras")
+            extras = screenshot.get("extras")
             if extras is not None:
                 str = ""
-                for node in extras:
-                    if node.text is not None:
-                        str = (
-                            str
-                            + "*****"
-                            + node.tag
-                            + "*****\n\n"
-                            + node.text
-                            + "\n\n\n"
-                        )
+                for key, value in extras:
+                    if key is not None:
+                        str = str + "*****" + key + "*****\n\n" + value + "\n\n\n"
                 if str != "":
                     extra_html = (
                         '<button class="extra" data="%s">Extra info</button>' % str
                     )
                     html.write(extra_html.encode("utf-8").strip())
 
-            description = screenshot.find("description")
+            description = screenshot.get("description")
             if description is not None:
-                html.write(
-                    '<div class="screenshot_description">%s</div>' % description.text
-                )
+                html.write('<div class="screenshot_description">%s</div>' % description)
 
-            error = screenshot.find("error")
+            error = screenshot.get("error")
             if error is not None:
-                html.write('<div class="screenshot_error">%s</div>' % error.text)
+                html.write('<div class="screenshot_error">%s</div>' % error)
             else:
                 hierarchy_data = get_view_hierarchy(output_dir, screenshot)
                 if hierarchy_data and KEY_VIEW_HIERARCHY in hierarchy_data:
@@ -331,7 +320,7 @@ def get_view_hierarchy_overlay_node_id(node):
 
 
 def get_view_hierarchy(dir, screenshot):
-    json_path = join(dir, screenshot.find("name").text + "_dump.json")
+    json_path = join(dir, screenshot["name"] + "_dump.json")
     if not os.path.exists(json_path):
         return None
     with codecs.open(json_path, mode="r", encoding="utf-8") as dump:
@@ -344,13 +333,11 @@ def write_image(hierarchy, dir, html, screenshot, parent_id, comparing):
         html.write("New Output")
     html.write('<div class="img-wrapper">')
     html.write("<table>")
-    for y in range(int(screenshot.find("tile_height").text)):
+    for y in range(int(screenshot["tileHeight"])):
         html.write("<tr>")
-        for x in range(int(screenshot.find("tile_width").text)):
+        for x in range(int(screenshot["tileWidth"])):
             html.write("<td>")
-            image_file = "./" + common.get_image_file_name(
-                screenshot.find("name").text, x, y
-            )
+            image_file = "./" + common.get_image_file_name(screenshot["name"], x, y)
 
             if os.path.exists(join(dir, image_file)):
                 html.write('<img src="%s" />' % image_file)
@@ -375,11 +362,10 @@ def write_image_diff(old_screenshot_url, dir, html, screenshot):
 
     # combine all tiles back into one image to ease the comparison
     x_offset = y_offset = height = 0
-    for y in range(int(screenshot.find("tile_height").text)):
-        for x in range(int(screenshot.find("tile_width").text)):
+    for y in range(int(screenshot["tile_height"])):
+        for x in range(int(screenshot["tile_width"])):
             image_file = join(
-                dir,
-                "./" + common.get_image_file_name(screenshot.find("name").text, x, y),
+                dir, "./" + common.get_image_file_name(screenshot["name"], x, y)
             )
             if os.path.exists(image_file):
                 img = Image.open(image_file)
@@ -474,50 +460,42 @@ def pull_metadata(package, dir, adb_puller):
         adb_puller.get_external_data_dir(), "screenshots"
     )
     metadata_file = android_path_join(
-        root_screenshot_dir, package, "screenshots-default/metadata.xml"
+        root_screenshot_dir, package, "screenshots-default/metadata.json"
     )
 
     old_metadata_file = android_path_join(
-        OLD_ROOT_SCREENSHOT_DIR, package, "app_screenshots-default/metadata.xml"
+        OLD_ROOT_SCREENSHOT_DIR, package, "app_screenshots-default/metadata.json"
     )
 
     if adb_puller.remote_file_exists(metadata_file):
-        adb_puller.pull(metadata_file, join(dir, "metadata.xml"))
+        adb_puller.pull(metadata_file, join(dir, "metadata.json"))
     elif adb_puller.remote_file_exists(old_metadata_file):
-        adb_puller.pull(old_metadata_file, join(dir, "metadata.xml"))
+        adb_puller.pull(old_metadata_file, join(dir, "metadata.json"))
         metadata_file = old_metadata_file
     else:
         create_empty_metadata_file(dir)
 
-    return metadata_file.replace("metadata.xml", "")
+    return metadata_file.replace("metadata.json", "")
 
 
 def create_empty_metadata_file(dir):
-    with open(join(dir, "metadata.xml"), "w") as out:
-        out.write(
-            """<?xml version="1.0" encoding="UTF-8"?>
-        <screenshots>
-        </screenshots>"""
-        )
+    with open(join(dir, "metadata.json"), "w") as out:
+        out.write("{}")
 
 
-def pull_images(dir, device_dir, adb_puller):
-    bundle_name = "screenshot_bundle.zip"
-    if adb_puller.remote_file_exists(android_path_join(device_dir, bundle_name)):
-        bundle_name_local_file = join(dir, os.path.basename(bundle_name))
+def pull_images(dir, device_dir, test_run_id, adb_puller):
+    if adb_puller.remote_file_exists(android_path_join(device_dir, test_run_id)):
+        bundle_name_local_file = join(dir, os.path.basename(test_run_id))
 
         # Optimization to pull down all the screenshots in a single pull.
         # If this file exists, we assume all of the screenshots are inside it.
         adb_puller.pull(
-            android_path_join(device_dir, bundle_name), bundle_name_local_file
+            android_path_join(device_dir, test_run_id), bundle_name_local_file
         )
-        # Now unzip, to maintain normal behavior
-        with zipfile.ZipFile(bundle_name_local_file, "r") as zipObj:
-            zipObj.extractall(dir)
-        names = zipObj.namelist()
-        print("Pulled %d files from device" % len(names))
-        # and clean up
-        os.remove(bundle_name_local_file)
+
+        move_all_files_to_different_directory(bundle_name_local_file, dir)
+        # clean up
+        shutil.rmtree(bundle_name_local_file)
     else:
         root = ET.parse(join(dir, "metadata.xml")).getroot()
         for s in root.iter("screenshot"):
@@ -535,30 +513,42 @@ def pull_images(dir, device_dir, adb_puller):
                 )
 
 
-def pull_all(package, dir, adb_puller):
+def pull_all(package, dir, test_run_id, adb_puller):
     device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
-    pull_images(dir, device_dir, adb_puller=adb_puller)
+    pull_images(dir, device_dir, test_run_id, adb_puller=adb_puller)
 
 
-def pull_filtered(package, dir, adb_puller, filter_name_regex=None):
+def pull_filtered(package, dir, adb_puller, test_run_id, filter_name_regex=None):
     device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
     _validate_metadata(dir)
-    metadata.filter_screenshots(join(dir, "metadata.xml"), name_regex=filter_name_regex)
-    pull_images(dir, device_dir, adb_puller=adb_puller)
+    metadata.filter_screenshots(
+        join(dir, "metadata.json"), name_regex=filter_name_regex
+    )
+    pull_images(dir, device_dir, test_run_id, adb_puller=adb_puller)
+
+
+def move_all_files_to_different_directory(source_dir, target_dir):
+    file_names = os.listdir(source_dir)
+    for file_name in file_names:
+        shutil.move(
+            os.path.join(source_dir, file_name), os.path.join(target_dir, file_name)
+        )
 
 
 def _summary(dir):
-    root = ET.parse(join(dir, "metadata.xml")).getroot()
-    count = len(root.findall("screenshot"))
+    metadataJson = json.load(open(join(dir, "metadata.json")))
+    count = len(metadataJson)
     print("Found %d screenshots" % count)
 
 
 def _validate_metadata(dir):
     try:
-        ET.parse(join(dir, "metadata.xml"))
-    except ET.ParseError:
+        with open(join(dir, "metadata.json"), "r") as f:
+            json.loads(f.read())
+    except Exception as e:
         raise RuntimeError(
-            "Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation"
+            "Unable to parse metadata file, this commonly happens if you did not call ScreenshotRunner.onDestroy() from your instrumentation",
+            e,
         )
 
 
@@ -571,6 +561,7 @@ def pull_screenshots(
     filter_name_regex=None,
     record=None,
     verify=None,
+    test_run_id=None,
     opt_generate_png=None,
     test_img_api=None,
     old_imgs_data=None,
@@ -582,6 +573,8 @@ def pull_screenshots(
         raise RuntimeError(
             """You must supply a directory for temp_dir if --no-pull is present"""
         )
+    if not perform_pull and test_run_id is None:
+        raise RuntimeError("""You must supply a test run id if --no-pull is present""")
 
     temp_dir = temp_dir or tempfile.mkdtemp(prefix="screenshots")
 
@@ -595,6 +588,7 @@ def pull_screenshots(
             process,
             adb_puller=adb_puller,
             dir=temp_dir,
+            test_run_id=test_run_id,
             filter_name_regex=filter_name_regex,
         )
 
@@ -658,6 +652,7 @@ def main(argv):
                 "temp-dir=",
                 "no-pull",
                 "multiple-devices=",
+                "test-run-id=",
             ],
         )
     except getopt.GetoptError:
@@ -711,6 +706,7 @@ def main(argv):
             temp_dir=opts.get("--temp-dir"),
             filter_name_regex=opts.get("--filter-name-regex"),
             opt_generate_png=opts.get("--generate-png"),
+            test_run_id=opts.get("--test-run-id"),
             record=opts.get("--record"),
             verify=opts.get("--verify"),
             adb_puller=SimplePuller(puller_args),

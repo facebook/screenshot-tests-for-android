@@ -52,6 +52,10 @@ android {
     versionCode 1
     versionName "1.0"
     testInstrumentationRunner "com.facebook.testing.screenshot.sample.ScreenshotTestRunner"
+    testInstrumentationRunnerArguments clearPackageData: 'true'
+  }
+  testOptions {
+    execution 'ANDROIDX_TEST_ORCHESTRATOR'
   }
 }
 
@@ -71,6 +75,8 @@ dependencies {
   androidTestImplementation deps.screenshotTestCommon
   androidTestImplementation deps.screenshotTestLitho
   androidTestImplementation deps.junit
+  androidTestImplementation deps.testRunner
+  androidTestUtil deps.orchestrator
   androidTestImplementation(deps.espresso) {
     exclude group: 'com.android.support', module: 'support-annotations'
     exclude group: 'com.google.code.findbugs', module: 'jsr305'
