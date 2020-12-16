@@ -33,12 +33,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.zip.Deflater;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
-import javax.annotation.Nullable;
-import org.xmlpull.v1.XmlSerializer;
 
 /** A "local" implementation of Album. */
 @SuppressWarnings("deprecation")
