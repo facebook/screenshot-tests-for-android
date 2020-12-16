@@ -46,11 +46,13 @@ dependencies {
   compileOnly deps.jsr305
   
   implementation deps.supportAppCompat
+  implementation deps.supportAnnotation
 
   androidTestImplementation deps.dexmaker
   androidTestImplementation deps.dexmakerDx
 
   androidTestImplementation deps.androidTestRules
+  androidTestImplementation deps.androidTestJunit
   androidTestImplementation deps.espresso
   androidTestImplementation deps.mockito
   androidTestImplementation deps.dexmakerMockito

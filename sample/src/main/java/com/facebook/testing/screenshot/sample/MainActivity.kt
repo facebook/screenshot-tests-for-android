@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
   private fun Intent.string(name: String, defValue: String): String {
     if (hasExtra(name)) {
-      return getStringExtra(name)
+      return getStringExtra(name)!!
     }
     return defValue
   }
