@@ -24,6 +24,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import java.io.File;
 import java.io.FileInputStream;
@@ -98,11 +99,11 @@ class ScreenshotDirectories {
   }
 
   private File getSdcardDir(String type) {
-    String externalStorage = System.getenv("EXTERNAL_STORAGE");
+    File publicDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
 
-    if (externalStorage == null) {
+    if (publicDir == null) {
       throw new RuntimeException(
-          "No $EXTERNAL_STORAGE has been set on the device, please report this bug!");
+          "No Downloads directory has been found on the device, please report this bug!");
     }
 
     String sdcardDirectory =
@@ -111,7 +112,7 @@ class ScreenshotDirectories {
             : DEFAULT_SDCARD_DIRECTORY;
 
     String parent =
-        String.format("%s/%s/%s/", externalStorage, sdcardDirectory, mContext.getPackageName());
+        String.format("%s/%s/%s/", publicDir, sdcardDirectory, mContext.getPackageName());
 
     String child = String.format("%s/screenshots-%s", parent, type);
 

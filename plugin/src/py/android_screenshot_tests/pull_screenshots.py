@@ -470,35 +470,48 @@ def android_path_join(a, *args):
 
 
 def pull_metadata(package, dir, adb_puller):
-    root_screenshot_dir = android_path_join(
-        adb_puller.get_external_data_dir(), "screenshots"
-    )
-    metadata_file = android_path_join(
-        root_screenshot_dir, package, "screenshots-default/metadata.xml"
-    )
+    metadata_file = None
+    external_dir = adb_puller.get_external_data_dir()
 
-    old_metadata_file = android_path_join(
-        OLD_ROOT_SCREENSHOT_DIR, package, "app_screenshots-default/metadata.xml"
-    )
+    possible_location = [
+        android_path_join(
+            external_dir,
+            'Download/screenshots',
+            package,
+            'screenshots-default/metadata.xml'),
+        android_path_join(
+            external_dir,
+            "screenshots",
+            package,
+            'screenshots-default/metadata.xml'),
+        android_path_join(
+            OLD_ROOT_SCREENSHOT_DIR,
+            package,
+            'app_screenshots-default/metadata.xml')
+    ]
 
-    if adb_puller.remote_file_exists(metadata_file):
-        adb_puller.pull(metadata_file, join(dir, "metadata.xml"))
-    elif adb_puller.remote_file_exists(old_metadata_file):
-        adb_puller.pull(old_metadata_file, join(dir, "metadata.xml"))
-        metadata_file = old_metadata_file
-    else:
-        create_empty_metadata_file(dir)
+    for location in possible_location:
+        if adb_puller.remote_file_exists(location):
+            adb_puller.pull(location, join(dir, 'metadata.xml'))
+            metadata_file = location
+            break
+
+    if metadata_file == None:
+        metadata_file = create_empty_metadata_file(dir)
 
     return metadata_file.replace("metadata.xml", "")
 
 
 def create_empty_metadata_file(dir):
-    with open(join(dir, "metadata.xml"), "w") as out:
+    metadata_file = join(dir, 'metadata.xml')
+    with open(metadata_file, 'w') as out:
         out.write(
             """<?xml version="1.0" encoding="UTF-8"?>
         <screenshots>
         </screenshots>"""
         )
+
+    return metadata_file
 
 
 def pull_images(dir, device_dir, adb_puller):
