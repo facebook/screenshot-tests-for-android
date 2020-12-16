@@ -16,20 +16,21 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import android.graphics.Bitmap;
 import androidx.test.InstrumentationRegistry;
+import java.io.BufferedReader;
 import java.io.File;
-import java.util.Arrays;
-import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.FileReader;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 /** Tests for {@link AlbumImpl} */
 public class AlbumImplTest {
@@ -43,12 +44,16 @@ public class AlbumImplTest {
   @Before
   public void setUp() throws Exception {
     mScreenshotDirectories = new ScreenshotDirectories(InstrumentationRegistry.getTargetContext());
-    mAlbumImpl = AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
+    mAlbumImpl = createAlbumImplForTests();
     mSomeBitmap = Bitmap.createBitmap(BITMAP_DIMENSION, BITMAP_DIMENSION, Bitmap.Config.ARGB_8888);
     mSomeBitmap.setPixel(1, 1, 0xff0000ff);
 
     mFooFile = mAlbumImpl.writeBitmap("foo", 0, 0, mSomeBitmap);
     mBarFile = mAlbumImpl.writeBitmap("bar", 0, 0, mSomeBitmap);
+  }
+
+  private AlbumImpl createAlbumImplForTests() {
+    return AlbumImpl.create(InstrumentationRegistry.getTargetContext(), "screenshots");
   }
 
   @After
@@ -62,6 +67,25 @@ public class AlbumImplTest {
 
     int actualBlueness = output.getPixel(1, 1) & 0xff;
     assertTrue("The pixel should be same accounting for compression", actualBlueness > 0xf0);
+  }
+
+  @Test
+  public void testMultipleBitmapsAreAvailableAfterAlbumRecreation() throws Throwable {
+    String firstScreenshotName = mAlbumImpl.writeBitmap("first", 0, 0, mSomeBitmap);
+    mAlbumImpl.flush();
+    mAlbumImpl = createAlbumImplForTests();
+    String secondScreenshotnName = mAlbumImpl.writeBitmap("second", 0, 0, mSomeBitmap);
+    mAlbumImpl.flush();
+
+    AlbumImpl newInstance = createAlbumImplForTests();
+    Bitmap firstOutput = newInstance.getScreenshot(firstScreenshotName);
+    Bitmap secondOutput = newInstance.getScreenshot(secondScreenshotnName);
+
+    int firstActualBlueness = firstOutput.getPixel(1, 1) & 0xff;
+    assertTrue("The pixel should be same accounting for compression", firstActualBlueness > 0xf0);
+
+    int secondActualBlueness = secondOutput.getPixel(1, 1) & 0xff;
+    assertTrue("The pixel should be same accounting for compression", secondActualBlueness > 0xf0);
   }
 
   @Test
@@ -96,18 +120,23 @@ public class AlbumImplTest {
         new RecordBuilderImpl(null).setTiling(Tiling.singleTile(mBarFile)).setName("bar"));
 
     mAlbumImpl.flush();
-    Document document = parseMetadata();
+    JSONArray metadataJson = parseMetadata();
 
-    assertEquals(
-        "bar",
-        ((Element)
-                ((Element)
-                        ((Element) document.getElementsByTagName("screenshots").item(0))
-                            .getElementsByTagName("screenshot")
-                            .item(1))
-                    .getElementsByTagName("name")
-                    .item(0))
-            .getTextContent());
+    assertEquals("bar", metadataJson.getJSONObject(1).getString("name"));
+  }
+
+  @Test
+  public void testMetadataSavingAfterInstanceRecreation() throws Throwable {
+    mAlbumImpl.addRecord(
+        new RecordBuilderImpl(null).setTiling(Tiling.singleTile(mFooFile)).setName("foo"));
+    mAlbumImpl.flush();
+    mAlbumImpl = createAlbumImplForTests();
+    mAlbumImpl.addRecord(
+        new RecordBuilderImpl(null).setTiling(Tiling.singleTile(mBarFile)).setName("bar"));
+    mAlbumImpl.flush();
+
+    JSONArray metadataJson = parseMetadata();
+    assertEquals("bar", metadataJson.getJSONObject(1).getString("name"));
   }
 
   @Test
@@ -117,18 +146,8 @@ public class AlbumImplTest {
         new RecordBuilderImpl(null).setName("foo").setTiling(Tiling.singleTile(mFooFile)));
 
     mAlbumImpl.flush();
-    Document document = parseMetadata();
-
-    String actual =
-        ((Element)
-                ((Element)
-                        ((Element) document.getElementsByTagName("screenshots").item(0))
-                            .getElementsByTagName("screenshot")
-                            .item(0))
-                    .getElementsByTagName("view_hierarchy")
-                    .item(0))
-            .getTextContent();
-
+    JSONArray metadataJson = parseMetadata();
+    String actual = metadataJson.getJSONObject(0).getString("viewHierarchy");
     assertEquals("foo_dump.json", actual);
   }
 
@@ -140,12 +159,9 @@ public class AlbumImplTest {
     mAlbumImpl.addRecord(rb);
 
     mAlbumImpl.flush();
-    Document document = parseMetadata();
+    JSONArray metadataJson = parseMetadata();
 
-    assertEquals(
-        "blah",
-        getNestedElement(document.getDocumentElement(), "screenshot", "extras", "foo")
-            .getTextContent());
+    assertEquals("blah", metadataJson.getJSONObject(0).getJSONObject("extras").getString("foo"));
   }
 
   @Test
@@ -159,44 +175,20 @@ public class AlbumImplTest {
     mAlbumImpl.addRecord(rb);
 
     mAlbumImpl.flush();
-    Document document = parseMetadata();
+    JSONArray metadataJson = parseMetadata();
 
-    assertEquals(
-        "blah",
-        getNestedElement(document.getDocumentElement(), "screenshot", "extras", "foo")
-            .getTextContent());
+    assertEquals("blah", metadataJson.getJSONObject(0).getJSONObject("extras").getString("foo"));
 
-    assertEquals(
-        "blah2",
-        getNestedElement(document.getDocumentElement(), "screenshot", "extras", "bar")
-            .getTextContent());
-  }
-
-  private Element getNestedElement(Element root, String... names) {
-    if (names.length == 0) {
-      return root;
-    }
-
-    Element next = (Element) root.getElementsByTagName(names[0]).item(0);
-    assertNotNull("could not find " + names[0], next);
-    return getNestedElement(next, Arrays.copyOfRange(names, 1, names.length));
+    assertEquals("blah2", metadataJson.getJSONObject(0).getJSONObject("extras").getString("bar"));
   }
 
   @Test
   public void testErrorSaving() throws Throwable {
     mAlbumImpl.addRecord(new RecordBuilderImpl(null).setError("foobar"));
     mAlbumImpl.flush();
-    Document document = parseMetadata();
-    assertEquals(
-        "foobar",
-        ((Element)
-                ((Element)
-                        ((Element) document.getElementsByTagName("screenshots").item(0))
-                            .getElementsByTagName("screenshot")
-                            .item(0))
-                    .getElementsByTagName("error")
-                    .item(0))
-            .getTextContent());
+    JSONArray metadataJson = parseMetadata();
+    String errorFromFile = metadataJson.getJSONObject(0).getString("error");
+    assertEquals("foobar", errorFromFile);
   }
 
   @Test
@@ -209,25 +201,28 @@ public class AlbumImplTest {
 
     mAlbumImpl.flush();
 
-    Document document = parseMetadata();
-    assertEquals(
-        "foo_bar",
-        ((Element)
-                ((Element)
-                        ((Element) document.getElementsByTagName("screenshots").item(0))
-                            .getElementsByTagName("screenshot")
-                            .item(0))
-                    .getElementsByTagName("group")
-                    .item(0))
-            .getTextContent());
+    JSONArray metadataFile = parseMetadata();
+    String actualGroup = metadataFile.getJSONObject(0).getString("group");
+    assertEquals("foo_bar", actualGroup);
   }
 
-  private Document parseMetadata() throws Throwable {
-    File file = mScreenshotDirectories.get("screenshots");
+  private JSONArray parseMetadata() throws Throwable {
+    String content = readAllMetadataContent();
+    return new JSONArray(content);
+  }
 
-    return DocumentBuilderFactory.newInstance()
-        .newDocumentBuilder()
-        .parse(new File(file, "metadata.xml"));
+  private String readAllMetadataContent() throws Throwable {
+    File file = new File(mScreenshotDirectories.get("screenshots"), "metadata.json");
+    FileReader fileReader = new FileReader(file);
+    BufferedReader bufferedReader = new BufferedReader(fileReader);
+    StringBuilder result = new StringBuilder();
+    String line = bufferedReader.readLine();
+    while (line != null) {
+      result.append(line).append("\n");
+      line = bufferedReader.readLine();
+    }
+    bufferedReader.close();
+    return result.toString();
   }
 
   @Test
@@ -263,32 +258,29 @@ public class AlbumImplTest {
     mAlbumImpl.addRecord(builder);
     mAlbumImpl.flush();
 
-    Document doc = parseMetadata();
+    JSONArray metadataJson = parseMetadata();
 
-    Element screenshots = (Element) doc.getElementsByTagName("screenshots").item(0);
-    Element screenshot = (Element) screenshots.getElementsByTagName("screenshot").item(0);
+    JSONObject screenshot = metadataJson.getJSONObject(0);
 
-    Element tileWidth = (Element) screenshot.getElementsByTagName("tile_width").item(0);
-    Element tileHeight = (Element) screenshot.getElementsByTagName("tile_height").item(0);
+    int tileWidth = screenshot.getInt("tileWidth");
+    int tileHeight = screenshot.getInt("tileHeight");
 
-    assertEquals(WIDTH, Integer.parseInt(tileWidth.getTextContent()));
-    assertEquals(HEIGHT, Integer.parseInt(tileHeight.getTextContent()));
+    assertEquals(WIDTH, tileWidth);
+    assertEquals(HEIGHT, tileHeight);
 
-    NodeList fileNames = screenshot.getElementsByTagName("absolute_file_name");
+    JSONArray fileNames = screenshot.getJSONArray("absoluteFilesNames");
 
-    assertEquals(12, fileNames.getLength());
-    String fourthFile = fileNames.item(4).getTextContent();
+    assertEquals(12, fileNames.length());
+    String fourthFile = fileNames.getString(4);
     OldApiBandaid.assertMatchesRegex(
-        "The x coordinate should be before y coordinate",
-        ".*baz_2_3",
-        fileNames.item(11).getTextContent());
+        "The x coordinate should be before y coordinate", ".*baz_2_3", fileNames.getString(11));
 
     OldApiBandaid.assertMatchesRegex(".*baz_1_0", fourthFile);
 
-    NodeList relativeFileNames = screenshot.getElementsByTagName("relative_file_name");
+    JSONArray relativeFileNames = screenshot.getJSONArray("relativeFileNames");
 
-    assertEquals(12, relativeFileNames.getLength());
-    String relativeFourthFile = relativeFileNames.item(4).getTextContent();
+    assertEquals(12, relativeFileNames.length());
+    String relativeFourthFile = relativeFileNames.getString(4);
     assertEquals("baz_1_0", relativeFourthFile);
   }
 }

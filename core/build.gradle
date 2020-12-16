@@ -47,6 +47,7 @@ dependencies {
   
   implementation deps.supportAppCompat
   implementation deps.supportAnnotation
+  implementation deps.gson
 
   androidTestImplementation deps.dexmaker
   androidTestImplementation deps.dexmakerDx

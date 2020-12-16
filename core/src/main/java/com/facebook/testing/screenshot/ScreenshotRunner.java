@@ -30,6 +30,8 @@ public abstract class ScreenshotRunner {
   /** These strings can be used as Keys to Bundle Arguments. */
   public static final String SDCARD_DIRECTORY = "sdcard_directory";
 
+  public static final String SCREENSHOT_TESTS_RUN_ID = "SCREENSHOT_TESTS_RUN_ID";
+
   /**
    * Call this exactly once in your process before any screenshots are generated.
    *

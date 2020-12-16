@@ -7,6 +7,7 @@ fb_core_android_library(
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
         "//fbandroid/third-party/android/androidx:support-v4",
+        "//fbandroid/third-party/java/gson:gson",
         "//fbandroid/third-party/java/jsr-305:jsr-305",
     ],
 )
