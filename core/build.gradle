@@ -44,7 +44,7 @@ afterEvaluate {
 dependencies {
 
   compileOnly deps.jsr305
-  
+
   implementation deps.supportAppCompat
   implementation deps.gson
 
