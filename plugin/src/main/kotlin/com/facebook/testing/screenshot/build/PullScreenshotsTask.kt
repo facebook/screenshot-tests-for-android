@@ -20,6 +20,7 @@ import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
 import java.io.File
 import org.gradle.api.Project
+import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.TaskAction
 
 open class PullScreenshotsTask : ScreenshotTask() {
@@ -31,9 +32,14 @@ open class PullScreenshotsTask : ScreenshotTask() {
   }
 
   private lateinit var apkPath: File
+
+  @Input
   protected var verify = false
+
+  @Input
   protected var record = false
 
+  @Input
   protected lateinit var testRunId: String
 
   init {
