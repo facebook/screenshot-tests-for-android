@@ -21,10 +21,12 @@ import com.android.build.gradle.LibraryExtension
 import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.ApkVariantOutput
 import com.android.build.gradle.api.TestVariant
+import com.android.build.gradle.internal.tasks.factory.dependsOn
 import com.facebook.testing.screenshot.generated.ScreenshotTestBuildConfig
 import java.util.UUID
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.tasks.TaskProvider
 
 open class ScreenshotsPluginExtension {
   /** The directory to store recorded screenshots in */
@@ -54,7 +56,6 @@ class ScreenshotsPlugin : Plugin<Project> {
 
   override fun apply(project: Project) {
     val extensions = project.extensions
-    val plugins = project.plugins
     screenshotExtensions = extensions.create("screenshots", ScreenshotsPluginExtension::class.java)
 
     project.afterEvaluate {
@@ -82,44 +83,46 @@ class ScreenshotsPlugin : Plugin<Project> {
     }
   }
 
-  private fun <T : ScreenshotTask> createTask(
+  private fun <T : ScreenshotTask> registerTask(
       project: Project,
       name: String,
       variant: TestVariant,
       clazz: Class<T>
-  ): T {
-    return project.tasks.register(name, clazz).configure { init(variant, screenshotExtensions) }
+  ): TaskProvider<T> {
+    return project.tasks.register(name, clazz).apply {
+      configure { it.init(variant, screenshotExtensions) }
+    }
   }
 
   private fun generateTasksFor(project: Project, variant: TestVariant) {
     variant.outputs.all {
       if (it is ApkVariantOutput) {
         val cleanScreenshots =
-            createTask(
+            registerTask(
                 project,
                 CleanScreenshotsTask.taskName(variant),
                 variant,
                 CleanScreenshotsTask::class.java)
-        createTask(
+        registerTask(
                 project,
                 PullScreenshotsTask.taskName(variant),
                 variant,
                 PullScreenshotsTask::class.java)
             .dependsOn(cleanScreenshots)
 
-        createTask(
+        registerTask(
             project,
             RunScreenshotTestTask.taskName(variant),
             variant,
             RunScreenshotTestTask::class.java)
 
-        createTask(
+        registerTask(
             project,
             RecordScreenshotTestTask.taskName(variant),
             variant,
             RecordScreenshotTestTask::class.java)
 
-        createTask(
+        registerTask(
             project,
             VerifyScreenshotTestTask.taskName(variant),
             variant,
