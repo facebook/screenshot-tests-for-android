@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: "com.vanniktech.maven.publish"
 
 group = 'com.facebook.testing.screenshot'
 
@@ -39,10 +40,12 @@ android {
 
 afterEvaluate {
   generateReleaseBuildConfig.enabled = false
+  tasks.getByName("androidJavadocs") {
+    exclude '**/BUCK'
+  }
 }
 
 dependencies {
-
   compileOnly deps.jsr305
 
   implementation deps.supportAppCompat
@@ -50,12 +53,10 @@ dependencies {
 
   androidTestImplementation deps.dexmaker
   androidTestImplementation deps.dexmakerDx
-
+  androidTestImplementation deps.junit
   androidTestImplementation deps.androidTestRules
   androidTestImplementation deps.espresso
   androidTestImplementation deps.mockito
   androidTestImplementation deps.dexmakerMockito
   androidTestImplementation deps.hamcrest
 }
-
-apply from: rootProject.file("gradle/gradle-mvn-push.gradle")
