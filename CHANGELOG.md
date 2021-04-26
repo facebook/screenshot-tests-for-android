@@ -1,3 +1,9 @@
+0.14.0 (Apr 22 2021)
+------
+- Added test orchestrator support
+- Switched away from xml to json for metadata files
+- Support for Gradle 7
+
 0.13.0 (Jul 8 2020)
 ------
 - Made accessibility node information optional
