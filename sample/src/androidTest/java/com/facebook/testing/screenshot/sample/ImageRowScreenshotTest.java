@@ -18,14 +18,22 @@ package com.facebook.testing.screenshot.sample;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import androidx.test.annotation.UiThreadTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.Screenshot;
 import com.facebook.testing.screenshot.ViewHelpers;
+import org.junit.Before;
 import org.junit.Test;
 
 public class ImageRowScreenshotTest {
+  @Before
+  public void before() {
+    InstrumentationRegistry.getInstrumentation().getUiAutomation();
+  }
+
   @Test
+  @UiThreadTest
   public void testDefault() {
     Context targetContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
     LayoutInflater inflater = LayoutInflater.from(targetContext);

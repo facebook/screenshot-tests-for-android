@@ -22,15 +22,22 @@ import androidx.test.espresso.Espresso.openActionBarOverflowOrOptionsMenu
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.facebook.testing.screenshot.Screenshot
 import org.hamcrest.core.AllOf.allOf
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
 class MainActivityTest {
   @get:Rule
   var activityTestRule = ActivityTestRule<MainActivity>(MainActivity::class.java, false, false)
+
+  @Before
+  fun before() {
+    InstrumentationRegistry.getInstrumentation().getUiAutomation()
+  }
 
   @Test
   fun testScreenshotEntireActivity() {
