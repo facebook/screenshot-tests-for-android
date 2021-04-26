@@ -48,7 +48,7 @@ Gradle plugin. All you need to do is apply the
     // ...
     dependencies {
       // ...
-      classpath 'com.facebook.testing.screenshot:plugin:0.13.0'
+      classpath 'com.facebook.testing.screenshot:plugin:0.14.0'
     }
   }
 
@@ -78,10 +78,10 @@ We provide extra plugins for the layout hierarchy viewer included in screenshot 
 Simply include the dependencies:
 ```groovy
   // Standard Android View Plugins (TextView, etc)
-  compile 'com.facebook.testing.screenshot:layout-hierarchy-common:0.13.0'
+  compile 'com.facebook.testing.screenshot:layout-hierarchy-common:0.14.0'
 
   // Litho Component Plugins
-  compile 'com.facebook.testing.screenshot:layout-hierarchy-litho:0.13.0'
+  compile 'com.facebook.testing.screenshot:layout-hierarchy-litho:0.14.0'
 ```
 
 And then use the plugins relevant to your test in your test class:
