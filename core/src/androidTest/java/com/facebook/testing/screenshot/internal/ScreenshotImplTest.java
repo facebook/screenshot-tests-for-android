@@ -39,10 +39,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Enumeration;
 import java.util.Locale;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import org.json.JSONObject;
 import org.junit.After;
 import org.junit.Before;
@@ -108,24 +105,11 @@ public class ScreenshotImplTest {
     rb.record();
     mScreenshot.flush();
 
-    ZipFile bundle =
-        new ZipFile(
-            new File(mScreenshotDirectories.get("verify-in-test"), "screenshot_bundle.zip"));
-    Enumeration<? extends ZipEntry> entries = bundle.entries();
-    ZipEntry hierarchyEntry = null;
-    while (entries.hasMoreElements()) {
-      ZipEntry entry = entries.nextElement();
-      if (entry.getName().equals("blahblah_dump.json")) {
-        hierarchyEntry = entry;
-        break;
-      }
-    }
+    String fileName =
+        new File(mScreenshotDirectories.get("verify-in-test"), "blahblah_dump.json")
+            .getAbsolutePath();
 
-    if (hierarchyEntry == null) {
-      throw new IllegalStateException("No hierarchy file found");
-    }
-
-    InputStream is = bundle.getInputStream(hierarchyEntry);
+    InputStream is = new FileInputStream(fileName);
 
     StringBuilder builder = new StringBuilder();
     byte[] buffer = new byte[8 * 1024];

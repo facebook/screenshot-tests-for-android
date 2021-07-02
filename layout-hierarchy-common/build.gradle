@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: "com.vanniktech.maven.publish"
 
 group = 'com.facebook.testing.screenshot'
 
@@ -34,6 +35,9 @@ android {
 
 afterEvaluate {
   generateReleaseBuildConfig.enabled = false
+  tasks.getByName("androidJavadocs") {
+    exclude '**/BUCK'
+  }
 }
 
 dependencies {
@@ -42,4 +46,3 @@ dependencies {
   androidTestImplementation deps.espresso
 }
 
-apply from: rootProject.file("gradle/gradle-mvn-push.gradle")

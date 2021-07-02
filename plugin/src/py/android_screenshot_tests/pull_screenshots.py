@@ -508,21 +508,6 @@ def pull_images(dir, device_dir, test_run_id, adb_puller):
         move_all_files_to_different_directory(bundle_name_local_file, dir)
         # clean up
         shutil.rmtree(bundle_name_local_file)
-    else:
-        root = ET.parse(join(dir, "metadata.xml")).getroot()
-        for s in root.iter("screenshot"):
-            filename_nodes = s.findall("relative_file_name")
-            for filename_node in filename_nodes:
-                adb_puller.pull(
-                    android_path_join(device_dir, filename_node.text),
-                    join(dir, os.path.basename(filename_node.text)),
-                )
-            dump_node = s.find("view_hierarchy")
-            if dump_node is not None:
-                adb_puller.pull(
-                    android_path_join(device_dir, dump_node.text),
-                    join(dir, os.path.basename(dump_node.text)),
-                )
 
 
 def pull_all(package, dir, test_run_id, adb_puller):

@@ -26,7 +26,7 @@ import com.facebook.testing.screenshot.ViewHelpers;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ImageRowScreenshotTest {
+public class ExampleScreenshotTest {
   @Before
   public void before() {
     InstrumentationRegistry.getInstrumentation().getUiAutomation();
@@ -39,9 +39,9 @@ public class ImageRowScreenshotTest {
     LayoutInflater inflater = LayoutInflater.from(targetContext);
     LithoView view = (LithoView) inflater.inflate(R.layout.litho_view, null, false);
 
-    view.setComponent(ImageRow.create(view.getComponentContext()).build());
+    view.setComponent(Example.create(view.getComponentContext()).build());
 
-    ViewHelpers.setupView(view).setExactWidthDp(300).layout();
+    ViewHelpers.setupView(view).setExactWidthDp(300).setExactHeightDp(300).layout();
     Screenshot.snap(view).record();
   }
 }
