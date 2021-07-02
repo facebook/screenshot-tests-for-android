@@ -88,12 +88,39 @@ class Recorder:
             shutil.rmtree(self._output)
         os.makedirs(self._output)
 
+    def _draw_diff_outline(self, failure_file, diff, image_to_draw_on):
+        draw = ImageDraw.Draw(image_to_draw_on)
+        draw.rectangle(list(diff), outline=(255, 0, 0))
+        image_to_draw_on.save(failure_file)
+
     def _is_image_same(self, file1, file2, failure_file):
         with Image.open(file1) as im1, Image.open(file2) as im2:
             diff_image = ImageChops.difference(im1, im2)
             try:
                 diff = diff_image.getbbox()
                 if diff is None:
+                    if (im1.size != im2.size) or (im1.getbbox() != im2.getbbox()):
+                        # First image is longer than the second
+                        if im1.getbbox()[3] > im2.getbbox()[3]:
+                            diff = [(0, im2.getbbox()[3]), (im1.getbbox()[2]-1, im1.getbbox()[3] - 1)]
+                            self._draw_diff_outline(failure_file, diff, im1)
+
+                        # First image is shorter than the first
+                        if im1.getbbox()[3] < im2.getbbox()[3]:
+                            diff = [(0, im1.getbbox()[3]), (im2.getbbox()[2]-1, im2.getbbox()[3] - 1)]
+                            self._draw_diff_outline(failure_file, diff, im2)
+
+                        # First image is wider than the second
+                        if im1.getbbox()[2] > im2.getbbox()[2]:
+                            diff = [(im2.getbbox()[2], 0), (im1.getbbox()[2]-1, im1.getbbox()[3] - 1)]
+                            self._draw_diff_outline(failure_file, diff, im1)
+
+                        # First image is narrower than the first
+                        if im1.getbbox()[2] < im2.getbbox()[2]:
+                            diff = [(im1.getbbox()[2], 0), (im2.getbbox()[2]-1, im2.getbbox()[3] - 1)]
+                            self._draw_diff_outline(failure_file, diff, im2)
+
+                        return False
                     return True
                 else:
                     if failure_file:

@@ -243,6 +243,221 @@ class TestRecorder(unittest.TestCase):
             self.assertEqual((0, 128, 0, 255), im.getpixel((1, 1)))
             self.assertEqual((0, 128, 0, 255), im.getpixel((9, 1)))
 
+    def test_verify_different_sizes_longer(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.make_metadata(
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
+        )
+
+        self.recorder.record()
+        os.unlink(join(self.inputdir, "foobar.png"))
+        self.create_temp_image("foobar.png", (10, 20), "blue")
+
+        try:
+            self.recorder.verify()
+            self.fail("expected exception")
+        except VerifyError:
+            pass  # expected
+
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_actual.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_expected.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_diff.png")))
+
+        # check colored diff
+        with Image.open(join(self.failureDir, "foobar_diff.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(10, w)
+            self.assertEqual(20, h)
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 5)))
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 5)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 10)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((9, 10)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((5, 10)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 15)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 19)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((9, 19)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((5, 19)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((9, 15)))
+
+    def test_verify_different_sizes_shorter(self):
+        self.create_temp_image("foobar.png", (10, 20), "blue")
+        self.make_metadata(
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
+        )
+
+        self.recorder.record()
+        os.unlink(join(self.inputdir, "foobar.png"))
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+
+        try:
+            self.recorder.verify()
+            self.fail("expected exception")
+        except VerifyError:
+            pass  # expected
+
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_actual.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_expected.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_diff.png")))
+
+        # check colored diff
+        with Image.open(join(self.failureDir, "foobar_diff.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(10, w)
+            self.assertEqual(20, h)
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 5)))
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 5)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 10)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((9, 10)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((5, 10)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 15)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((0, 19)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((9, 19)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((5, 19)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((9, 15)))
+
+    def test_verify_different_sizes_wider(self):
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+        self.make_metadata(
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
+        )
+
+        self.recorder.record()
+        os.unlink(join(self.inputdir, "foobar.png"))
+        self.create_temp_image("foobar.png", (20, 10), "blue")
+
+        try:
+            self.recorder.verify()
+            self.fail("expected exception")
+        except VerifyError:
+            pass  # expected
+
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_actual.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_expected.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_diff.png")))
+
+        # check colored diff
+        with Image.open(join(self.failureDir, "foobar_diff.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(20, w)
+            self.assertEqual(10, h)
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 5)))
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 5)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 0)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 9)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 5)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((15, 0)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((19, 0)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((19, 9)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((19, 5)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((15, 9)))
+
+    def test_verify_different_sizes_narrower(self):
+        self.create_temp_image("foobar.png", (20, 10), "blue")
+        self.make_metadata(
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
+        )
+
+        self.recorder.record()
+        os.unlink(join(self.inputdir, "foobar.png"))
+        self.create_temp_image("foobar.png", (10, 10), "blue")
+
+        try:
+            self.recorder.verify()
+            self.fail("expected exception")
+        except VerifyError:
+            pass  # expected
+
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_actual.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_expected.png")))
+        self.assertTrue(os.path.exists(join(self.failureDir, "foobar_diff.png")))
+
+        # check colored diff
+        with Image.open(join(self.failureDir, "foobar_diff.png")) as im:
+            (w, h) = im.size
+            self.assertEqual(20, w)
+            self.assertEqual(10, h)
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 5)))
+
+            self.assertEqual((0, 0, 255, 255), im.getpixel((0, 0)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((9, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 9)))
+            self.assertEqual((0, 0, 255, 255), im.getpixel((5, 5)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 0)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 9)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((10, 5)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((15, 0)))
+
+            self.assertEqual((255, 0, 0, 255), im.getpixel((19, 0)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((19, 9)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((19, 5)))
+            self.assertEqual((255, 0, 0, 255), im.getpixel((15, 9)))
 
 if __name__ == "__main__":
     unittest.main()
