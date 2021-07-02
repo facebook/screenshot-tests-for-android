@@ -37,7 +37,7 @@ def filter_screenshots(metadata_file, name_regex=None):
                 to_remove.append(s)
 
         for s in to_remove:
-            del parsed[s]
+            parsed.remove(s)
 
     with open(metadata_file, "w") as f:
         f.write(json.dumps(parsed))
