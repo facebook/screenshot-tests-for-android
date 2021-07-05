@@ -362,8 +362,8 @@ def write_image_diff(old_screenshot_url, dir, html, screenshot):
 
     # combine all tiles back into one image to ease the comparison
     x_offset = y_offset = height = 0
-    for y in range(int(screenshot["tile_height"])):
-        for x in range(int(screenshot["tile_width"])):
+    for y in range(int(screenshot["tileHeight"])):
+        for x in range(int(screenshot["tileWidth"])):
             image_file = join(
                 dir, "./" + common.get_image_file_name(screenshot["name"], x, y)
             )

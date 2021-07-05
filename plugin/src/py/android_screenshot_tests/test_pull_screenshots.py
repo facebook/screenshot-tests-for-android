@@ -23,7 +23,9 @@ import shutil
 import sys
 import tempfile
 import unittest
-import xml.etree.ElementTree as ET
+import json
+import errno
+
 from os.path import join
 
 from . import pull_screenshots
@@ -44,14 +46,14 @@ FIXTURE_DIR = "%s/fixtures/sdcard/screenshots/%s/screenshots-default" % (
 
 
 class LocalFileHelper:
-    def setup(self, dir):
-        shutil.copyfile(FIXTURE_DIR + "/metadata_no_errors.xml", dir + "/metadata.xml")
+    def setup(self, dir, test_run_id):
+        shutil.copyfile(FIXTURE_DIR + "/metadata_no_errors.json", dir + "/metadata.json")
         shutil.copyfile(
-            FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png",
+            FIXTURE_DIR + "/" + test_run_id + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png",
             dir + "/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png",
         )
         shutil.copyfile(
-            FIXTURE_DIR + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png",
+            FIXTURE_DIR + "/" + test_run_id + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png",
             dir + "/com.foo.ScriptsFixtureTest_testSecondScreenshot.png",
         )
 
@@ -72,7 +74,7 @@ class AdbPuller:
         self._valid_src(src)
         assert_nice_filename(src)
         src = self.fixture_dir + src
-        shutil.copyfile(src, dest)
+        self._copy(src, dest)
 
     def remote_file_exists(self, src):
         self._valid_src(src)
@@ -86,6 +88,15 @@ class AdbPuller:
 
     def get_external_data_dir(self):
         return "/sdcard"
+
+    def _copy(self, src, dst):
+        try:
+            shutil.copytree(src, dst)
+        except OSError as exc:
+            if exc.errno == errno.ENOTDIR:
+                shutil.copy(src, dst)
+            else:
+                raise
 
 
 class TestAdbHelpers(unittest.TestCase):
@@ -105,10 +116,10 @@ class TestAdbHelpers(unittest.TestCase):
         adb_instance.pull.side_effect = Exception("should not be called")
 
         pull_screenshots.pull_all(
-            "com.facebook.testing.tests", self.tmpdir, adb_puller=AdbPuller()
+            "com.facebook.testing.tests", self.tmpdir, test_run_id="unittest", adb_puller=AdbPuller()
         )
 
-        self.assertTrue(os.path.exists(self.tmpdir + "/metadata.xml"))
+        self.assertTrue(os.path.exists(self.tmpdir + "/metadata.json"))
 
 
 class TestPullScreenshots(unittest.TestCase):
@@ -146,23 +157,24 @@ class TestPullScreenshots(unittest.TestCase):
     def test_index_html_created(self):
         self.tmpdir = tempfile.mkdtemp(prefix="screenshots")
         pull_screenshots.pull_screenshots(
-            TESTING_PACKAGE, adb_puller=AdbPuller(), temp_dir=self.tmpdir
+            TESTING_PACKAGE, adb_puller=AdbPuller(), temp_dir=self.tmpdir, test_run_id="unittest",
         )
         self.assertTrue(os.path.exists(self.tmpdir + "/index.html"))
 
     def test_image_is_linked(self):
         self.tmpdir = tempfile.mkdtemp(prefix="screenshots")
         pull_screenshots.pull_screenshots(
-            TESTING_PACKAGE, adb_puller=AdbPuller(), temp_dir=self.tmpdir
+            TESTING_PACKAGE, adb_puller=AdbPuller(), temp_dir=self.tmpdir, test_run_id="unittest",
         )
         with open(self.tmpdir + "/index.html", "r") as f:
             contents = f.read()
+            print(contents)
             assertRegex(self, contents, ".*com.foo.*")
             self.assertTrue(contents.find('<img src="./com.foo.') >= 0)
 
     def test_generate_html_returns_a_valid_file(self):
         self.tmpdir = tempfile.mkdtemp(prefix="screenshots")
-        pull_screenshots.pull_all(TESTING_PACKAGE, self.tmpdir, adb_puller=AdbPuller())
+        pull_screenshots.pull_all(TESTING_PACKAGE, self.tmpdir, "unittest", adb_puller=AdbPuller())
         html = pull_screenshots.generate_html(self.tmpdir)
         self.assertTrue(os.path.exists(html))
 
@@ -227,14 +239,15 @@ class TestPullScreenshots(unittest.TestCase):
         source = tempfile.mkdtemp()
         dest = tempfile.mkdtemp()
 
-        LocalFileHelper().setup(source)
-        LocalFileHelper().setup(dest)
+        LocalFileHelper().setup(source, "unittest")
+        LocalFileHelper().setup(dest, "unittest")
 
         pull_screenshots.pull_screenshots(
             TESTING_PACKAGE,
             adb_puller=None,
             perform_pull=False,
             temp_dir=source,
+            test_run_id="unittest",
             verify=dest,
         )
 
@@ -242,14 +255,15 @@ class TestPullScreenshots(unittest.TestCase):
         source = tempfile.mkdtemp()
         dest = tempfile.mkdtemp()
 
-        LocalFileHelper().setup(source)
-        LocalFileHelper().setup(dest)
+        LocalFileHelper().setup(source, "unittest")
+        LocalFileHelper().setup(dest, "unittest")
 
         pull_screenshots.pull_screenshots(
             TESTING_PACKAGE,
             adb_puller=None,
             perform_pull=False,
             temp_dir=source,
+            test_run_id="unittest",
             record=dest,
         )
 
@@ -268,37 +282,47 @@ class TestPullScreenshots(unittest.TestCase):
             assertRegex(self, e.args[0], "You must supply a directory for temp_dir")
 
     def test_screenshots_with_same_group_ordered_together(self):
-        xml = ET.fromstring(
-            """<screenshots>
-          <screenshot><name>one</name><group>foo</group></screenshot>
-          <screenshot><name>two</name></screenshot>
-          <screenshot><name>three</name><group>foo</group></screenshot>
-        </screenshots>"""
+        loaded_json = json.loads(
+            # language=json
+            """[
+                    {
+                        "name": "one",
+                        "group": "foo"
+                    },
+                    {
+                        "name": "two"
+                    },
+                    {
+                        "name": "three",
+                        "group": "foo"
+                    }
+               ]
+"""
         )
 
-        screenshots = pull_screenshots.sort_screenshots(xml.iter("screenshot"))
+        screenshots = pull_screenshots.sort_screenshots(loaded_json)
 
         self.assertEquals(
-            ["two", "one", "three"], [x.find("name").text for x in screenshots]
+            ["two", "one", "three"], [x.get("name") for x in screenshots]
         )
 
-    def test_invalid_xml(self):
+    def test_invalid_json(self):
         source = join(tempfile.mkdtemp(), "foo")
         shutil.copytree(join(CURRENT_DIR, "fixtures"), source)
 
         metadata_file = join(
-            source, "sdcard/screenshots/com.foo/screenshots-default/metadata.xml"
+            source, "sdcard/screenshots/com.foo/screenshots-default/metadata.json"
         )
         self.assertTrue(os.path.exists(metadata_file))
 
         with open(metadata_file, "w") as f:
-            f.write("<invalid-xml>")
+            f.write("{invalid-json{")
             f.flush()
 
         adb_puller = AdbPuller(source)
 
         try:
-            pull_screenshots.pull_screenshots(TESTING_PACKAGE, adb_puller=adb_puller)
+            pull_screenshots.pull_screenshots(TESTING_PACKAGE, test_run_id="unittest", adb_puller=adb_puller)
             self.fail("expected exception")
         except RuntimeError as e:
             assertRegex(self, e.args[0], ".*ScreenshotRunner.*")

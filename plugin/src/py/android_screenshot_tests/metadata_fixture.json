@@ -1,0 +1,101 @@
+[
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testEditBoxIsCentered",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testEditBoxIsCentered",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testEditBoxIsCentered.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testEditBoxWithBlueBar",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testEditBoxWithBlueBar",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testEditBoxWithBlueBar.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testEditBoxWithSkip",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testEditBoxWithSkip",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testEditBoxWithSkip.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarInBlueMode",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testTitleBarInBlueMode",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarInBlueMode.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarInBlueModeWithSkip",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testTitleBarInBlueModeWithSkip",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarInBlueModeWithSkip.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarIsCentered",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testTitleBarIsCentered",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarIsCentered.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarWithSkip",
+    "testClass": "com.facebook.places.checkin.CheckinTitleBarTest",
+    "testName": "testTitleBarWithSkip",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.CheckinTitleBarTest_testTitleBarWithSkip.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.activity.SelectAtTagActivityTest_testAddPlaceIsShowing",
+    "testClass": "com.facebook.places.checkin.activity.SelectAtTagActivityTest",
+    "testName": "testAddPlaceIsShowing",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.activity.SelectAtTagActivityTest_testAddPlaceIsShowing.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.activity.SelectAtTagActivityTest_testSearchEditIsShowingInInlineSearchBarMode",
+    "testClass": "com.facebook.places.checkin.activity.SelectAtTagActivityTest",
+    "testName": "testSearchEditIsShowingInInlineSearchBarMode",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.activity.SelectAtTagActivityTest_testSearchEditIsShowingInInlineSearchBarMode.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.activity.SelectAtTagActivityTest_testSearchEditIsShowingInTitleBarMode",
+    "testClass": "com.facebook.places.checkin.activity.SelectAtTagActivityTest",
+    "testName": "testSearchEditIsShowingInTitleBarMode",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.activity.SelectAtTagActivityTest_testSearchEditIsShowingInTitleBarMode.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.facebook.places.checkin.activity.SelectAtTagActivityTest_testSimpleCreation",
+    "testClass": "com.facebook.places.checkin.activity.SelectAtTagActivityTest",
+    "testName": "testSimpleCreation",
+    "absoluteFileNames": [
+      "/data/data/com.facebook.places.tests/app_screenshots-default/com.facebook.places.checkin.activity.SelectAtTagActivityTest_testSimpleCreation.png"
+    ]
+  }
+]

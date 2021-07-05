@@ -40,7 +40,7 @@ class TestRecorder(unittest.TestCase):
         return filename
 
     def make_metadata(self, str):
-        with open(os.path.join(self.inputdir, "metadata.xml"), "w") as f:
+        with open(os.path.join(self.inputdir, "metadata.json"), "w") as f:
             f.write(str)
 
     def tearDown(self):
@@ -56,7 +56,7 @@ class TestRecorder(unittest.TestCase):
 
     def test_recorder_creates_dir(self):
         shutil.rmtree(self.outputdir)
-        self.make_metadata("""<screenshots></screenshots>""")
+        self.make_metadata("""[]""")
         self.recorder.record()
 
         self.assertTrue(os.path.exists(self.outputdir))
@@ -64,13 +64,15 @@ class TestRecorder(unittest.TestCase):
     def test_single_input(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foobar</name>
-   <tile_width>1</tile_width>
-   <tile_height>1</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
         )
 
         self.recorder.record()
@@ -80,18 +82,20 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foo.png", (10, 10), "blue")
         self.create_temp_image("bar.png", (10, 10), "red")
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foo</name>
-   <tile_width>1</tile_width>
-   <tile_height>1</tile_height>
-</screenshot>
-<screenshot>
-   <name>bar</name>
-   <tile_width>1</tile_width>
-   <tile_height>1</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foo",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                },
+                {
+                    "name": "bar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
         )
 
         self.recorder.record()
@@ -103,13 +107,15 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foobar_0_1.png", (10, 10), "red")
 
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foobar</name>
-    <tile_width>1</tile_width>
-    <tile_height>2</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 2
+                }
+            ]"""
         )
 
         self.recorder.record()
@@ -128,13 +134,15 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foobar_1_0.png", (10, 10), "red")
 
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foobar</name>
-    <tile_width>2</tile_width>
-    <tile_height>1</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 2,
+                    "tileHeight": 1
+                }
+            ]"""
         )
 
         self.recorder.record()
@@ -154,13 +162,15 @@ class TestRecorder(unittest.TestCase):
         self.create_temp_image("foobar_1_1.png", (9, 8), "blue")
 
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foobar</name>
-    <tile_width>2</tile_width>
-    <tile_height>2</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 2,
+                    "tileHeight": 2
+                }
+            ]"""
         )
 
         self.recorder.record()
@@ -179,13 +189,15 @@ class TestRecorder(unittest.TestCase):
     def test_verify_success(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foobar</name>
-    <tile_width>1</tile_width>
-    <tile_height>1</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
         )
 
         self.recorder.record()
@@ -194,13 +206,15 @@ class TestRecorder(unittest.TestCase):
     def test_verify_failure(self):
         self.create_temp_image("foobar.png", (10, 10), "blue")
         self.make_metadata(
-            """<screenshots>
-<screenshot>
-   <name>foobar</name>
-    <tile_width>1</tile_width>
-    <tile_height>1</tile_height>
-</screenshot>
-</screenshots>"""
+            # language=json
+            """
+            [
+                {
+                    "name": "foobar",
+                    "tileWidth": 1,
+                    "tileHeight": 1
+                }
+            ]"""
         )
 
         self.recorder.record()
