@@ -1,0 +1,24 @@
+[
+  {
+    "description": null,
+    "name": "com.foo.ScriptsFixtureTest_testGetTextViewScreenshot",
+    "testClass": "com.facebook.testing.screenshot.ScriptsFixtureTest",
+    "testName": "testGetTextViewScreenshot",
+    "tileWidth": 1,
+    "tileHeight": 1,
+    "absoluteFileNames": [
+      "/sdcard/screenshots/com.foo/screenshots-default/com.foo.ScriptsFixtureTest_testGetTextViewScreenshot.png"
+    ]
+  },
+  {
+    "description": null,
+    "name": "com.foo.ScriptsFixtureTest_testSecondScreenshot",
+    "testClass": "com.facebook.testing.screenshot.ScriptsFixtureTest",
+    "testName": "testSecondScreenshot",
+    "tileWidth": 1,
+    "tileHeight": 1,
+    "absoluteFileNames": [
+      "/sdcard/screenshots/com.foo/screenshots-default/com.foo.ScriptsFixtureTest_testSecondScreenshot.png"
+    ]
+  }
+]

@@ -97,7 +97,7 @@ clean {
 
 task pyTests(type: Exec) {
   workingDir file('./src/py')
-  commandLine 'python', '-m', 'unittest', 'discover'
+  commandLine 'python3', '-m', 'unittest', 'discover'
 }
 
 task py3Tests(type: Exec) {

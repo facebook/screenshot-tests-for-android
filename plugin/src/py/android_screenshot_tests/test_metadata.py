@@ -18,23 +18,23 @@ from __future__ import division
 from __future__ import print_function
 from __future__ import unicode_literals
 
+import json
 import os
 import shutil
 import tempfile
 import unittest
-import xml.etree.ElementTree as ET
 
 from . import metadata
 
 # Tests for the metadata package
 class TestMetadata(unittest.TestCase):
     def setUp(self):
-        fd, self.tmp_metadata = tempfile.mkstemp(prefix="TempMetadataXml")
+        fd, self.tmp_metadata = tempfile.mkstemp(prefix="TempMetadataJson")
         os.close(fd)
         os.unlink(self.tmp_metadata)
 
         self.fixture_metadata = os.path.join(
-            os.path.dirname(__file__), "metadata_fixture.xml"
+            os.path.dirname(__file__), "metadata_fixture.json"
         )
         shutil.copyfile(self.fixture_metadata, self.tmp_metadata)
 
@@ -70,8 +70,10 @@ class TestMetadata(unittest.TestCase):
         self.assertEqual(7, self.get_num_screenshots_in(self.tmp_metadata))
 
     def get_num_screenshots_in(self, metadata_file):
-        """Gets the number of screenshots in the given metadata file"""
-        return len(list(ET.parse(metadata_file).getroot().iter("screenshot")))
+        with open(metadata_file, "r") as f:
+            parsed = json.load(f)
+            """Gets the number of screenshots in the given metadata file"""
+            return len(parsed)
 
 
 if __name__ == "__main__":
