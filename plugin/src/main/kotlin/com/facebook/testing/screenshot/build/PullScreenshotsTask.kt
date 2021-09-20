@@ -25,10 +25,10 @@ import org.gradle.api.tasks.TaskAction
 
 open class PullScreenshotsTask : ScreenshotTask() {
   companion object {
-    fun taskName(variant: TestVariant) = "pull${variant.name.capitalize()}Screenshots"
+    fun taskName(variant: TestVariant) = "pull${variant.name.replaceFirstChar { it.uppercase() }}Screenshots"
 
     fun getReportDir(project: Project, variant: TestVariant): File =
-        File(project.buildDir, "screenshots" + variant.name.capitalize())
+        File(project.buildDir, "screenshots" + variant.name.replaceFirstChar { it.uppercase() })
   }
 
   private lateinit var apkPath: File

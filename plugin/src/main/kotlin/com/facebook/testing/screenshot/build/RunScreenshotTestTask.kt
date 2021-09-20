@@ -20,7 +20,7 @@ import com.android.build.gradle.api.TestVariant
 
 open class RunScreenshotTestTask : PullScreenshotsTask() {
   companion object {
-    fun taskName(variant: TestVariant) = "run${variant.name.capitalize()}ScreenshotTest"
+    fun taskName(variant: TestVariant) = "run${variant.name.replaceFirstChar { it.uppercase() }}ScreenshotTest"
   }
 
   init {

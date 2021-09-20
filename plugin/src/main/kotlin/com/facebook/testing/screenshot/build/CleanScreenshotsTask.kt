@@ -21,7 +21,7 @@ import org.gradle.api.tasks.TaskAction
 
 open class CleanScreenshotsTask : ScreenshotTask() {
   companion object {
-    fun taskName(variant: TestVariant) = "clean${variant.name.capitalize()}Screenshots"
+    fun taskName(variant: TestVariant) = "clean${variant.name.replaceFirstChar { it.uppercase() }}Screenshots"
   }
 
   init {
