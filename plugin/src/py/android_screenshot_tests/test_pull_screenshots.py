@@ -83,6 +83,9 @@ class AdbPuller:
         src = self.fixture_dir + src
         self._copy(src, dest)
 
+    def pull_folder(self, src, dest):
+        self.pull(src, dest)
+
     def remote_file_exists(self, src):
         self._valid_src(src)
         assert_nice_filename(src)

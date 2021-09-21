@@ -483,13 +483,14 @@ def create_empty_metadata_file(dir):
         out.write("{}")
 
 
-def pull_images(dir, device_dir, test_run_id, adb_puller):
+def pull_images(dir, device_dir, test_run_id, adb_puller, bundle_results=False):
     if adb_puller.remote_file_exists(android_path_join(device_dir, test_run_id)):
         bundle_name_local_file = join(dir, os.path.basename(test_run_id))
 
         # Optimization to pull down all the screenshots in a single pull.
         # If this file exists, we assume all of the screenshots are inside it.
-        adb_puller.pull(
+        pulling_function = adb_puller.pull_folder if bundle_results else adb_puller.pull
+        pulling_function(
             android_path_join(device_dir, test_run_id), bundle_name_local_file
         )
 
@@ -503,13 +504,26 @@ def pull_all(package, dir, test_run_id, adb_puller):
     pull_images(dir, device_dir, test_run_id, adb_puller=adb_puller)
 
 
-def pull_filtered(package, dir, adb_puller, test_run_id, filter_name_regex=None):
+def pull_filtered(
+    package,
+    dir,
+    adb_puller,
+    test_run_id,
+    filter_name_regex=None,
+    bundle_results=False,
+):
     device_dir = pull_metadata(package, dir, adb_puller=adb_puller)
     _validate_metadata(dir)
     metadata.filter_screenshots(
         join(dir, "metadata.json"), name_regex=filter_name_regex
     )
-    pull_images(dir, device_dir, test_run_id, adb_puller=adb_puller)
+    pull_images(
+        dir,
+        device_dir,
+        test_run_id,
+        adb_puller=adb_puller,
+        bundle_results=bundle_results,
+    )
 
 
 def move_all_files_to_different_directory(source_dir, target_dir):
@@ -542,6 +556,7 @@ def pull_screenshots(
     adb_puller,
     device_name_calculator=None,
     perform_pull=True,
+    bundle_results=False,
     temp_dir=None,
     filter_name_regex=None,
     record=None,
@@ -575,6 +590,7 @@ def pull_screenshots(
             dir=temp_dir,
             test_run_id=test_run_id,
             filter_name_regex=filter_name_regex,
+            bundle_results=bundle_results,
         )
 
     _validate_metadata(temp_dir)
@@ -638,6 +654,7 @@ def main(argv):
                 "no-pull",
                 "multiple-devices=",
                 "test-run-id=",
+                "bundle-results",
             ],
         )
     except getopt.GetoptError:
@@ -657,6 +674,7 @@ def main(argv):
         process = aapt.get_package(process)
 
     should_perform_pull = "--no-pull" not in opts
+    bundle_results = "--bundle-results" in opts
 
     multiple_devices = opts.get("--multiple-devices")
     device_calculator = (
@@ -698,6 +716,7 @@ def main(argv):
             device_name_calculator=device_calculator,
             failure_dir=opts.get("--failure-dir"),
             open_html=opts.get("--open-html"),
+            bundle_results=bundle_results,
         )
 
 
