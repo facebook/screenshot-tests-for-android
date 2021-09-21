@@ -65,6 +65,30 @@ class TestSimplePuller(unittest.TestCase):
         ]
         self.assertIn(self.puller.get_external_data_dir(), accepted_dirs)
 
+    def test_pull_folder(self):
+        target_remote_folder = "/sdcard/folder"
+        target_remote_sub_folders = [".", "a", "b"]
+        subprocess.check_call([get_adb(), "shell", f"mkdir -p {target_remote_folder}"])
+        for sub_folder in target_remote_sub_folders:
+            subprocess.check_call(
+                [get_adb(), "shell", f"mkdir -p {target_remote_folder}/{sub_folder}"]
+            )
+            for i in range(10):
+                subprocess.check_call(
+                    [
+                        get_adb(),
+                        "shell",
+                        f"echo foobar{i} > {target_remote_folder}/{sub_folder}/pic{i}.png",
+                    ]
+                )
+        self.puller.pull_folder(target_remote_folder, self.tmpdir)
+
+        for sub_folder in target_remote_sub_folders:
+            for i in range(10):
+                file = os.path.join(self.tmpdir, sub_folder, f"pic{i}.png")
+                with open(file, "rt") as f2:
+                    self.assertEqual(f"foobar{i}\n", f2.read())
+
 
 if __name__ == "__main__":
     unittest.main()

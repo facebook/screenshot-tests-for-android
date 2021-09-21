@@ -13,12 +13,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import subprocess
+import tarfile
+import tempfile
 
 from . import common
 from .common import get_adb
@@ -42,6 +39,46 @@ class SimplePuller:
         subprocess.check_call(
             [get_adb()] + self._adb_args + ["pull", src, dest], stderr=subprocess.STDOUT
         )
+
+    @staticmethod
+    def _get_tar_name(src) -> str:
+        return f"{src}.tar.gz"
+
+    def _tar(self, src):
+        subprocess.check_call(
+            [get_adb()]
+            + self._adb_args
+            + [
+                "shell",
+                "tar",
+                "-zcvf",
+                SimplePuller._get_tar_name(src),
+                "-C",
+                src,
+                ".",
+            ],
+            stderr=subprocess.STDOUT,
+        )
+
+    def _remove_temp_tar(self, src):
+        subprocess.check_call(
+            [get_adb()]
+            + self._adb_args
+            + ["shell", "rm", SimplePuller._get_tar_name(src)],
+            stderr=subprocess.STDOUT,
+        )
+
+    def pull_folder(self, src, dest):
+        # Pulling a folder with lots of files is very slow, as each file transmission needs
+        # to reestablish the connection, slowing down the overall throughput.
+        # Hence taring the entire folder first.
+        self._tar(src)
+        with tempfile.NamedTemporaryFile() as f:
+            self.pull(SimplePuller._get_tar_name(src), f.name)
+            local_file = tarfile.open(f.name)
+            local_file.extractall(dest)
+            local_file.close()
+        self._remove_temp_tar(src)
 
     def get_external_data_dir(self):
         output = common.check_output(
