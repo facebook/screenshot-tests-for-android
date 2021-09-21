@@ -41,8 +41,8 @@ class SimplePuller:
         )
 
     @staticmethod
-    def _get_tar_name(src) -> str:
-        return f"{src}.tar.gz"
+    def _get_tar_name(src):
+        return "{}.tar.gz".format(src)
 
     def _tar(self, src):
         subprocess.check_call(
