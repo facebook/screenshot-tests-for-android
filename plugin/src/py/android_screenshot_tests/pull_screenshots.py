@@ -13,11 +13,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import codecs
 import getopt
 import json
@@ -100,7 +95,7 @@ def get_old_screenshot_url(test_name, test_img_api, old_imgs_data):
     old_imgs_data["test"] = test_name
     encoded_data = urllib.urlencode(old_imgs_data)
     url = test_img_api + encoded_data
-    response = json.loads(urllib.urlopen(url).read().decode("utf-8"))
+    response = json.loads(urllib.urlopen(url).read().decode())
     if "error" in response:
         raise Exception
     return response["url"]

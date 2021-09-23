@@ -43,7 +43,7 @@ def get_adb():
 
 # a version of subprocess.check_output that returns a utf-8 string
 def check_output(args, **kwargs):
-    return subprocess.check_output(args, **kwargs).decode("utf-8")
+    return subprocess.check_output(args, **kwargs).decode()
 
 
 # a compat version for py3, since assertRegexpMatches is deprecated
