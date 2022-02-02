@@ -78,14 +78,14 @@ open class PullScreenshotsTask : ScreenshotTask() {
 
       it.args =
           mutableListOf(
-              "-m",
-              "android_screenshot_tests.pull_screenshots",
-              "--apk",
-              apkPath.absolutePath,
-              "--test-run-id",
-              testRunId,
-              "--temp-dir",
-              outputDir.absolutePath)
+                  "-m",
+                  "android_screenshot_tests.pull_screenshots",
+                  "--apk",
+                  apkPath.absolutePath,
+                  "--test-run-id",
+                  testRunId,
+                  "--temp-dir",
+                  outputDir.absolutePath)
               .apply {
                 if (verify) {
                   add("--verify")
