@@ -86,4 +86,5 @@ dependencies {
 
 screenshots {
   multipleDevices true
+  pythonExecutable 'python3'
 }
