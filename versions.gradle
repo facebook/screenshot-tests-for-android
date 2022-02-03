@@ -20,9 +20,9 @@ ext {
   final lithoVersion = "0.40.0"
 
   versions = [
-      kotlin    : '1.3.61',
-      targetSdk : 28,
-      compileSdk: 28,
+      kotlin    : '1.4.21',
+      targetSdk : 30,
+      compileSdk: 30,
       minSdk    : 14,
   ]
 
@@ -36,8 +36,9 @@ ext {
   ]
 
   deps = [
-      supportAppCompat    : "androidx.appcompat:appcompat:1.1.0",
-      supportDesign       : "com.google.android.material:material:1.1.0",
+      supportAppCompat    : "androidx.appcompat:appcompat:1.2.0",
+      supportAnnotation   : "androidx.annotation:annotation:1.1.0",
+      supportDesign       : "com.google.android.material:material:1.2.1",
       supportMultidex     : "androidx.multidex:multidex:2.0.1",
 
       kotlinStdlib        : "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
@@ -60,10 +61,11 @@ ext {
       dexmakerDx          : "com.crittercism.dexmaker:dexmaker-dx:$dexmakerVersion",
       dexmakerMockito     : "com.crittercism.dexmaker:dexmaker-mockito:$dexmakerVersion",
 
-      espresso            : "androidx.test.espresso:espresso-core:3.1.0",
-      testRunner          : "androidx.test:runner:1.2.0",
-      orchestrator        : "androidx.test:orchestrator:1.2.0",
-      androidTestRules    : "androidx.test:rules:1.1.0",
+      espresso            : "androidx.test.espresso:espresso-core:3.3.0",
+      testRunner          : "androidx.test:runner:1.3.0",
+      androidTestRules    : "androidx.test:rules:1.3.0",
+      androidTestJunit    : "androidx.test.ext:junit:1.1.2",
+      orchestrator        : "androidx.test:orchestrator:1.3.0",
       junit               : "junit:junit:4.12",
       mockito             : "org.mockito:mockito-core:1.10.19",
       hamcrest            : "org.hamcrest:hamcrest-core:1.3",

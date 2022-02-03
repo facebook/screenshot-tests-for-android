@@ -23,6 +23,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
+import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -32,7 +33,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import javax.annotation.Nullable;
 
 /** A "local" implementation of Album. */
 @SuppressWarnings("deprecation")
