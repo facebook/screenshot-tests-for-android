@@ -323,7 +323,7 @@ class TestPullScreenshots(unittest.TestCase):
 
         screenshots = pull_screenshots.sort_screenshots(loaded_json)
 
-        self.assertEquals(["two", "one", "three"], [x.get("name") for x in screenshots])
+        self.assertEqual(["two", "one", "three"], [x.get("name") for x in screenshots])
 
     def test_invalid_json(self):
         source = join(tempfile.mkdtemp(), "foo")
@@ -351,18 +351,16 @@ class TestPullScreenshots(unittest.TestCase):
 
 class TestAndroidJoin(unittest.TestCase):
     def test_simple(self):
-        self.assertEquals("/foo/bar", pull_screenshots.android_path_join("/foo", "bar"))
-        self.assertEquals(
-            "/foo/bar", pull_screenshots.android_path_join("/foo/", "bar")
-        )
+        self.assertEqual("/foo/bar", pull_screenshots.android_path_join("/foo", "bar"))
+        self.assertEqual("/foo/bar", pull_screenshots.android_path_join("/foo/", "bar"))
 
     def test_multiple(self):
-        self.assertEquals(
+        self.assertEqual(
             "/foo/bar/car", pull_screenshots.android_path_join("/foo", "bar/", "car")
         )
 
     def test_root(self):
-        self.assertEquals("/bar", pull_screenshots.android_path_join("/foo", "/bar"))
+        self.assertEqual("/bar", pull_screenshots.android_path_join("/foo", "/bar"))
 
 
 if __name__ == "__main__":
