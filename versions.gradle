@@ -31,8 +31,8 @@ ext {
       screenshot : "com.facebook.testing.screenshot:plugin:$screenshotTestVersion",
       kotlin     : "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
       versions   : 'com.github.ben-manes:gradle-versions-plugin:0.20.0',
-      publish    : 'com.vanniktech:gradle-maven-publish-plugin:0.14.2',
-      dokka      : 'org.jetbrains.dokka:dokka-gradle-plugin:1.4.30'
+      publish    : 'com.vanniktech:gradle-maven-publish-plugin:0.18.0',
+      dokka      : 'org.jetbrains.dokka:dokka-gradle-plugin:1.6.10'
   ]
 
   deps = [

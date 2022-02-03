@@ -34,8 +34,8 @@ import javax.annotation.Nullable;
 
 /**
  * This class provides utility methods for determining certain accessibility properties of {@link
- * View}s and {@link AccessibilityNodeInfoCompat}s. It is porting some of the checks from {@link
- * com.googlecode.eyesfree.utils.AccessibilityNodeInfoUtils}, but has stripped many features which
+ * View}s and {@link AccessibilityNodeInfoCompat}s. It is porting some of the checks from
+ * com.googlecode.eyesfree.utils.AccessibilityNodeInfoUtils, but has stripped many features which
  * are unnecessary here.
  */
 public class AccessibilityUtil {
@@ -127,7 +127,7 @@ public class AccessibilityUtil {
    * Gets the role from a given {@link AccessibilityNodeInfoCompat}. If no role is defined it will
    * return AccessibilityRole.NONE, which has a value of null.
    *
-   * @param node The node to check.
+   * @param nodeInfo The node to check.
    * @return {@code AccessibilityRole} the defined role.
    */
   public static AccessibilityRole getRole(AccessibilityNodeInfoCompat nodeInfo) {
