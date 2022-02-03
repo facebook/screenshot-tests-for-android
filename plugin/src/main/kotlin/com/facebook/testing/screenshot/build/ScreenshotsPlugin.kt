@@ -41,6 +41,8 @@ open class ScreenshotsPluginExtension {
   var referenceDir: String? = null
   /** The directory to save failed screenshots */
   var failureDir: String? = null
+  /** Whether to tar the screenshots in an archive file to transfer */
+  var bundleResults = false
 
   var testRunId: String = UUID.randomUUID().toString()
 }
