@@ -90,10 +90,10 @@ class Recorder:
 
     def _is_image_same(self, file1, file2, failure_file):
         with Image.open(file1) as im1, Image.open(file2) as im2:
-            diff_image = ImageChops.difference(im1, im2)
+            diff_image = ImageChops.difference(im1.convert("RGB"), im2.convert("RGB"))
             try:
                 diff = diff_image.getbbox()
-                if diff is None:
+                if diff is None and im1.size == im2.size:
                     return True
                 else:
                     if failure_file:
