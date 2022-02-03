@@ -71,8 +71,8 @@ class Recorder:
         im.close()
 
     def _get_metadata_json(self):
-        file = open(join(self._input, "metadata.json"), "r")
-        return json.load(file)
+        with open(join(self._input, "metadata.json"), "r") as f:
+            return json.load(f)
 
     def _record(self):
         metadata = self._get_metadata_json()

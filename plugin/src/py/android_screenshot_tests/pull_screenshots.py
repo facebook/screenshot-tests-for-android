@@ -113,7 +113,8 @@ def generate_html(
     #   and returns a url to an image from a previous run of the test,
     # old_imgs_data a dict that will be used in the test_img_api url.
     # Creates the html for showing a before and after comparison of the images.
-    screenshots = json.load(open(join(output_dir, "metadata.json")))
+    with open(join(output_dir, "metadata.json")) as m:
+        screenshots = json.load(m)
     alternate = False
     index_html = abspath(join(output_dir, "index.html"))
     with codecs.open(index_html, mode="w", encoding="utf-8") as html:
@@ -530,7 +531,8 @@ def move_all_files_to_different_directory(source_dir, target_dir):
 
 
 def _summary(dir):
-    metadataJson = json.load(open(join(dir, "metadata.json")))
+    with open(join(dir, "metadata.json")) as f:
+        metadataJson = json.load(f)
     count = len(metadataJson)
     print("Found %d screenshots" % count)
 
