@@ -1,3 +1,8 @@
+0.15.0 (Feb 2 2022)
+------
+- Python 3 support
+- Added option to specify pulling a `tar` bundle instead of individual files via `bundleResults`. This is useful for reducing the time it takes to pull a large amount of screenshots. It will also help if you experience ADB connection flakiness.
+
 0.14.0 (Apr 22 2021)
 ------
 - Added test orchestrator support
