@@ -16,19 +16,16 @@
 import codecs
 import getopt
 import json
+import os, platform, subprocess
 import shutil
-import subprocess, os, platform
 import sys
 import tempfile
 import urllib
 import xml.etree.ElementTree as ET
 import zipfile
-from os.path import abspath
-from os.path import join
+from os.path import abspath, join
 
-from . import aapt
-from . import common
-from . import metadata
+from . import aapt, common, metadata
 from .device_name_calculator import DeviceNameCalculator
 from .no_op_device_name_calculator import NoOpDeviceNameCalculator
 from .simple_puller import SimplePuller

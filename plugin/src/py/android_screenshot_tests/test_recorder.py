@@ -17,7 +17,7 @@ import os
 import shutil
 import tempfile
 import unittest
-from os.path import join, exists
+from os.path import exists, join
 
 from PIL import Image
 

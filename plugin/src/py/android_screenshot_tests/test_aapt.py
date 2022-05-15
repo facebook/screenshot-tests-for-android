@@ -12,16 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import print_function
-from __future__ import unicode_literals
+from __future__ import absolute_import, division, print_function, unicode_literals
 
 import os
 import shutil
 import tempfile
 import unittest
-from os.path import join, dirname
+from os.path import dirname, join
 
 from . import aapt
 from .common import assertRegex
