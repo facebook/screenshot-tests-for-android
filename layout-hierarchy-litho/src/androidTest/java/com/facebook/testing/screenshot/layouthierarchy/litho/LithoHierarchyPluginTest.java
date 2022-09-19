@@ -18,9 +18,9 @@ package com.facebook.testing.screenshot.layouthierarchy.litho;
 
 import static org.junit.Assert.assertEquals;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 import android.widget.ImageView;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 import com.facebook.litho.LithoView;
 import org.junit.Test;
 import org.junit.runner.RunWith;
