@@ -389,7 +389,8 @@ Download an appropriate version from:
 def generate_png(path_to_html, path_to_png):
     test_for_wkhtmltoimage()
     subprocess.check_call(
-        ["wkhtmltoimage", path_to_html, path_to_png], stdout=sys.stdout
+        ["wkhtmltoimage", "--enable-local-file-access", path_to_html, path_to_png],
+        stdout=sys.stdout,
     )
 
 
