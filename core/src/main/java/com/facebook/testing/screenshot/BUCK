@@ -3,7 +3,6 @@ load("//tools/build_defs/oss:screenshot_test_defs.bzl", "SCREENSHOT_TESTS_VISIBI
 fb_core_android_library(
     name = "screenshot",
     srcs = glob(["**/*.java"]),
-    is_androidx = False,
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
         "//fbandroid/third-party/android/androidx:support-v4",
