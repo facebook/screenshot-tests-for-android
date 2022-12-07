@@ -64,8 +64,11 @@ public class TestNameDetector {
     for (StackTraceElement element : stack) {
       try {
         Class<?> clazz = Class.forName(element.getClassName());
+        if (isTestClass(clazz)) {
+          return element;
+        }
         Method method = clazz.getMethod(element.getMethodName());
-        if (isTestClass(clazz) || isTestMethod(method)) {
+        if (isTestMethod(method)) {
           return element;
         }
       } catch (NoSuchMethodException ignored) {
