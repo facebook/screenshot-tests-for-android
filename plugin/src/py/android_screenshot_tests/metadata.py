@@ -22,6 +22,7 @@ import shutil
 import tempfile
 import unittest
 
+
 # Given a metadata file locally, this transforms it (in-place), to
 # remove any screenshot elements that don't satisfy the given filter
 # criteria
