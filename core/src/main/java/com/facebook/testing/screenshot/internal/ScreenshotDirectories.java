@@ -135,6 +135,6 @@ class ScreenshotDirectories {
   private void setWorldWriteable(File dir) {
     // Context.MODE_WORLD_WRITEABLE has been deprecated, so let's
     // manually set this
-    dir.setWritable(/* writeable = */ true, /* ownerOnly = */ false);
+    dir.setWritable(/* writeable= */ true, /* ownerOnly= */ false);
   }
 }

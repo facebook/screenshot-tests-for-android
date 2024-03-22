@@ -56,6 +56,7 @@ public class ScreenshotImpl {
   private static final int METADATA_VERSION = 1;
 
   private static ScreenshotImpl sInstance;
+
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
 
@@ -351,7 +352,9 @@ public class ScreenshotImpl {
     return ret[0];
   }
 
-  /** @return The largest amount of pixels we'll capture, otherwise an exception will be thrown. */
+  /**
+   * @return The largest amount of pixels we'll capture, otherwise an exception will be thrown.
+   */
   public static long getMaxPixels() {
     return RecordBuilderImpl.DEFAULT_MAX_PIXELS;
   }
