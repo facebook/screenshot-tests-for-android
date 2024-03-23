@@ -54,7 +54,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mDescription;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setDescription(String description) {
     mDescription = description;
@@ -68,7 +70,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mName;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setName(String name) {
     CharsetEncoder charsetEncoder = Charset.forName("latin-1").newEncoder();
@@ -112,20 +116,26 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public Bitmap getBitmap() {
     return mScreenshotImpl.getBitmap(this);
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setMaxPixels(long maxPixels) {
     mMaxPixels = maxPixels;
     return this;
   }
 
-  /** @return The maximum number of pixels that is expected to be produced by this screenshot */
+  /**
+   * @return The maximum number of pixels that is expected to be produced by this screenshot
+   */
   public long getMaxPixels() {
     return mMaxPixels;
   }
@@ -148,7 +158,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public void record() {
     mScreenshotImpl.record(this);
@@ -207,7 +219,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setIncludeAccessibilityInfo(boolean includeAccessibilityInfo) {
     mIncludeAccessibilityInfo = includeAccessibilityInfo;
