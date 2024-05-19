@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import javax.annotation.Nullable;
 
@@ -344,24 +345,29 @@ public class AccessibilityUtil {
       return true;
     }
 
-    final List actionList = node.getActionList();
-    if (actionList.contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD)
-        || actionList.contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD)) {
-      return true;
+    final List<AccessibilityNodeInfoCompat.AccessibilityActionCompat> actionList = node.getActionList();
+    final HashSet<Integer> actionIds = new HashSet<>();
+    actionIds.add(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD);
+    actionIds.add(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD);
+
+    for (AccessibilityNodeInfoCompat.AccessibilityActionCompat action : actionList) {
+      if (actionIds.contains(action.getId())) {
+        return true;
+      }
     }
 
     // Top-level items in a scrolling pager are actually two levels down since the first
     // level items in pagers are the pages themselves.
     View grandparent = (View) ViewCompat.getParentForAccessibility(parent);
-    if (grandparent != null && getRole(grandparent) == AccessibilityRole.PAGER) {
+    if (grandparent != null && getRole(grandparent) == AccessibilityUtil.AccessibilityRole.PAGER) {
       return true;
     }
 
-    AccessibilityRole parentRole = getRole(parent);
-    return parentRole == AccessibilityRole.LIST
-        || parentRole == AccessibilityRole.GRID
-        || parentRole == AccessibilityRole.SCROLL_VIEW
-        || parentRole == AccessibilityRole.HORIZONTAL_SCROLL_VIEW;
+    AccessibilityUtil.AccessibilityRole parentRole = getRole(parent);
+    return parentRole == AccessibilityUtil.AccessibilityRole.LIST
+        || parentRole == AccessibilityUtil.AccessibilityRole.GRID
+        || parentRole == AccessibilityUtil.AccessibilityRole.SCROLL_VIEW
+        || parentRole == AccessibilityUtil.AccessibilityRole.HORIZONTAL_SCROLL_VIEW;
   }
 
   /**
@@ -381,10 +387,18 @@ public class AccessibilityUtil {
       return true;
     }
 
-    final List actionList = node.getActionList();
-    return actionList.contains(AccessibilityNodeInfoCompat.ACTION_CLICK)
-        || actionList.contains(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK)
-        || actionList.contains(AccessibilityNodeInfoCompat.ACTION_FOCUS);
+    final List<AccessibilityNodeInfoCompat.AccessibilityActionCompat> actionList = node.getActionList();
+    final HashSet<Integer> accessibilityActionIds = new HashSet<>();
+    accessibilityActionIds.add(AccessibilityNodeInfoCompat.ACTION_CLICK);
+    accessibilityActionIds.add(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK);
+    accessibilityActionIds.add(AccessibilityNodeInfoCompat.ACTION_ACCESSIBILITY_FOCUS);
+
+    for (AccessibilityNodeInfoCompat.AccessibilityActionCompat action : actionList) {
+      if (accessibilityActionIds.contains(action.getId())) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
