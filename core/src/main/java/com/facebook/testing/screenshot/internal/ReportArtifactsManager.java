@@ -25,7 +25,7 @@ class ReportArtifactsManager {
 
   private final String mTestRunId;
   private final File mRootDir;
-  private File mCurrentTestRunReportsDirectory;
+  @Nullable private File mCurrentTestRunReportsDirectory;
 
   public ReportArtifactsManager(String testRunId, File rootDir) {
     mTestRunId = testRunId;
