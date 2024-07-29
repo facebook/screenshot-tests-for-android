@@ -18,10 +18,11 @@ package com.facebook.testing.screenshot.internal;
 
 import android.app.Instrumentation;
 import android.os.Bundle;
+import javax.annotation.Nullable;
 
 /** Stores some of the static state. We bundle this into a class for easy cleanup. */
 public class Registry {
-  private static Registry sRegistry;
+  @Nullable private static Registry sRegistry;
   public Instrumentation instrumentation;
   public Bundle arguments;
 
