@@ -17,6 +17,7 @@
 package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.graphics.Point;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,6 +25,7 @@ import org.json.JSONObject;
  * A plugin for a layout hierarchy that allows you to configure what attributes are added per view
  * type.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public interface AttributePlugin {
   String KEY_CLASS = "class";
   String KEY_LEFT = "left";
