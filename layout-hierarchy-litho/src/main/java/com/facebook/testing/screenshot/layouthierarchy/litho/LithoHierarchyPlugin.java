@@ -17,6 +17,7 @@
 package com.facebook.testing.screenshot.layouthierarchy.litho;
 
 import android.graphics.Point;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.litho.DebugComponent;
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.layouthierarchy.BaseViewHierarchyPlugin;
@@ -26,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class LithoHierarchyPlugin implements HierarchyPlugin {
   private static final LithoHierarchyPlugin INSTANCE = new LithoHierarchyPlugin();
 
