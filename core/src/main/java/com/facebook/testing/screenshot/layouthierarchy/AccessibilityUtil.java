@@ -28,6 +28,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -38,6 +39,7 @@ import javax.annotation.Nullable;
  * com.googlecode.eyesfree.utils.AccessibilityNodeInfoUtils, but has stripped many features which
  * are unnecessary here.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class AccessibilityUtil {
 
   private static final int NODE_INFO_CREATION_RETRY_COUNT = 3;
@@ -51,6 +53,7 @@ public class AccessibilityUtil {
    * <p>https://github.com/google/talkback/blob/master/utils/src/main/java/Role.java
    */
   public enum AccessibilityRole {
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     NONE(null),
     BUTTON("android.widget.Button"),
     CHECK_BOX("android.widget.CompoundButton"),
@@ -131,6 +134,7 @@ public class AccessibilityUtil {
    * @return {@code AccessibilityRole} the defined role.
    */
   public static AccessibilityRole getRole(AccessibilityNodeInfoCompat nodeInfo) {
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     AccessibilityRole role = AccessibilityRole.fromValue((String) nodeInfo.getClassName());
     if (role.equals(AccessibilityRole.IMAGE_BUTTON) || role.equals(AccessibilityRole.IMAGE)) {
       return nodeInfo.isClickable() ? AccessibilityRole.IMAGE_BUTTON : AccessibilityRole.IMAGE;
@@ -345,7 +349,9 @@ public class AccessibilityUtil {
     }
 
     final List actionList = node.getActionList();
+    // NULLSAFE_FIXME[Nullable Dereference]
     if (actionList.contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD)
+        // NULLSAFE_FIXME[Nullable Dereference]
         || actionList.contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD)) {
       return true;
     }
@@ -382,8 +388,11 @@ public class AccessibilityUtil {
     }
 
     final List actionList = node.getActionList();
+    // NULLSAFE_FIXME[Nullable Dereference]
     return actionList.contains(AccessibilityNodeInfoCompat.ACTION_CLICK)
+        // NULLSAFE_FIXME[Nullable Dereference]
         || actionList.contains(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK)
+        // NULLSAFE_FIXME[Nullable Dereference]
         || actionList.contains(AccessibilityNodeInfoCompat.ACTION_FOCUS);
   }
 
