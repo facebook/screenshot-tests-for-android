@@ -18,12 +18,16 @@ package com.facebook.testing.screenshot.internal;
 
 import android.app.Instrumentation;
 import android.os.Bundle;
+import com.facebook.infer.annotation.Nullsafe;
 import javax.annotation.Nullable;
 
 /** Stores some of the static state. We bundle this into a class for easy cleanup. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class Registry {
   @Nullable private static Registry sRegistry;
+  // NULLSAFE_FIXME[Field Not Initialized]
   public Instrumentation instrumentation;
+  // NULLSAFE_FIXME[Field Not Initialized]
   public Bundle arguments;
 
   Registry() {}
