@@ -25,6 +25,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
+import com.facebook.infer.annotation.Nullsafe;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -33,6 +34,7 @@ import java.lang.reflect.Proxy;
 import java.util.WeakHashMap;
 import javax.annotation.Nullable;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @SuppressLint("PrivateApi")
 public abstract class WindowAttachment {
 
@@ -150,6 +152,7 @@ public abstract class WindowAttachment {
 
       Context context = view.getContext();
       WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+      // NULLSAFE_FIXME[Nullable Dereference]
       Display display = wm.getDefaultDisplay();
 
       Object window = createIWindow();
