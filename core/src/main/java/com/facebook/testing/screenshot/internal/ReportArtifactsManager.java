@@ -16,11 +16,13 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import javax.annotation.Nullable;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 class ReportArtifactsManager {
 
   private final String mTestRunId;
