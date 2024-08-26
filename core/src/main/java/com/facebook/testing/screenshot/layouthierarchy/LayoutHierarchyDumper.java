@@ -19,6 +19,7 @@ package com.facebook.testing.screenshot.layouthierarchy;
 import android.graphics.Point;
 import android.os.Build;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,6 +27,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Dumps information about a layout hierarchy into a JSON object */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public final class LayoutHierarchyDumper {
   private static final List<AttributePlugin> sGlobalAttributePlugins = new ArrayList<>();
   private static final List<HierarchyPlugin> sGlobalHierarchyPlugins = new ArrayList<>();
