@@ -25,6 +25,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.ParcelFileDescriptor;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -32,6 +33,7 @@ import java.io.InputStream;
 import java.util.Locale;
 
 /** Provides a directory for an Album to store its screenshots in. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 class ScreenshotDirectories {
   // Constants used to alleviate potential API level conflicts
   private static final String WRITE_PERMISSION = "android.permission.WRITE_EXTERNAL_STORAGE";
@@ -64,6 +66,7 @@ class ScreenshotDirectories {
       if (Build.VERSION.SDK_INT < 23) {
         throw new RuntimeException("We need " + permission + " permission for screenshot tests");
       }
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       Context targetContext = Registry.getRegistry().instrumentation.getTargetContext();
       grantPermission(targetContext, permission);
       grantPermission(mContext, permission);
@@ -74,9 +77,11 @@ class ScreenshotDirectories {
     if (Build.VERSION.SDK_INT < 23) {
       return;
     }
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     UiAutomation automation = Registry.getRegistry().instrumentation.getUiAutomation();
     String command =
         String.format(Locale.ENGLISH, "pm grant %s %s", context.getPackageName(), permission);
+    // NULLSAFE_FIXME[Not Vetted Third-Party]
     ParcelFileDescriptor pfd = automation.executeShellCommand(command);
     InputStream stream = new FileInputStream(pfd.getFileDescriptor());
     try {
