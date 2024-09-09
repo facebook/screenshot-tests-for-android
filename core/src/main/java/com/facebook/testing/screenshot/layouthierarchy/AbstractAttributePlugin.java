@@ -17,9 +17,11 @@
 package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.text.TextUtils;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class AbstractAttributePlugin implements AttributePlugin {
   protected String prefix(String name) {
     String prefix = namespace();
