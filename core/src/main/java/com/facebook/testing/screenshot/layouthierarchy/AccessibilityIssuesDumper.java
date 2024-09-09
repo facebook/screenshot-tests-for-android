@@ -19,11 +19,13 @@ package com.facebook.testing.screenshot.layouthierarchy;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import com.facebook.infer.annotation.Nullsafe;
 import javax.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public final class AccessibilityIssuesDumper {
 
   AccessibilityIssuesDumper() {}
