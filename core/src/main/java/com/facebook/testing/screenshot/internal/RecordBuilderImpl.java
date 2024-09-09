@@ -18,6 +18,7 @@ package com.facebook.testing.screenshot.internal;
 
 import android.graphics.Bitmap;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.RecordBuilder;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -31,18 +32,26 @@ import java.util.Map;
  * <p>Use Screenshot#snap() or Screenshot#snapActivity() to get an instance of this, and commit the
  * record with #record().
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class RecordBuilderImpl implements RecordBuilder {
   public static final long DEFAULT_MAX_PIXELS = 10000000L;
   private final ScreenshotImpl mScreenshotImpl;
   private final Map<String, String> mExtras = new HashMap<>();
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mDescription;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mName;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mTestClass;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mTestName;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mError;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mGroup;
   private boolean mIncludeAccessibilityInfo = true;
   private Tiling mTiling = new Tiling(1, 1);
+  // NULLSAFE_FIXME[Field Not Initialized]
   private View mView;
   private long mMaxPixels = DEFAULT_MAX_PIXELS;
 
