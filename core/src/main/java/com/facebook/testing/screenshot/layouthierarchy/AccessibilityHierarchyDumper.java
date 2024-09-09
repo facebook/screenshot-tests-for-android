@@ -24,11 +24,13 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.Accessibilit
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.CollectionInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.CollectionItemInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.RangeInfoCompat;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Dumps information about the accessibility hierarchy into a JSON object */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public final class AccessibilityHierarchyDumper {
 
   AccessibilityHierarchyDumper() {}
@@ -45,10 +47,12 @@ public final class AccessibilityHierarchyDumper {
     root.put("class", view.getClass().getName());
 
     if (nodeInfo != null) {
+      // NULLSAFE_FIXME[Nullable Dereference]
       if (nodeInfo.getActionList().size() == 0) {
         root.put("actionList", JSONObject.NULL);
       } else {
         JSONArray actionList = new JSONArray();
+        // NULLSAFE_FIXME[Nullable Dereference]
         for (AccessibilityActionCompat action : nodeInfo.getActionList()) {
           actionList.put(action.getId());
         }
@@ -102,7 +106,9 @@ public final class AccessibilityHierarchyDumper {
         root.put("collectionItemInfo", collectionItemInfoObj);
       }
 
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       root.put("contentDescription", jsonNullOr(nodeInfo.getContentDescription()));
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       root.put("error", jsonNullOr(nodeInfo.getError()));
 
       if (nodeInfo.getExtras() == null) {
@@ -144,6 +150,7 @@ public final class AccessibilityHierarchyDumper {
         root.put("rangeInfo", rangeInfoObj);
       }
 
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       root.put("text", jsonNullOr(nodeInfo.getText()));
 
       nodeInfo.recycle();
