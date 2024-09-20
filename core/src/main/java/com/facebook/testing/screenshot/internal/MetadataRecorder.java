@@ -27,11 +27,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
 class MetadataRecorder {
 
   private final File mDir;
-  private List<ScreenshotMetadata> mMetadata;
+  @Nullable private List<ScreenshotMetadata> mMetadata;
 
   MetadataRecorder(File reportDirectory) {
     mDir = reportDirectory;
