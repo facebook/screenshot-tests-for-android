@@ -28,6 +28,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.WindowAttachment;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityHierarchyDumper;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityIssuesDumper;
@@ -47,6 +48,7 @@ import org.json.JSONObject;
  *
  * <p>This is public only for implementation convenient for using UiThreadHelper.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class ScreenshotImpl {
   /**
    * The version of the metadata file generated. This should be bumped whenever the structure of the
@@ -61,7 +63,9 @@ public class ScreenshotImpl {
   private final Album mAlbum;
 
   private int mTileSize = 512;
+  // NULLSAFE_FIXME[Field Not Nullable]
   private Bitmap mBitmap = null;
+  // NULLSAFE_FIXME[Field Not Nullable]
   private Canvas mCanvas = null;
   private boolean mEnableBitmapReconfigure = Build.VERSION.SDK_INT >= 19;
 
@@ -92,6 +96,7 @@ public class ScreenshotImpl {
 
       Instrumentation instrumentation = Registry.getRegistry().instrumentation;
 
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       sInstance = create(instrumentation.getContext());
 
       return sInstance;
@@ -119,7 +124,9 @@ public class ScreenshotImpl {
 
   public void setTileSize(int tileSize) {
     mTileSize = tileSize;
+    // NULLSAFE_FIXME[Field Not Nullable]
     mBitmap = null;
+    // NULLSAFE_FIXME[Field Not Nullable]
     mCanvas = null;
   }
 
@@ -136,6 +143,7 @@ public class ScreenshotImpl {
           .setTestClass(TestNameDetector.getTestClass())
           .setTestName(TestNameDetector.getTestName());
     }
+    // NULLSAFE_FIXME[Nullable Dereference]
     View rootView = activity.getWindow().getDecorView();
     return snap(rootView);
   }
@@ -280,6 +288,7 @@ public class ScreenshotImpl {
           recordBuilder.getIncludeAccessibilityInfo()
               ? AccessibilityUtil.generateAccessibilityTree(recordBuilder.getView(), null)
               : null;
+      // NULLSAFE_FIXME[Parameter Not Nullable]
       dump.put("axHierarchy", AccessibilityHierarchyDumper.dumpHierarchy(axTree));
       mAlbum.writeViewHierarchyFile(recordBuilder.getName(), dump.toString(2));
 
