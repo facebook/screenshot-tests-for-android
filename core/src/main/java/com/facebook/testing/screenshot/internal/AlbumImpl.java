@@ -24,6 +24,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Log;
 import androidx.annotation.VisibleForTesting;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -35,6 +36,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 
 /** A "local" implementation of Album. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 @SuppressWarnings("deprecation")
 public class AlbumImpl implements Album {
   private static final int COMPRESSION_QUALITY = 90;
@@ -71,8 +73,10 @@ public class AlbumImpl implements Album {
     try {
       BufferedReader reader =
           new BufferedReader(new FileReader(new File(mDir, SCREENSHOT_TESTS_RUN_ID_FILE_NAME)));
+      // NULLSAFE_FIXME[Return Not Nullable]
       return reader.readLine();
     } catch (IOException e) {
+      // NULLSAFE_FIXME[Return Not Nullable]
       return null;
     }
   }
@@ -131,6 +135,7 @@ public class AlbumImpl implements Album {
       // We probably failed to even create it, so nothing to clean up
       return;
     }
+    // NULLSAFE_FIXME[Nullable Dereference]
     for (String s : mDir.list()) {
       new File(mDir, s).delete();
     }
