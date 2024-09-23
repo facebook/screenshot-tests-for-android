@@ -18,6 +18,7 @@ package com.facebook.testing.screenshot;
 
 import android.app.Instrumentation;
 import android.os.Bundle;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.internal.Registry;
 import com.facebook.testing.screenshot.internal.ScreenshotImpl;
 
@@ -25,6 +26,7 @@ import com.facebook.testing.screenshot.internal.ScreenshotImpl;
  * The ScreenshotRunner needs to be called from the top level Instrumentation test runner before and
  * after all the tests run.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public abstract class ScreenshotRunner {
 
   /** These strings can be used as Keys to Bundle Arguments. */
