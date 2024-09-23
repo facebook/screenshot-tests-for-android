@@ -19,10 +19,12 @@ package com.facebook.testing.screenshot.layouthierarchy;
 import android.graphics.Point;
 import android.view.View;
 import android.view.ViewGroup;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class BaseViewHierarchyPlugin implements HierarchyPlugin {
   private static BaseViewHierarchyPlugin INSTANCE = new BaseViewHierarchyPlugin();
 
