@@ -18,12 +18,14 @@ package com.facebook.testing.screenshot.layouthierarchy.litho;
 
 import android.graphics.Point;
 import android.graphics.Rect;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.litho.DebugComponent;
 import com.facebook.litho.LithoView;
 import com.facebook.testing.screenshot.layouthierarchy.AbstractAttributePlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class LithoAttributePlugin extends AbstractAttributePlugin {
   private static final LithoAttributePlugin INSTANCE = new LithoAttributePlugin();
 
