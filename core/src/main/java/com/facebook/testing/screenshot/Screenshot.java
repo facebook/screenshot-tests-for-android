@@ -18,6 +18,7 @@ package com.facebook.testing.screenshot;
 
 import android.app.Activity;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.internal.ScreenshotImpl;
 
 /**
@@ -28,6 +29,7 @@ import com.facebook.testing.screenshot.internal.ScreenshotImpl;
  * <p>Eventually we can use this to catch rendering changes, with very little work added to the
  * instrumentation test.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class Screenshot {
   /**
    * Take a snapshot of an already measured and layout-ed view. See adb-logcat for how to pull the
