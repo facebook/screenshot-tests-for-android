@@ -286,7 +286,6 @@ class TestPullScreenshots(unittest.TestCase):
         )
 
     def test_no_pull_argument_must_have_temp_dir(self):
-
         try:
             pull_screenshots.pull_screenshots(
                 TESTING_PACKAGE,
