@@ -26,6 +26,7 @@ import android.view.Display;
 import android.view.View;
 import android.view.WindowManager;
 import com.facebook.infer.annotation.Nullsafe;
+import com.google.common.base.Preconditions;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
@@ -152,8 +153,7 @@ public abstract class WindowAttachment {
 
       Context context = view.getContext();
       WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-      // NULLSAFE_FIXME[Nullable Dereference]
-      Display display = wm.getDefaultDisplay();
+      Display display = Preconditions.checkNotNull(wm).getDefaultDisplay();
 
       Object window = createIWindow();
 
