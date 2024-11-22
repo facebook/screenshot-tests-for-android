@@ -29,6 +29,7 @@ import android.view.WindowManager;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import com.facebook.infer.annotation.Nullsafe;
+import com.google.common.base.Preconditions;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -349,9 +350,8 @@ public class AccessibilityUtil {
     }
 
     final List actionList = node.getActionList();
-    // NULLSAFE_FIXME[Nullable Dereference]
-    if (actionList.contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD)
-        // NULLSAFE_FIXME[Nullable Dereference]
+    if (Preconditions.checkNotNull(actionList)
+            .contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_FORWARD)
         || actionList.contains(AccessibilityNodeInfoCompat.ACTION_SCROLL_BACKWARD)) {
       return true;
     }
@@ -388,11 +388,8 @@ public class AccessibilityUtil {
     }
 
     final List actionList = node.getActionList();
-    // NULLSAFE_FIXME[Nullable Dereference]
-    return actionList.contains(AccessibilityNodeInfoCompat.ACTION_CLICK)
-        // NULLSAFE_FIXME[Nullable Dereference]
+    return Preconditions.checkNotNull(actionList).contains(AccessibilityNodeInfoCompat.ACTION_CLICK)
         || actionList.contains(AccessibilityNodeInfoCompat.ACTION_LONG_CLICK)
-        // NULLSAFE_FIXME[Nullable Dereference]
         || actionList.contains(AccessibilityNodeInfoCompat.ACTION_FOCUS);
   }
 
