@@ -34,6 +34,7 @@ import com.facebook.testing.screenshot.layouthierarchy.AccessibilityHierarchyDum
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityIssuesDumper;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityUtil;
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
+import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
@@ -143,8 +144,7 @@ public class ScreenshotImpl {
           .setTestClass(TestNameDetector.getTestClass())
           .setTestName(TestNameDetector.getTestName());
     }
-    // NULLSAFE_FIXME[Nullable Dereference]
-    View rootView = activity.getWindow().getDecorView();
+    View rootView = Preconditions.checkNotNull(activity.getWindow()).getDecorView();
     return snap(rootView);
   }
 
