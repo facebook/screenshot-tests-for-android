@@ -6,6 +6,7 @@ fb_core_android_library(
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
         "//fbandroid/third-party/java/gson:gson",
+        "//fbandroid/third-party/java/guava:guava",
         "//fbandroid/third-party/java/infer-annotations:infer-annotations",
         "//fbandroid/third-party/java/jsr-305:jsr-305",
         "//third-party/java/androidx/annotation/annotation:annotation",

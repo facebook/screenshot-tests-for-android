@@ -25,6 +25,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.CollectionIn
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.CollectionItemInfoCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.RangeInfoCompat;
 import com.facebook.infer.annotation.Nullsafe;
+import com.google.common.base.Preconditions;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -47,12 +48,10 @@ public final class AccessibilityHierarchyDumper {
     root.put("class", view.getClass().getName());
 
     if (nodeInfo != null) {
-      // NULLSAFE_FIXME[Nullable Dereference]
-      if (nodeInfo.getActionList().size() == 0) {
+      if (Preconditions.checkNotNull(nodeInfo.getActionList()).size() == 0) {
         root.put("actionList", JSONObject.NULL);
       } else {
         JSONArray actionList = new JSONArray();
-        // NULLSAFE_FIXME[Nullable Dereference]
         for (AccessibilityActionCompat action : nodeInfo.getActionList()) {
           actionList.put(action.getId());
         }
