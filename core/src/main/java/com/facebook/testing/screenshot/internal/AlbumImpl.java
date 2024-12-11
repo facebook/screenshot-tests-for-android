@@ -52,6 +52,7 @@ public class AlbumImpl implements Album {
   /* VisibleForTesting */
   AlbumImpl(ScreenshotDirectories screenshotDirectories, String name) {
     mDir = screenshotDirectories.get(name);
+    // NULLSAFE_FIXME[Field Not Nullable]
     mPreviousTestRunId = readPreviousTestRunId();
     mCurrentTestRunId = getCurrentTestRunId();
     mMetadataRecorder = new MetadataRecorder(mDir);
@@ -69,14 +70,13 @@ public class AlbumImpl implements Album {
     writePreviousTestRunId();
   }
 
+  @Nullable
   private String readPreviousTestRunId() {
     try {
       BufferedReader reader =
           new BufferedReader(new FileReader(new File(mDir, SCREENSHOT_TESTS_RUN_ID_FILE_NAME)));
-      // NULLSAFE_FIXME[Return Not Nullable]
       return reader.readLine();
     } catch (IOException e) {
-      // NULLSAFE_FIXME[Return Not Nullable]
       return null;
     }
   }
