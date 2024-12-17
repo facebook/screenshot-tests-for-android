@@ -79,11 +79,10 @@ public class TestNameDetector {
     return null;
   }
 
-  private static boolean isTestClass(Class<?> clazz) {
+  private static boolean isTestClass(@Nullable Class<?> clazz) {
     return clazz != null
         && (JUNIT_TEST_CASE.equals(clazz.getCanonicalName())
             || hasAnnotation(clazz.getAnnotations(), JUNIT_RUN_WITH)
-            // NULLSAFE_FIXME[Parameter Not Nullable]
             || isTestClass(clazz.getSuperclass()));
   }
 
