@@ -26,6 +26,7 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.CollectionIt
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.RangeInfoCompat;
 import com.facebook.infer.annotation.Nullsafe;
 import com.google.common.base.Preconditions;
+import javax.annotation.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -36,7 +37,8 @@ public final class AccessibilityHierarchyDumper {
 
   AccessibilityHierarchyDumper() {}
 
-  public static JSONObject dumpHierarchy(AccessibilityUtil.AXTreeNode axTree) throws JSONException {
+  public static JSONObject dumpHierarchy(@Nullable AccessibilityUtil.AXTreeNode axTree)
+      throws JSONException {
     JSONObject root = new JSONObject();
     if (axTree == null) {
       return root;
@@ -105,9 +107,7 @@ public final class AccessibilityHierarchyDumper {
         root.put("collectionItemInfo", collectionItemInfoObj);
       }
 
-      // NULLSAFE_FIXME[Not Vetted Third-Party]
       root.put("contentDescription", jsonNullOr(nodeInfo.getContentDescription()));
-      // NULLSAFE_FIXME[Not Vetted Third-Party]
       root.put("error", jsonNullOr(nodeInfo.getError()));
 
       if (nodeInfo.getExtras() == null) {
@@ -149,7 +149,6 @@ public final class AccessibilityHierarchyDumper {
         root.put("rangeInfo", rangeInfoObj);
       }
 
-      // NULLSAFE_FIXME[Not Vetted Third-Party]
       root.put("text", jsonNullOr(nodeInfo.getText()));
 
       nodeInfo.recycle();
@@ -173,7 +172,7 @@ public final class AccessibilityHierarchyDumper {
     return dumpHierarchy(AccessibilityUtil.generateAccessibilityTree(view, null));
   }
 
-  private static Object jsonNullOr(Object obj) {
+  private static Object jsonNullOr(@Nullable Object obj) {
     return obj == null ? JSONObject.NULL : obj;
   }
 }
