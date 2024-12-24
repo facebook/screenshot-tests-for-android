@@ -288,7 +288,6 @@ public class ScreenshotImpl {
           recordBuilder.getIncludeAccessibilityInfo()
               ? AccessibilityUtil.generateAccessibilityTree(recordBuilder.getView(), null)
               : null;
-      // NULLSAFE_FIXME[Parameter Not Nullable]
       dump.put("axHierarchy", AccessibilityHierarchyDumper.dumpHierarchy(axTree));
       mAlbum.writeViewHierarchyFile(recordBuilder.getName(), dump.toString(2));
 
