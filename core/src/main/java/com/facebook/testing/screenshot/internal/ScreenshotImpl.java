@@ -38,6 +38,7 @@ import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -64,10 +65,8 @@ public class ScreenshotImpl {
   private final Album mAlbum;
 
   private int mTileSize = 512;
-  // NULLSAFE_FIXME[Field Not Nullable]
-  private Bitmap mBitmap = null;
-  // NULLSAFE_FIXME[Field Not Nullable]
-  private Canvas mCanvas = null;
+  @Nullable private Bitmap mBitmap = null;
+  @Nullable private Canvas mCanvas = null;
   private boolean mEnableBitmapReconfigure = Build.VERSION.SDK_INT >= 19;
 
   ScreenshotImpl(Album album) {
@@ -125,9 +124,7 @@ public class ScreenshotImpl {
 
   public void setTileSize(int tileSize) {
     mTileSize = tileSize;
-    // NULLSAFE_FIXME[Field Not Nullable]
     mBitmap = null;
-    // NULLSAFE_FIXME[Field Not Nullable]
     mCanvas = null;
   }
 
@@ -236,12 +233,17 @@ public class ScreenshotImpl {
     lazyInitBitmap();
 
     if (mEnableBitmapReconfigure) {
+      // NULLSAFE_FIXME[Nullable Dereference]
       mBitmap.reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
+      // NULLSAFE_FIXME[Parameter Not Nullable]
       mCanvas = new Canvas(mBitmap);
     }
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     clearCanvas(mCanvas);
 
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     drawClippedView(measuredView, left, top, mCanvas);
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     String tempName = mAlbum.writeBitmap(recordBuilder.getName(), i, j, mBitmap);
     if (tempName == null) {
       throw new NullPointerException();
