@@ -233,9 +233,8 @@ public class ScreenshotImpl {
     lazyInitBitmap();
 
     if (mEnableBitmapReconfigure) {
-      // NULLSAFE_FIXME[Nullable Dereference]
-      mBitmap.reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
-      // NULLSAFE_FIXME[Parameter Not Nullable]
+      Preconditions.checkNotNull(mBitmap)
+          .reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
       mCanvas = new Canvas(mBitmap);
     }
     // NULLSAFE_FIXME[Parameter Not Nullable]
