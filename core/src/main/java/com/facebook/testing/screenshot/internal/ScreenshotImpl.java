@@ -59,7 +59,7 @@ public class ScreenshotImpl {
    */
   private static final int METADATA_VERSION = 1;
 
-  private static ScreenshotImpl sInstance;
+  @Nullable private static ScreenshotImpl sInstance;
 
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
