@@ -5,6 +5,7 @@ fb_core_android_library(
     srcs = glob(["**/*.java"]),
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
+        "//fbandroid/third-party/java/infer-annotations:infer-annotations",
         SCREENSHOT_TESTS_CORE_TARGET,
     ],
 )

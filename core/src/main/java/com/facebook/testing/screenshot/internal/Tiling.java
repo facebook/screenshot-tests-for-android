@@ -16,10 +16,13 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import com.facebook.infer.annotation.Nullsafe;
+
 /**
  * A 2D layout of image tiles. We represent images as strings which can be looked up in an {@code
  * AlbumImpl}
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class Tiling {
   private int mWidth;
   private int mHeight;

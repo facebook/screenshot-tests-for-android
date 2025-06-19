@@ -20,11 +20,13 @@ import android.graphics.Point;
 import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.layouthierarchy.AbstractAttributePlugin;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Provides attribute details from a TextView */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class TextViewAttributePlugin extends AbstractAttributePlugin {
   private static final String NAMESPACE = "TextView";
   private static final String TEXT = "text";
@@ -67,6 +69,7 @@ public class TextViewAttributePlugin extends AbstractAttributePlugin {
         put(node, TEXT, "null");
       }
     } catch (Exception e) {
+      // NULLSAFE_FIXME[Parameter Not Nullable]
       put(node, TEXT, e.getMessage());
     }
 

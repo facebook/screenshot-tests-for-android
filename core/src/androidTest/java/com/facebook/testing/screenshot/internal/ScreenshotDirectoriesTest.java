@@ -21,11 +21,12 @@ import static org.junit.Assert.*;
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
 import java.io.File;
+import javax.annotation.Nullable;
 import org.junit.After;
 import org.junit.Test;
 
 public class ScreenshotDirectoriesTest {
-  File mDir;
+  @Nullable File mDir;
 
   @After
   public void teardown() throws Exception {

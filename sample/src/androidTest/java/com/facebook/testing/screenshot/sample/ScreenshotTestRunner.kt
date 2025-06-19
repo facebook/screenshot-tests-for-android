@@ -18,7 +18,7 @@ package com.facebook.testing.screenshot.sample
 
 import android.os.Bundle
 import androidx.test.runner.AndroidJUnitRunner
-import com.facebook.litho.config.ComponentsConfiguration
+import com.facebook.litho.config.LithoDebugConfigurations
 import com.facebook.testing.screenshot.ScreenshotRunner
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper
 import com.facebook.testing.screenshot.layouthierarchy.litho.LithoAttributePlugin
@@ -27,7 +27,7 @@ import com.facebook.testing.screenshot.layouthierarchy.litho.LithoHierarchyPlugi
 class ScreenshotTestRunner : AndroidJUnitRunner() {
   companion object {
     init {
-      ComponentsConfiguration.isDebugModeEnabled = true
+      LithoDebugConfigurations.isDebugModeEnabled = true
       LayoutHierarchyDumper.addGlobalHierarchyPlugin(LithoHierarchyPlugin.getInstance())
       LayoutHierarchyDumper.addGlobalAttributePlugin(LithoAttributePlugin.getInstance())
     }

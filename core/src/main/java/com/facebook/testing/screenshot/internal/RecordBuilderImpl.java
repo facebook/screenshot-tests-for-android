@@ -18,6 +18,7 @@ package com.facebook.testing.screenshot.internal;
 
 import android.graphics.Bitmap;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.RecordBuilder;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -31,18 +32,26 @@ import java.util.Map;
  * <p>Use Screenshot#snap() or Screenshot#snapActivity() to get an instance of this, and commit the
  * record with #record().
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class RecordBuilderImpl implements RecordBuilder {
   public static final long DEFAULT_MAX_PIXELS = 10000000L;
   private final ScreenshotImpl mScreenshotImpl;
   private final Map<String, String> mExtras = new HashMap<>();
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mDescription;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mName;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mTestClass;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mTestName;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mError;
+  // NULLSAFE_FIXME[Field Not Initialized]
   private String mGroup;
   private boolean mIncludeAccessibilityInfo = true;
   private Tiling mTiling = new Tiling(1, 1);
+  // NULLSAFE_FIXME[Field Not Initialized]
   private View mView;
   private long mMaxPixels = DEFAULT_MAX_PIXELS;
 
@@ -54,7 +63,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mDescription;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setDescription(String description) {
     mDescription = description;
@@ -68,7 +79,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return mName;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setName(String name) {
     CharsetEncoder charsetEncoder = Charset.forName("latin-1").newEncoder();
@@ -112,20 +125,26 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public Bitmap getBitmap() {
     return mScreenshotImpl.getBitmap(this);
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setMaxPixels(long maxPixels) {
     mMaxPixels = maxPixels;
     return this;
   }
 
-  /** @return The maximum number of pixels that is expected to be produced by this screenshot */
+  /**
+   * @return The maximum number of pixels that is expected to be produced by this screenshot
+   */
   public long getMaxPixels() {
     return mMaxPixels;
   }
@@ -148,7 +167,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public void record() {
     mScreenshotImpl.record(this);
@@ -207,7 +228,9 @@ public class RecordBuilderImpl implements RecordBuilder {
     return this;
   }
 
-  /** @inherit */
+  /**
+   * @inherit
+   */
   @Override
   public RecordBuilderImpl setIncludeAccessibilityInfo(boolean includeAccessibilityInfo) {
     mIncludeAccessibilityInfo = includeAccessibilityInfo;

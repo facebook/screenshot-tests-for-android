@@ -28,14 +28,17 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import com.facebook.testing.screenshot.WindowAttachment;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityHierarchyDumper;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityIssuesDumper;
 import com.facebook.testing.screenshot.layouthierarchy.AccessibilityUtil;
 import com.facebook.testing.screenshot.layouthierarchy.LayoutHierarchyDumper;
+import com.google.common.base.Preconditions;
 import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.Callable;
+import javax.annotation.Nullable;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -47,6 +50,7 @@ import org.json.JSONObject;
  *
  * <p>This is public only for implementation convenient for using UiThreadHelper.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class ScreenshotImpl {
   /**
    * The version of the metadata file generated. This should be bumped whenever the structure of the
@@ -55,13 +59,14 @@ public class ScreenshotImpl {
    */
   private static final int METADATA_VERSION = 1;
 
-  private static ScreenshotImpl sInstance;
+  @Nullable private static ScreenshotImpl sInstance;
+
   /** The album of all the screenshots taken in this run. */
   private final Album mAlbum;
 
   private int mTileSize = 512;
-  private Bitmap mBitmap = null;
-  private Canvas mCanvas = null;
+  @Nullable private Bitmap mBitmap = null;
+  @Nullable private Canvas mCanvas = null;
   private boolean mEnableBitmapReconfigure = Build.VERSION.SDK_INT >= 19;
 
   ScreenshotImpl(Album album) {
@@ -91,6 +96,7 @@ public class ScreenshotImpl {
 
       Instrumentation instrumentation = Registry.getRegistry().instrumentation;
 
+      // NULLSAFE_FIXME[Not Vetted Third-Party]
       sInstance = create(instrumentation.getContext());
 
       return sInstance;
@@ -135,7 +141,7 @@ public class ScreenshotImpl {
           .setTestClass(TestNameDetector.getTestClass())
           .setTestName(TestNameDetector.getTestName());
     }
-    View rootView = activity.getWindow().getDecorView();
+    View rootView = Preconditions.checkNotNull(activity.getWindow()).getDecorView();
     return snap(rootView);
   }
 
@@ -227,12 +233,16 @@ public class ScreenshotImpl {
     lazyInitBitmap();
 
     if (mEnableBitmapReconfigure) {
-      mBitmap.reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
+      Preconditions.checkNotNull(mBitmap)
+          .reconfigure(right - left, bottom - top, Bitmap.Config.ARGB_8888);
       mCanvas = new Canvas(mBitmap);
     }
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     clearCanvas(mCanvas);
 
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     drawClippedView(measuredView, left, top, mCanvas);
+    // NULLSAFE_FIXME[Parameter Not Nullable]
     String tempName = mAlbum.writeBitmap(recordBuilder.getName(), i, j, mBitmap);
     if (tempName == null) {
       throw new NullPointerException();
@@ -351,7 +361,9 @@ public class ScreenshotImpl {
     return ret[0];
   }
 
-  /** @return The largest amount of pixels we'll capture, otherwise an exception will be thrown. */
+  /**
+   * @return The largest amount of pixels we'll capture, otherwise an exception will be thrown.
+   */
   public static long getMaxPixels() {
     return RecordBuilderImpl.DEFAULT_MAX_PIXELS;
   }

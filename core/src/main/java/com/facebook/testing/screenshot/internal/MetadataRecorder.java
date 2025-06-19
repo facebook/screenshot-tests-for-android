@@ -16,6 +16,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
+import com.facebook.infer.annotation.Nullsafe;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
@@ -27,11 +28,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 
+@Nullsafe(Nullsafe.Mode.LOCAL)
 class MetadataRecorder {
 
   private final File mDir;
-  private List<ScreenshotMetadata> mMetadata;
+  @Nullable private List<ScreenshotMetadata> mMetadata;
 
   MetadataRecorder(File reportDirectory) {
     mDir = reportDirectory;
@@ -166,18 +169,29 @@ class MetadataRecorder {
   }
 
   private static class ScreenshotMetadata {
+    // NULLSAFE_FIXME[Field Not Initialized]
     String description;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String name;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String testClass;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String testName;
     int tileWidth;
     int tileHeight;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String viewHierarchy;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String axIssues;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String error;
+    // NULLSAFE_FIXME[Field Not Initialized]
     String group;
+    // NULLSAFE_FIXME[Field Not Initialized]
     List<String> absoluteFilesNames;
+    // NULLSAFE_FIXME[Field Not Initialized]
     List<String> relativeFileNames;
+    // NULLSAFE_FIXME[Field Not Initialized]
     Map<String, String> extras;
   }
 }

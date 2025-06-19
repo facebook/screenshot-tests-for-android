@@ -18,10 +18,12 @@ package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.graphics.Point;
 import android.view.View;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /** Dumps basic information that applies to all {@link View}s, like position and class */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class BaseViewAttributePlugin extends AbstractAttributePlugin {
   private static final BaseViewAttributePlugin INSTANCE = new BaseViewAttributePlugin();
 
@@ -48,6 +50,7 @@ public class BaseViewAttributePlugin extends AbstractAttributePlugin {
     final View view = (View) obj;
     putRequired(
         node,
+        // NULLSAFE_FIXME[Parameter Not Nullable]
         view.getClass().getCanonicalName(),
         offset.x + LayoutHierarchyDumper.getViewLeft(view),
         offset.y + LayoutHierarchyDumper.getViewTop(view),

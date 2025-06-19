@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import com.facebook.infer.annotation.Nullsafe;
 
 /**
  * A collection of static utilities for measuring and pre-drawing a view, usually a pre-requirement
@@ -38,6 +39,7 @@ import android.widget.ListView;
  *     .layout();
  * </code>
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public class ViewHelpers {
   private static final int HEIGHT_LIMIT = 100000;
 

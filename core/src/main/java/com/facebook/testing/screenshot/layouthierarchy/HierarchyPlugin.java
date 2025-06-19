@@ -17,6 +17,7 @@
 package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.graphics.Point;
+import com.facebook.infer.annotation.Nullsafe;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -25,6 +26,7 @@ import org.json.JSONObject;
  * If you have a custom view group, for example, that you want to display differently than normal,
  * then you would create a plugin for it.
  */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public interface HierarchyPlugin {
   String KEY_CHILDREN = "children";
 

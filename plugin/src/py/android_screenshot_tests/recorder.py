@@ -65,7 +65,6 @@ class Recorder:
                 input_file = common.get_image_file_name(name, i, j)
                 with Image.open(join(self._input, input_file)) as input_image:
                     im.paste(input_image, (i * tilewidth, j * tileheight))
-                    input_image.close()
 
         im.save(join(self._output, name + ".png"))
         im.close()

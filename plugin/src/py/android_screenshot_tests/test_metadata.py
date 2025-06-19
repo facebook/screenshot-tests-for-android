@@ -23,6 +23,7 @@ import unittest
 
 from . import metadata
 
+
 # Tests for the metadata package
 class TestMetadata(unittest.TestCase):
     def setUp(self):
