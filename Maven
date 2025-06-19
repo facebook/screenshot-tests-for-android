@@ -1,0 +1,139 @@
+@@ -1,75 +1,78 @@
+/*
+ * Copyright (c) Meta Platforms, Inc. and affiliates.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+buildscript {
+    repositories {
+        jcenter()
+        maven() {
+           url "./repo"
+        }
+    }
+
+    dependencies {
+        classpath 'com.android.tools.build:gradle:1.1.3'
+        classpath 'com.facebook.testing.screenshot:plugin:0.1+'
+    }
+}
+
+apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+apply plugin: 'screenshot-tests-plugin'
+
+buildscript {
+  apply from: rootProject.file('versions.gradle')
+  repositories {
+    mavenCentral()
+    google()
+repositories {
+    jcenter()
+  }
+}
+
+  dependencies {
+    classpath plugs.agp
+    classpath plugs.versions
+    classpath plugs.publish
+    classpath plugs.dokka
+  }
+dependencies {
+    compile 'junit:junit:4.12'
+    compile 'org.mockito:mockito-core:1.+'
+    compile 'com.google.dexmaker:dexmaker:1.0'
+    compile 'com.google.dexmaker:dexmaker-mockito:1.0'
+    compile 'com.android.support.test:runner:0.3'
+
+    androidTestCompile 'com.android.support:support-v4:21.0.0'
+    androidTestCompile 'com.android.support.test:runner:0.3'
+    androidTestCompile 'com.android.support.test:rules:0.3'
+    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2'
+}
+
+allprojects {
+  version = property('VERSION_NAME')
+  repositories {
+    mavenCentral()
+    google()
+    jcenter()
+  }
+task pyTests(type: Exec) {
+     workingDir 'plugin/src/py'
+     commandLine 'python', '-m', 'unittest', 'discover'
+}
+
+def taskLogOutput = new StringBuilder()
+gradle.addListener(new TaskExecutionListener() {
+  def listener = new StandardOutputListener() {
+    @Override
+    void onOutput(CharSequence charSequence) {
+      taskLogOutput.append(charSequence)
+android {
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+  }
+
+  @Override
+  void beforeExecute(Task task) {
+    task.logging.addStandardOutputListener(listener)
+  }
+    defaultConfig {
+        minSdkVersion 9
+        testInstrumentationRunner "com.facebook.testing.screenshot.ScreenshotTestRunner"
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    sourceSets {
+    }
+}
+
+  @Override
+  void afterExecute(Task task, TaskState state) {
+    task.logging.removeStandardOutputListener(listener)
+  }
+})
+
+task cleanAll(dependsOn: [
+    ':core:clean',
+    ':plugin:clean',
+    ':layout-hierarchy-common:clean',
+    ':layout-hierarchy-litho:clean',
+])
+publishing {
+  publications {
+    mavenAndroid(MavenPublication) {
+      groupId 'com.facebook.testing.screenshot'
+      artifactId 'lib'
+      version '0.1'
+
+task integrationTest(dependsOn: ':sample:runDebugAndroidTestScreenshotTest') {
+  doLast {
+    assert taskLogOutput.toString().contains('Found 12 screenshots')
+      artifact("$buildDir/outputs/aar/screenshot-test-for-android-release.aar")
+    }
+  }
+
+  repositories {
+    maven {
+    }
+  }
+}
