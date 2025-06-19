@@ -1,0 +1,11 @@
+If these changes are meant to be squashed into the previous commit, run:
+
+  git commit --amend 
+
+If they are meant to go into a new commit, run:
+
+  git commit 
+
+In both cases, once you're done, continue with:
+
+  git rebase --continue
