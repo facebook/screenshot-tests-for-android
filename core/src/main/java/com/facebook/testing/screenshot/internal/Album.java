@@ -17,9 +17,11 @@
 package com.facebook.testing.screenshot.internal;
 
 import android.graphics.Bitmap;
+import com.facebook.infer.annotation.Nullsafe;
 import java.io.IOException;
 
 /** Stores metadata about an album of screenshots during an instrumentation test run. */
+@Nullsafe(Nullsafe.Mode.LOCAL)
 public interface Album {
 
   /**
