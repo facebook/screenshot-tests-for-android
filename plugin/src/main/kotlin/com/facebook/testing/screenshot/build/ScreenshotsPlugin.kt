@@ -64,7 +64,8 @@ class ScreenshotsPlugin : Plugin<Project> {
       if (screenshotExtensions.addDeps) {
         it.dependencies.add(
             "androidTestImplementation",
-            "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}")
+            "$DEPENDENCY_GROUP:$DEPENDENCY_CORE:${ScreenshotTestBuildConfig.VERSION}",
+        )
       }
     }
     val androidExtension = getProjectExtension(project)
@@ -89,7 +90,7 @@ class ScreenshotsPlugin : Plugin<Project> {
       project: Project,
       name: String,
       variant: TestVariant,
-      clazz: Class<T>
+      clazz: Class<T>,
   ): TaskProvider<T> {
     return project.tasks.register(name, clazz).apply {
       configure { it.init(variant, screenshotExtensions) }
@@ -104,31 +105,36 @@ class ScreenshotsPlugin : Plugin<Project> {
                 project,
                 CleanScreenshotsTask.taskName(variant),
                 variant,
-                CleanScreenshotsTask::class.java)
+                CleanScreenshotsTask::class.java,
+            )
         registerTask(
                 project,
                 PullScreenshotsTask.taskName(variant),
                 variant,
-                PullScreenshotsTask::class.java)
+                PullScreenshotsTask::class.java,
+            )
             .dependsOn(cleanScreenshots)
 
         registerTask(
             project,
             RunScreenshotTestTask.taskName(variant),
             variant,
-            RunScreenshotTestTask::class.java)
+            RunScreenshotTestTask::class.java,
+        )
 
         registerTask(
             project,
             RecordScreenshotTestTask.taskName(variant),
             variant,
-            RecordScreenshotTestTask::class.java)
+            RecordScreenshotTestTask::class.java,
+        )
 
         registerTask(
             project,
             VerifyScreenshotTestTask.taskName(variant),
             variant,
-            VerifyScreenshotTestTask::class.java)
+            VerifyScreenshotTestTask::class.java,
+        )
       }
     }
   }

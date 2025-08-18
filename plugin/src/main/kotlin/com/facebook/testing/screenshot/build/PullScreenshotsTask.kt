@@ -88,7 +88,8 @@ open class PullScreenshotsTask : ScreenshotTask() {
                   "--test-run-id",
                   testRunId,
                   "--temp-dir",
-                  outputDir.absolutePath)
+                  outputDir.absolutePath,
+              )
               .apply {
                 if (verify) {
                   add("--verify")

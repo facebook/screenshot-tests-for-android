@@ -37,7 +37,7 @@ class MainActivity : AppCompatActivity() {
   enum class Status {
     OK,
     WARNING,
-    ERROR
+    ERROR,
   }
 
   override fun onCreate(savedInstanceState: Bundle?) {
