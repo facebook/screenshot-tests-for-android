@@ -37,6 +37,7 @@ object ExampleSpec {
               Border.create(c)
                   .colorRes(YogaEdge.ALL, R.color.colorPrimary)
                   .widthDip(YogaEdge.ALL, 8f)
-                  .build())
+                  .build()
+          )
           .build()
 }
