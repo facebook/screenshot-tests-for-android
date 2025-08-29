@@ -26,7 +26,7 @@ import org.json.JSONObject;
 
 @Nullsafe(Nullsafe.Mode.LOCAL)
 public class BaseViewHierarchyPlugin implements HierarchyPlugin {
-  private static BaseViewHierarchyPlugin INSTANCE = new BaseViewHierarchyPlugin();
+  private static final BaseViewHierarchyPlugin INSTANCE = new BaseViewHierarchyPlugin();
 
   public static BaseViewHierarchyPlugin getInstance() {
     return INSTANCE;

@@ -34,7 +34,7 @@ public class TextViewAttributePlugin extends AbstractAttributePlugin {
   private static final String TEXT_COLOR = "textColor";
   private static final String TEXT_ALIGNMENT = "textAlignment";
 
-  private static TextViewAttributePlugin INSTANCE = new TextViewAttributePlugin();
+  private static final TextViewAttributePlugin INSTANCE = new TextViewAttributePlugin();
 
   public static TextViewAttributePlugin getInstance() {
     return INSTANCE;
