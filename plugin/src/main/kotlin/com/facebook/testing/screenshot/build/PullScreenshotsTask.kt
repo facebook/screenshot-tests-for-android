@@ -75,11 +75,11 @@ open class PullScreenshotsTask : ScreenshotTask() {
 
     assert(if (isVerifyOnly) outputDir.exists() else !outputDir.exists())
 
-    project.exec {
-      it.executable = extension.pythonExecutable
-      it.environment("PYTHONPATH", jarFile)
+    project.exec { execSpec ->
+      execSpec.executable = extension.pythonExecutable
+      execSpec.environment("PYTHONPATH", jarFile)
 
-      it.args =
+      execSpec.args =
           mutableListOf(
                   "-m",
                   "android_screenshot_tests.pull_screenshots",
@@ -120,7 +120,7 @@ open class PullScreenshotsTask : ScreenshotTask() {
                 }
               }
 
-      println(it.args)
+      println(execSpec.args)
     }
   }
 }
