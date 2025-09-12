@@ -5,5 +5,8 @@ fb_python_library(
     srcs = glob(["android_screenshot_tests/**/*.py"]),
     base_module = "",
     visibility = ["PUBLIC"],
-    deps = ["//third-party/pypi/pillow:pillow"],
+    deps = [
+        "//third-party/pypi/mock:mock",
+        "//third-party/pypi/pillow:pillow",
+    ],
 )
