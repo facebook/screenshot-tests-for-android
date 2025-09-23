@@ -3,6 +3,7 @@ load("//tools/build_defs/oss:screenshot_test_defs.bzl", "SCREENSHOT_TESTS_CORE_T
 fb_core_android_library(
     name = "common",
     srcs = glob(["**/*.java"]),
+    k2 = True,
     visibility = SCREENSHOT_TESTS_VISIBILITY,
     deps = [
         "//fbandroid/third-party/java/infer-annotations:infer-annotations",
