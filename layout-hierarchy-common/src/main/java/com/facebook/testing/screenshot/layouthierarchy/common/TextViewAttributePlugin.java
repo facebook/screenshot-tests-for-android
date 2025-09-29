@@ -17,7 +17,6 @@
 package com.facebook.testing.screenshot.layouthierarchy.common;
 
 import android.graphics.Point;
-import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import com.facebook.infer.annotation.Nullsafe;
@@ -75,9 +74,7 @@ public class TextViewAttributePlugin extends AbstractAttributePlugin {
 
     put(node, TEXT_SIZE, String.valueOf(textView.getTextSize()));
     put(node, TEXT_COLOR, Integer.toHexString(textView.getCurrentTextColor()));
-    if (Build.VERSION.SDK_INT >= 17) {
-      put(node, TEXT_ALIGNMENT, nameForAlignment(textView.getTextAlignment()));
-    }
+    put(node, TEXT_ALIGNMENT, nameForAlignment(textView.getTextAlignment()));
   }
 
   private static String nameForAlignment(int alignment) {
