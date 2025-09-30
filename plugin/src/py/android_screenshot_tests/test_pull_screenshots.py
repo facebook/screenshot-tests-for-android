@@ -27,9 +27,9 @@ from os.path import join
 from . import pull_screenshots
 
 if sys.version_info >= (3,):
-    from unittest.mock import *
+    from unittest.mock import MagicMock
 else:
-    from mock import *
+    from mock import MagicMock
 
 from .common import assertRegex
 
