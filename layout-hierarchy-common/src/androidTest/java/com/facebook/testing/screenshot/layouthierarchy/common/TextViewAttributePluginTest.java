@@ -20,7 +20,6 @@ import static org.junit.Assert.assertEquals;
 
 import android.graphics.Color;
 import android.graphics.Point;
-import android.os.Build;
 import android.view.View;
 import android.widget.TextView;
 import androidx.test.InstrumentationRegistry;
@@ -66,9 +65,7 @@ public class TextViewAttributePluginTest {
     assertEquals("foobar", node.getString("TextView:text"));
     assertEquals("1337.0", node.getString("TextView:textSize"));
     assertEquals("ff000000", node.getString("TextView:textColor"));
-    if (Build.VERSION.SDK_INT >= 17) {
-      assertEquals("TEXT_ALIGNMENT_GRAVITY", node.getString("TextView:textAlignment"));
-    }
+    assertEquals("TEXT_ALIGNMENT_GRAVITY", node.getString("TextView:textAlignment"));
   }
 
   @Test
