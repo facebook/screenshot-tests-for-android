@@ -58,12 +58,10 @@ class ScreenshotDirectories {
 
   private void checkPermissions() {
     for (String permission : REQUIRED_PERMISSIONS) {
-      if ((permission.equals(READ_PERMISSION) && Build.VERSION.SDK_INT < 16)
-          || mContext.checkCallingOrSelfPermission(permission)
-              == PackageManager.PERMISSION_GRANTED) {
+      if (mContext.checkCallingOrSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
         continue;
       }
-      if (Build.VERSION.SDK_INT < 23) {
+      if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
         throw new RuntimeException("We need " + permission + " permission for screenshot tests");
       }
       // NULLSAFE_FIXME[Not Vetted Third-Party]
@@ -74,7 +72,7 @@ class ScreenshotDirectories {
   }
 
   private void grantPermission(Context context, String permission) {
-    if (Build.VERSION.SDK_INT < 23) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
       return;
     }
     // NULLSAFE_FIXME[Not Vetted Third-Party]
