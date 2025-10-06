@@ -139,13 +139,7 @@ public abstract class WindowAttachment {
 
     try {
       Class cAttachInfo = Class.forName("android.view.View$AttachInfo");
-      Class cViewRootImpl;
-
-      if (Build.VERSION.SDK_INT >= 11) {
-        cViewRootImpl = Class.forName("android.view.ViewRootImpl");
-      } else {
-        return null;
-      }
+      Class cViewRootImpl = Class.forName("android.view.ViewRootImpl");
 
       Class cIWindowSession = Class.forName("android.view.IWindowSession");
       Class cIWindow = Class.forName("android.view.IWindow");
@@ -188,7 +182,8 @@ public abstract class WindowAttachment {
               stub(cICallbacks),
               context
             };
-      } else if (Build.VERSION.SDK_INT >= 17) {
+      } else {
+        // For API 17+ (always true since minimum API is 21)
         viewRootImpl =
             cViewRootImpl
                 .getConstructor(Context.class, Display.class)
@@ -203,21 +198,6 @@ public abstract class WindowAttachment {
             new Object[] {
               stub(cIWindowSession), window, display, viewRootImpl, new Handler(), stub(cICallbacks)
             };
-      } else if (Build.VERSION.SDK_INT >= 16) {
-        viewRootImpl = cViewRootImpl.getConstructor(Context.class).newInstance(context);
-
-        viewRootCtorParams =
-            new Class[] {cIWindowSession, cIWindow, cViewRootImpl, Handler.class, cICallbacks};
-
-        viewRootCtorValues =
-            new Object[] {
-              stub(cIWindowSession), window, viewRootImpl, new Handler(), stub(cICallbacks)
-            };
-      } else {
-        viewRootCtorParams = new Class[] {cIWindowSession, cIWindow, Handler.class, cICallbacks};
-
-        viewRootCtorValues =
-            new Object[] {stub(cIWindowSession), window, new Handler(), stub(cICallbacks)};
       }
 
       Object attachInfo = invokeConstructor(cAttachInfo, viewRootCtorParams, viewRootCtorValues);
@@ -225,9 +205,7 @@ public abstract class WindowAttachment {
       setField(attachInfo, "mHasWindowFocus", true);
       setField(attachInfo, "mWindowVisibility", View.VISIBLE);
       setField(attachInfo, "mInTouchMode", false);
-      if (Build.VERSION.SDK_INT >= 11) {
-        setField(attachInfo, "mHardwareAccelerated", false);
-      }
+      setField(attachInfo, "mHardwareAccelerated", false);
 
       return attachInfo;
     } catch (Exception e) {
