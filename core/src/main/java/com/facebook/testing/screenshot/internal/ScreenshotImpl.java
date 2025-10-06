@@ -16,7 +16,6 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Instrumentation;
 import android.content.Context;
@@ -24,7 +23,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
@@ -67,7 +65,7 @@ public class ScreenshotImpl {
   private int mTileSize = 512;
   @Nullable private Bitmap mBitmap = null;
   @Nullable private Canvas mCanvas = null;
-  private boolean mEnableBitmapReconfigure = Build.VERSION.SDK_INT >= 19;
+  private boolean mEnableBitmapReconfigure = true;
 
   ScreenshotImpl(Album album) {
     mAlbum = album;
@@ -220,7 +218,6 @@ public class ScreenshotImpl {
     }
   }
 
-  @TargetApi(Build.VERSION_CODES.KITKAT)
   private void drawTile(View measuredView, int i, int j, RecordBuilderImpl recordBuilder)
       throws IOException {
     int width = measuredView.getWidth();
