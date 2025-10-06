@@ -17,7 +17,6 @@
 package com.facebook.testing.screenshot.layouthierarchy;
 
 import android.graphics.Point;
-import android.os.Build;
 import android.view.View;
 import com.facebook.infer.annotation.Nullsafe;
 import java.util.ArrayList;
@@ -117,16 +116,10 @@ public final class LayoutHierarchyDumper {
   }
 
   public static int getViewLeft(View view) {
-    if (Build.VERSION.SDK_INT >= 11) {
-      return view.getLeft() + (int) view.getTranslationX();
-    }
-    return view.getLeft();
+    return view.getLeft() + (int) view.getTranslationX();
   }
 
   public static int getViewTop(View view) {
-    if (Build.VERSION.SDK_INT >= 11) {
-      return view.getTop() + (int) view.getTranslationY();
-    }
-    return view.getTop();
+    return view.getTop() + (int) view.getTranslationY();
   }
 }
