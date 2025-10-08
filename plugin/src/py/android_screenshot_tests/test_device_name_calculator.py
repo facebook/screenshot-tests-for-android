@@ -19,9 +19,9 @@ import unittest
 from .device_name_calculator import DeviceNameCalculator
 
 if sys.version_info >= (3,):
-    from unittest.mock import *
+    from unittest.mock import MagicMock
 else:
-    from mock import *
+    from mock import MagicMock
 
 
 class TestDeviceNameCalculator(unittest.TestCase):
