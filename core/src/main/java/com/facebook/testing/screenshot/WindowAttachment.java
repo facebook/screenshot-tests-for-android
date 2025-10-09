@@ -183,7 +183,6 @@ public abstract class WindowAttachment {
               context
             };
       } else {
-        // For API 17+ (always true since minimum API is 21)
         viewRootImpl =
             cViewRootImpl
                 .getConstructor(Context.class, Display.class)
