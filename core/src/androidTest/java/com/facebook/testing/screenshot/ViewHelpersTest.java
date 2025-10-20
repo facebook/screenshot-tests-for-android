@@ -18,7 +18,6 @@ package com.facebook.testing.screenshot;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.assertEquals;
 
 import android.content.Context;
 import android.widget.ArrayAdapter;
@@ -26,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import androidx.test.InstrumentationRegistry;
 import com.facebook.testing.screenshot.test.R;
+import org.assertj.core.api.Assertions;
 import org.junit.Before;
 
 /** Tests {@link ViewHelpers} */
@@ -41,7 +41,7 @@ public class ViewHelpersTest {
   }
 
   public void testPreconditions() throws Throwable {
-    assertEquals(0, mTextView.getMeasuredHeight());
+    Assertions.assertThat(mTextView.getMeasuredHeight()).isEqualTo(0);
   }
 
   public void testMeasureWithoutHeight() throws Throwable {
