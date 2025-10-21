@@ -16,7 +16,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.content.Context;
 import androidx.test.InstrumentationRegistry;
@@ -41,6 +41,6 @@ public class ScreenshotDirectoriesTest {
     ScreenshotDirectories dirs = new ScreenshotDirectories(context);
 
     mDir = dirs.get("foobar");
-    assertTrue(mDir.exists());
+    assertThat(mDir.exists()).isTrue();
   }
 }
