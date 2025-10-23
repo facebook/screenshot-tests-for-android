@@ -16,8 +16,7 @@
 
 package com.facebook.testing.screenshot.layouthierarchy;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -138,18 +137,18 @@ public class LayoutHierarchyDumperTest {
   @Test
   public void testClassNames() throws Throwable {
     ParsedViewDetail node = ParsedViewDetail.convert(mView);
-    assertEquals("android.widget.LinearLayout", node.name);
-    assertEquals("android.widget.TextView", node.childAt(2).childAt(0).name);
+    assertThat(node.name).isEqualTo("android.widget.LinearLayout");
+    assertThat(node.childAt(2).childAt(0).name).isEqualTo("android.widget.TextView");
   }
 
   @Test
   public void testBasicCoordinateCheck() throws Throwable {
     ViewHelpers.setupView(mView).setExactHeightPx(1000).setExactWidthPx(20000).layout();
     ParsedViewDetail node = ParsedViewDetail.convert(mView);
-    assertEquals(0, node.absoluteRect.top);
-    assertEquals(0, node.absoluteRect.left);
-    assertEquals(node.childAt(0).absoluteRect.bottom, node.childAt(1).absoluteRect.top);
-    assertTrue(node.childAt(0).absoluteRect.bottom != 0);
+    assertThat(node.absoluteRect.top).isEqualTo(0);
+    assertThat(node.absoluteRect.left).isEqualTo(0);
+    assertThat(node.childAt(1).absoluteRect.top).isEqualTo(node.childAt(0).absoluteRect.bottom);
+    assertThat(node.childAt(0).absoluteRect.bottom != 0).isTrue();
   }
 
   @Test
@@ -159,7 +158,7 @@ public class LayoutHierarchyDumperTest {
 
     int textViewHeight = ((ViewGroup) mView).getChildAt(0).getHeight();
 
-    assertEquals(3 * textViewHeight, node.childAt(2).childAt(1).absoluteRect.top);
+    assertThat(node.childAt(2).childAt(1).absoluteRect.top).isEqualTo(3 * textViewHeight);
   }
 
   @Test
@@ -167,11 +166,11 @@ public class LayoutHierarchyDumperTest {
     ViewHelpers.setupView(mView).setExactHeightPx(1000).setExactWidthPx(20000).layout();
     ParsedViewDetail node = ParsedViewDetail.convert(((ViewGroup) mView).getChildAt(2));
 
-    assertEquals(0, node.absoluteRect.top);
-    assertEquals(0, node.absoluteRect.left);
+    assertThat(node.absoluteRect.top).isEqualTo(0);
+    assertThat(node.absoluteRect.left).isEqualTo(0);
     int textViewHeight = ((ViewGroup) mView).getChildAt(0).getHeight();
 
-    assertEquals(textViewHeight, node.childAt(1).absoluteRect.top);
+    assertThat(node.childAt(1).absoluteRect.top).isEqualTo(textViewHeight);
   }
 
   @Test
@@ -183,7 +182,7 @@ public class LayoutHierarchyDumperTest {
             Collections.<HierarchyPlugin>emptyList(), Collections.singletonList(mAttributePlugin));
     JSONObject root = dumper.dumpHierarchy(mView);
 
-    assertEquals("bar", root.getString("foo:foo"));
+    assertThat(root.getString("foo:foo")).isEqualTo("bar");
   }
 
   @Test
@@ -221,6 +220,6 @@ public class LayoutHierarchyDumperTest {
     expected.add("foobar3");
     expected.add("foobar4");
 
-    assertEquals(expected, allText);
+    assertThat(allText).isEqualTo(expected);
   }
 }
