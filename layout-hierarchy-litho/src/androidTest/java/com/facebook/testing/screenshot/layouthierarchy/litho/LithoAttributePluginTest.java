@@ -16,7 +16,7 @@
 
 package com.facebook.testing.screenshot.layouthierarchy.litho;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.widget.ImageView;
 import androidx.test.InstrumentationRegistry;
@@ -31,12 +31,12 @@ public class LithoAttributePluginTest {
   @Test
   public void testAcceptsLithoView() throws Exception {
     LithoView lithoView = new LithoView(InstrumentationRegistry.getTargetContext());
-    assertEquals(true, LithoAttributePlugin.getInstance().accept(lithoView));
+    assertThat(LithoAttributePlugin.getInstance().accept(lithoView)).isEqualTo(true);
   }
 
   @Test
   public void testDoesntAcceptOtherViews() {
     ImageView imageView = new ImageView(InstrumentationRegistry.getTargetContext());
-    assertEquals(false, LithoAttributePlugin.getInstance().accept(imageView));
+    assertThat(LithoAttributePlugin.getInstance().accept(imageView)).isEqualTo(false);
   }
 }
