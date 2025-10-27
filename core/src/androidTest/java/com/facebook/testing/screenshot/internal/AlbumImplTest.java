@@ -16,10 +16,8 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import android.graphics.Bitmap;
 import androidx.test.InstrumentationRegistry;
@@ -66,7 +64,9 @@ public class AlbumImplTest {
     Bitmap output = mAlbumImpl.getScreenshot(mAlbumImpl.writeBitmap("sfdf", 0, 0, mSomeBitmap));
 
     int actualBlueness = output.getPixel(1, 1) & 0xff;
-    assertTrue("The pixel should be same accounting for compression", actualBlueness > 0xf0);
+    assertThat(actualBlueness > 0xf0)
+        .as("The pixel should be same accounting for compression")
+        .isTrue();
   }
 
   @Test
@@ -82,10 +82,14 @@ public class AlbumImplTest {
     Bitmap secondOutput = newInstance.getScreenshot(secondScreenshotnName);
 
     int firstActualBlueness = firstOutput.getPixel(1, 1) & 0xff;
-    assertTrue("The pixel should be same accounting for compression", firstActualBlueness > 0xf0);
+    assertThat(firstActualBlueness > 0xf0)
+        .as("The pixel should be same accounting for compression")
+        .isTrue();
 
     int secondActualBlueness = secondOutput.getPixel(1, 1) & 0xff;
-    assertTrue("The pixel should be same accounting for compression", secondActualBlueness > 0xf0);
+    assertThat(secondActualBlueness > 0xf0)
+        .as("The pixel should be same accounting for compression")
+        .isTrue();
   }
 
   @Test
@@ -93,9 +97,9 @@ public class AlbumImplTest {
     mAlbumImpl.addRecord(
         new RecordBuilderImpl(null).setName("foo").setTiling(Tiling.singleTile(mFooFile)));
 
-    assertNotNull(mAlbumImpl.getScreenshot("foo"));
+    assertThat(mAlbumImpl.getScreenshot("foo")).isNotNull();
     mAlbumImpl.cleanup();
-    assertEquals(null, mAlbumImpl.getScreenshot("foo"));
+    assertThat(mAlbumImpl.getScreenshot("foo")).isEqualTo(null);
   }
 
   @Test
@@ -108,8 +112,8 @@ public class AlbumImplTest {
 
   @Test
   public void testNonExistentScreenshotReturnsNull() throws Throwable {
-    assertEquals(null, mAlbumImpl.getScreenshot("mehmeh"));
-    assertEquals(null, mAlbumImpl.getScreenshotFile("mehmeh"));
+    assertThat(mAlbumImpl.getScreenshot("mehmeh")).isEqualTo(null);
+    assertThat(mAlbumImpl.getScreenshotFile("mehmeh")).isEqualTo(null);
   }
 
   @Test
@@ -122,7 +126,7 @@ public class AlbumImplTest {
     mAlbumImpl.flush();
     JSONArray metadataJson = parseMetadata();
 
-    assertEquals("bar", metadataJson.getJSONObject(1).getString("name"));
+    assertThat(metadataJson.getJSONObject(1).getString("name")).isEqualTo("bar");
   }
 
   @Test
@@ -136,7 +140,7 @@ public class AlbumImplTest {
     mAlbumImpl.flush();
 
     JSONArray metadataJson = parseMetadata();
-    assertEquals("bar", metadataJson.getJSONObject(1).getString("name"));
+    assertThat(metadataJson.getJSONObject(1).getString("name")).isEqualTo("bar");
   }
 
   @Test
@@ -148,7 +152,7 @@ public class AlbumImplTest {
     mAlbumImpl.flush();
     JSONArray metadataJson = parseMetadata();
     String actual = metadataJson.getJSONObject(0).getString("viewHierarchy");
-    assertEquals("foo_dump.json", actual);
+    assertThat(actual).isEqualTo("foo_dump.json");
   }
 
   @Test
@@ -161,7 +165,8 @@ public class AlbumImplTest {
     mAlbumImpl.flush();
     JSONArray metadataJson = parseMetadata();
 
-    assertEquals("blah", metadataJson.getJSONObject(0).getJSONObject("extras").getString("foo"));
+    assertThat(metadataJson.getJSONObject(0).getJSONObject("extras").getString("foo"))
+        .isEqualTo("blah");
   }
 
   @Test
@@ -177,9 +182,11 @@ public class AlbumImplTest {
     mAlbumImpl.flush();
     JSONArray metadataJson = parseMetadata();
 
-    assertEquals("blah", metadataJson.getJSONObject(0).getJSONObject("extras").getString("foo"));
+    assertThat(metadataJson.getJSONObject(0).getJSONObject("extras").getString("foo"))
+        .isEqualTo("blah");
 
-    assertEquals("blah2", metadataJson.getJSONObject(0).getJSONObject("extras").getString("bar"));
+    assertThat(metadataJson.getJSONObject(0).getJSONObject("extras").getString("bar"))
+        .isEqualTo("blah2");
   }
 
   @Test
@@ -188,7 +195,7 @@ public class AlbumImplTest {
     mAlbumImpl.flush();
     JSONArray metadataJson = parseMetadata();
     String errorFromFile = metadataJson.getJSONObject(0).getString("error");
-    assertEquals("foobar", errorFromFile);
+    assertThat(errorFromFile).isEqualTo("foobar");
   }
 
   @Test
@@ -203,7 +210,7 @@ public class AlbumImplTest {
 
     JSONArray metadataFile = parseMetadata();
     String actualGroup = metadataFile.getJSONObject(0).getString("group");
-    assertEquals("foo_bar", actualGroup);
+    assertThat(actualGroup).isEqualTo("foo_bar");
   }
 
   private JSONArray parseMetadata() throws Throwable {
@@ -265,12 +272,12 @@ public class AlbumImplTest {
     int tileWidth = screenshot.getInt("tileWidth");
     int tileHeight = screenshot.getInt("tileHeight");
 
-    assertEquals(WIDTH, tileWidth);
-    assertEquals(HEIGHT, tileHeight);
+    assertThat(tileWidth).isEqualTo(WIDTH);
+    assertThat(tileHeight).isEqualTo(HEIGHT);
 
     JSONArray fileNames = screenshot.getJSONArray("absoluteFilesNames");
 
-    assertEquals(12, fileNames.length());
+    assertThat(fileNames.length()).isEqualTo(12);
     String fourthFile = fileNames.getString(4);
     OldApiBandaid.assertMatchesRegex(
         "The x coordinate should be before y coordinate", ".*baz_2_3", fileNames.getString(11));
@@ -279,8 +286,8 @@ public class AlbumImplTest {
 
     JSONArray relativeFileNames = screenshot.getJSONArray("relativeFileNames");
 
-    assertEquals(12, relativeFileNames.length());
+    assertThat(relativeFileNames.length()).isEqualTo(12);
     String relativeFourthFile = relativeFileNames.getString(4);
-    assertEquals("baz_1_0", relativeFourthFile);
+    assertThat(relativeFourthFile).isEqualTo("baz_1_0");
   }
 }
