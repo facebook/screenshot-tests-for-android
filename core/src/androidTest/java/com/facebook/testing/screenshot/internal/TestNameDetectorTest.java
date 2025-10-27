@@ -16,7 +16,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import androidx.test.annotation.UiThreadTest;
 import org.junit.Test;
@@ -26,18 +26,16 @@ public class TestNameDetectorTest {
   @Test
   @UiThreadTest
   public void testTestNameIsDetected() throws Throwable {
-    assertEquals("testTestNameIsDetected", TestNameDetector.getTestName());
-    assertEquals(
-        "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
-        TestNameDetector.getTestClass());
+    assertThat(TestNameDetector.getTestName()).isEqualTo("testTestNameIsDetected");
+    assertThat(TestNameDetector.getTestClass())
+        .isEqualTo("com.facebook.testing.screenshot.internal.TestNameDetectorTest");
   }
 
   @Test
   public void testTestNameIsDetectedOnNonUiThread() throws Throwable {
-    assertEquals("testTestNameIsDetectedOnNonUiThread", TestNameDetector.getTestName());
-    assertEquals(
-        "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
-        TestNameDetector.getTestClass());
+    assertThat(TestNameDetector.getTestName()).isEqualTo("testTestNameIsDetectedOnNonUiThread");
+    assertThat(TestNameDetector.getTestClass())
+        .isEqualTo("com.facebook.testing.screenshot.internal.TestNameDetectorTest");
   }
 
   @Test
@@ -47,9 +45,9 @@ public class TestNameDetectorTest {
   }
 
   private void extraLayerMethod() {
-    assertEquals("testTestNameIsDetectedThroughExtraMethod", TestNameDetector.getTestName());
-    assertEquals(
-        "com.facebook.testing.screenshot.internal.TestNameDetectorTest",
-        TestNameDetector.getTestClass());
+    assertThat(TestNameDetector.getTestName())
+        .isEqualTo("testTestNameIsDetectedThroughExtraMethod");
+    assertThat(TestNameDetector.getTestClass())
+        .isEqualTo("com.facebook.testing.screenshot.internal.TestNameDetectorTest");
   }
 }
