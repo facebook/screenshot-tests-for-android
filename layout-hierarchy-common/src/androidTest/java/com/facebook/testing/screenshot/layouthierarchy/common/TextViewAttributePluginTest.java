@@ -16,7 +16,7 @@
 
 package com.facebook.testing.screenshot.layouthierarchy.common;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.graphics.Color;
 import android.graphics.Point;
@@ -34,13 +34,13 @@ public class TextViewAttributePluginTest {
   @Test
   public void testAcceptsTextViews() {
     TextView textView = new TextView(InstrumentationRegistry.getTargetContext());
-    assertEquals(true, TextViewAttributePlugin.getInstance().accept(textView));
+    assertThat(TextViewAttributePlugin.getInstance().accept(textView)).isTrue();
   }
 
   @Test
   public void testDoesntAcceptOtherViews() {
     View view = new View(InstrumentationRegistry.getTargetContext());
-    assertEquals(false, TextViewAttributePlugin.getInstance().accept(view));
+    assertThat(TextViewAttributePlugin.getInstance().accept(view)).isFalse();
   }
 
   @Test
@@ -62,10 +62,10 @@ public class TextViewAttributePluginTest {
 
     TextViewAttributePlugin.getInstance().putAttributes(node, textView, new Point());
 
-    assertEquals("foobar", node.getString("TextView:text"));
-    assertEquals("1337.0", node.getString("TextView:textSize"));
-    assertEquals("ff000000", node.getString("TextView:textColor"));
-    assertEquals("TEXT_ALIGNMENT_GRAVITY", node.getString("TextView:textAlignment"));
+    assertThat(node.getString("TextView:text")).isEqualTo("foobar");
+    assertThat(node.getString("TextView:textSize")).isEqualTo("1337.0");
+    assertThat(node.getString("TextView:textColor")).isEqualTo("ff000000");
+    assertThat(node.getString("TextView:textAlignment")).isEqualTo("TEXT_ALIGNMENT_GRAVITY");
   }
 
   @Test
@@ -81,7 +81,7 @@ public class TextViewAttributePluginTest {
 
     TextViewAttributePlugin.getInstance().putAttributes(node, textView, new Point());
 
-    assertEquals("null", node.getString("TextView:text"));
+    assertThat(node.getString("TextView:text")).isEqualTo("null");
   }
 
   @Test
@@ -97,6 +97,6 @@ public class TextViewAttributePluginTest {
 
     TextViewAttributePlugin.getInstance().putAttributes(node, textView, new Point());
 
-    assertEquals("Foobar", node.getString("TextView:text"));
+    assertThat(node.getString("TextView:text")).isEqualTo("Foobar");
   }
 }
