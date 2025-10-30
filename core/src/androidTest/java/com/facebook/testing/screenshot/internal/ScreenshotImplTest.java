@@ -16,10 +16,8 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.fail;
 
 import android.app.Instrumentation;
 import android.content.Context;
@@ -91,12 +89,12 @@ public class ScreenshotImplTest {
 
   @Test
   public void testClassNameIsDetectedOnNonUiThread() throws Throwable {
-    assertEquals(getClass().getName(), mScreenshot.snap(mTextView).getTestClass());
+    assertThat(mScreenshot.snap(mTextView).getTestClass()).isEqualTo(getClass().getName());
   }
 
   @Test
   public void testTestNameIsDetected() throws Throwable {
-    assertEquals("testTestNameIsDetected", mScreenshot.snap(mTextView).getTestName());
+    assertThat(mScreenshot.snap(mTextView).getTestName()).isEqualTo("testTestNameIsDetected");
   }
 
   @Test
@@ -119,14 +117,14 @@ public class ScreenshotImplTest {
     }
     JSONObject result = new JSONObject(builder.toString());
 
-    assertEquals(3, result.length());
+    assertThat(result.length()).isEqualTo(3);
     JSONObject viewHierarchy = result.getJSONObject("viewHierarchy");
-    assertEquals(5, viewHierarchy.length());
-    assertEquals("android.widget.TextView", viewHierarchy.getString("class"));
-    assertEquals(0, viewHierarchy.getInt("left"));
-    assertEquals(0, viewHierarchy.getInt("top"));
-    assertEquals(200, viewHierarchy.getInt("width"));
-    assertEquals(100, viewHierarchy.getInt("height"));
+    assertThat(viewHierarchy.length()).isEqualTo(5);
+    assertThat(viewHierarchy.getString("class")).isEqualTo("android.widget.TextView");
+    assertThat(viewHierarchy.getInt("left")).isEqualTo(0);
+    assertThat(viewHierarchy.getInt("top")).isEqualTo(0);
+    assertThat(viewHierarchy.getInt("width")).isEqualTo(200);
+    assertThat(viewHierarchy.getInt("height")).isEqualTo(100);
 
     File metadata = mAlbumImpl.getMetadataFile();
     String metadataContents = fileToString(metadata);
@@ -138,8 +136,8 @@ public class ScreenshotImplTest {
   public void testLargeViewThrowsWithDefaultMax() throws Throwable {
     measureAndLayout(200, 0xffff00);
 
-    assertEquals(200, mTextView.getMeasuredWidth());
-    assertEquals(0xffff00, mTextView.getMeasuredHeight());
+    assertThat(mTextView.getMeasuredWidth()).isEqualTo(200);
+    assertThat(mTextView.getMeasuredHeight()).isEqualTo(0xffff00);
     try {
       mScreenshot.snap(mTextView).setName("largeView").record();
       fail("expected exception");
@@ -152,8 +150,8 @@ public class ScreenshotImplTest {
   public void testLargeViewDoesntThrowWithCustomMax() throws Throwable {
     measureAndLayout(1440, 1000);
 
-    assertEquals(1440, mTextView.getMeasuredWidth());
-    assertEquals(1000, mTextView.getMeasuredHeight());
+    assertThat(mTextView.getMeasuredWidth()).isEqualTo(1440);
+    assertThat(mTextView.getMeasuredHeight()).isEqualTo(1000);
     mScreenshot.snap(mTextView).setMaxPixels(10733760L).setName("largeView").record();
   }
 
@@ -161,8 +159,8 @@ public class ScreenshotImplTest {
   public void testLargeViewDoesntThrowWithNoMax() throws Throwable {
     measureAndLayout(1440, 1000);
 
-    assertEquals(1440, mTextView.getMeasuredWidth());
-    assertEquals(1000, mTextView.getMeasuredHeight());
+    assertThat(mTextView.getMeasuredWidth()).isEqualTo(1440);
+    assertThat(mTextView.getMeasuredHeight()).isEqualTo(1000);
     mScreenshot.snap(mTextView).setMaxPixels(0).setName("largeView").record();
   }
 
@@ -219,7 +217,7 @@ public class ScreenshotImplTest {
         Bitmap.createBitmap(VIEW_WIDTH, VIEW_HEIGHT, Bitmap.Config.ARGB_8888);
     Canvas canvas = new Canvas(reconstructedFromTiles);
 
-    assertEquals(Color.TRANSPARENT, reconstructedFromTiles.getPixel(0, 0));
+    assertThat(reconstructedFromTiles.getPixel(0, 0)).isEqualTo(Color.TRANSPARENT);
 
     for (int i = 0; i < TILE_COLS; i++) {
       for (int j = 0; j < TILE_ROWS; j++) {
@@ -230,7 +228,7 @@ public class ScreenshotImplTest {
 
         Bitmap bmp = mAlbumImpl.getScreenshot(name);
 
-        assertNotNull(bmp);
+        assertThat(bmp).isNotNull();
 
         Paint paint = new Paint();
         int left = i * 10;
@@ -240,17 +238,17 @@ public class ScreenshotImplTest {
 
         if (i == TILE_COLS - 1) {
           if (enableReconfigure) {
-            assertEquals(3, bmp.getWidth());
+            assertThat(bmp.getWidth()).isEqualTo(3);
           } else {
-            assertEquals(10, bmp.getWidth());
+            assertThat(bmp.getWidth()).isEqualTo(10);
           }
         }
 
         if (j == TILE_ROWS - 1) {
           if (enableReconfigure) {
-            assertEquals(2, bmp.getHeight());
+            assertThat(bmp.getHeight()).isEqualTo(2);
           } else {
-            assertEquals(10, bmp.getHeight());
+            assertThat(bmp.getHeight()).isEqualTo(10);
           }
         }
       }
@@ -343,7 +341,7 @@ public class ScreenshotImplTest {
     @Override
     public void onDraw(Canvas canvas) {
       super.onDraw(canvas);
-      assertTrue(mAttached);
+      assertThat(mAttached).isTrue();
     }
   }
 
