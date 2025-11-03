@@ -18,8 +18,7 @@ package com.facebook.testing.screenshot;
 
 import static androidx.test.espresso.action.ViewActions.*;
 import static androidx.test.espresso.matcher.ViewMatchers.*;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import android.app.KeyguardManager;
 import android.content.Context;
@@ -65,22 +64,22 @@ public class WindowAttachmentTest {
   public void testCalled() throws Throwable {
     MyView view = new MyView(mContext);
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(view);
-    assertEquals(1, mAttachedCalled);
-    assertEquals(0, mDetachedCalled);
+    assertThat(mAttachedCalled).isEqualTo(1);
+    assertThat(mDetachedCalled).isEqualTo(0);
 
     detacher.detach();
-    assertEquals(1, mDetachedCalled);
+    assertThat(mDetachedCalled).isEqualTo(1);
   }
 
   @Test
   public void testCalledForViewGroup() throws Throwable {
     Parent view = new Parent(mContext);
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(view);
-    assertEquals(1, mAttachedCalled);
-    assertEquals(0, mDetachedCalled);
+    assertThat(mAttachedCalled).isEqualTo(1);
+    assertThat(mDetachedCalled).isEqualTo(0);
 
     detacher.detach();
-    assertEquals(1, mDetachedCalled);
+    assertThat(mDetachedCalled).isEqualTo(1);
   }
 
   @Test
@@ -90,11 +89,11 @@ public class WindowAttachmentTest {
     view.addView(child);
 
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(view);
-    assertEquals(2, mAttachedCalled);
-    assertEquals(0, mDetachedCalled);
+    assertThat(mAttachedCalled).isEqualTo(2);
+    assertThat(mDetachedCalled).isEqualTo(0);
 
     detacher.detach();
-    assertEquals(2, mDetachedCalled);
+    assertThat(mDetachedCalled).isEqualTo(2);
   }
 
   @Test
@@ -123,8 +122,8 @@ public class WindowAttachmentTest {
     WindowAttachment.Detacher detacher = WindowAttachment.dispatchAttach(view[0]);
     detacher.detach();
 
-    assertEquals(0, mAttachedCalled);
-    assertEquals(0, mDetachedCalled);
+    assertThat(mAttachedCalled).isEqualTo(0);
+    assertThat(mDetachedCalled).isEqualTo(0);
   }
 
   @Test
@@ -139,7 +138,7 @@ public class WindowAttachmentTest {
               }
             });
 
-    assertNotNull(view.getWindowToken());
+    assertThat(view.getWindowToken()).isNotNull();
   }
 
   public class MyView extends View {
