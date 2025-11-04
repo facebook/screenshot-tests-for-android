@@ -16,7 +16,7 @@
 
 package com.facebook.testing.screenshot.internal;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
@@ -24,10 +24,9 @@ import org.junit.Test;
 public class TestNameDetectorForJUnit4Test {
   @Test
   public void testTestNameIsDetectedOnNonUiThread() throws Throwable {
-    assertEquals("testTestNameIsDetectedOnNonUiThread", TestNameDetector.getTestName());
-    assertEquals(
-        "com.facebook.testing.screenshot.internal.TestNameDetectorForJUnit4Test",
-        TestNameDetector.getTestClass());
+    assertThat(TestNameDetector.getTestName()).isEqualTo("testTestNameIsDetectedOnNonUiThread");
+    assertThat(TestNameDetector.getTestClass())
+        .isEqualTo("com.facebook.testing.screenshot.internal.TestNameDetectorForJUnit4Test");
   }
 
   @Test
@@ -37,10 +36,10 @@ public class TestNameDetectorForJUnit4Test {
   }
 
   public void delegate(boolean foobar) {
-    assertEquals("testDelegated", TestNameDetector.getTestName());
+    assertThat(TestNameDetector.getTestName()).isEqualTo("testDelegated");
   }
 
   private void delegatePrivate() {
-    assertEquals("testDelegated", TestNameDetector.getTestName());
+    assertThat(TestNameDetector.getTestName()).isEqualTo("testDelegated");
   }
 }
