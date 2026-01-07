@@ -18,6 +18,15 @@ see how the view renders in a real Android environment, without having to
 build the whole app. You can also render the view in multiple configurations
 at one go.
 
+# Current Status & Alternative
+
+**This repository is now archived and no longer being maintained.**
+
+Thank you everyone for the years of support!
+
+If you're searching for a maintained fork, you can take a look at [Screenshot Bot's fork](https://github.com/screenshotbot/screenshot-tests-for-android).
+
+
 ## Documentation
 
 Take a look at the documentation at http://facebook.github.io/screenshot-tests-for-android/#getting-started
